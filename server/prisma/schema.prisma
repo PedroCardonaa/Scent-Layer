@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String          @id @default(cuid())
+  email        String          @unique
+  passwordHash String
+  createdAt    DateTime        @default(now())
+  quizResult   Json?
+  wishlist     WishlistItem[]
+}
+
+model Fragrance {
+  id          Int             @id
+  name        String
+  brand       String
+  type        String          // "niche" | "designer"
+  family      String          // Fresh, Floral, Woody, Oriental, Gourmand
+  top         String
+  heart       String
+  base        String
+  season      String[]
+  time        String[]
+  mood        String[]
+  description String?
+  imageUrl    String?
+  bg          String          // p-bg-1 ... p-bg-12 — preserves existing gradient class
+  badge       String?
+  createdAt   DateTime        @default(now())
+  wishlist    WishlistItem[]
+}
+
+model WishlistItem {
+  id          String     @id @default(cuid())
+  userId      String
+  fragranceId Int
+  createdAt   DateTime   @default(now())
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fragrance   Fragrance  @relation(fields: [fragranceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, fragranceId])
+}
+
+model WaitlistSignup {
+  id        String   @id @default(cuid())
+  email     String
+  type      String   // "fotm" | "referral" | "general"
+  createdAt DateTime @default(now())
+
+  @@index([email, type])
+}
+
+model SourceRequest {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  fragrance String?
+  message   String?
+  createdAt DateTime @default(now())
+}

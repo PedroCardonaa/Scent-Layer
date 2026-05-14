@@ -1,0 +1,53 @@
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Nav } from '../components/Nav.jsx';
+import { useApp } from '../context/AppContext.jsx';
+
+export function SignupPage() {
+  const { signup, user } = useApp();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => { document.body.classList.add('dark'); return () => document.body.classList.remove('dark'); }, []);
+  useEffect(() => { if (user) navigate('/profile', { replace: true }); }, [user, navigate]);
+
+  async function submit(e) {
+    e.preventDefault();
+    setError(null); setSubmitting(true);
+    try {
+      await signup(email, password);
+      navigate('/profile');
+    } catch (err) {
+      setError(err.message || 'Sign up failed');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <>
+      <Nav theme="dark" />
+      <div className="auth-page">
+        <form className="auth-card" onSubmit={submit}>
+          <p className="auth-eyebrow">Join Scent Layer</p>
+          <h1 className="auth-title">Create your<br/><em>profile.</em></h1>
+          <p className="auth-sub">Your wishlist and quiz result sync across devices. Free, no spam, takes 10 seconds.</p>
+          {error && <div className="auth-error">{error}</div>}
+          <div className="auth-field">
+            <label className="auth-label">Email</label>
+            <input className="auth-input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+          </div>
+          <div className="auth-field">
+            <label className="auth-label">Password</label>
+            <input className="auth-input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} autoComplete="new-password" placeholder="Minimum 8 characters" />
+          </div>
+          <button type="submit" className="auth-submit" disabled={submitting}>{submitting ? 'Creating account…' : 'Create Account'}</button>
+          <p className="auth-switch">Already have an account? <Link to="/login">Sign in</Link></p>
+        </form>
+      </div>
+    </>
+  );
+}

@@ -1,0 +1,19 @@
+{
+  "name": "scent-layer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Scent Layer — luxury fragrance discovery and sourcing platform",
+  "workspaces": ["client", "server"],
+  "scripts": {
+    "dev": "concurrently -k -n server,client -c blue,magenta \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:client": "npm --workspace client run dev",
+    "dev:server": "npm --workspace server run dev",
+    "build": "npm --workspace client run build && npm --workspace server run build",
+    "seed": "npm --workspace server run seed",
+    "prisma:migrate": "npm --workspace server run prisma:migrate",
+    "prisma:generate": "npm --workspace server run prisma:generate"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}

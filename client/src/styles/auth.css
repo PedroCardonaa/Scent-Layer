@@ -1,0 +1,19 @@
+/* ===== AUTH PAGES (LOGIN / SIGNUP) ===== */
+.auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 100px 24px 60px; background: var(--deep2); }
+.auth-card { width: 100%; max-width: 440px; background: rgba(255,255,255,0.04); border: 1px solid rgba(201,169,110,0.15); padding: 48px 40px; }
+.auth-eyebrow { font-size:.62rem; letter-spacing:.28em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; }
+.auth-title { font-family:'Cormorant Garamond',serif; font-size:2.2rem; font-weight:300; color:var(--cream); margin-bottom:8px; line-height:1.15; }
+.auth-title em { font-style:italic; color:var(--gold); }
+.auth-sub { font-size:.78rem; color:rgba(245,240,232,.45); margin-bottom:32px; line-height:1.7; }
+.auth-field { margin-bottom:14px; }
+.auth-label { display:block; font-size:.58rem; letter-spacing:.22em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+.auth-input { width:100%; background:rgba(255,255,255,.04); border:1px solid rgba(201,169,110,.2); color:var(--cream); font-family:'Jost',sans-serif; font-size:.85rem; padding:13px 16px; outline:none; transition:border-color .3s; }
+.auth-input:focus { border-color:var(--gold); }
+.auth-input::placeholder { color:rgba(245,240,232,.3); }
+.auth-submit { width:100%; padding:14px; background:var(--gold); color:var(--deep2); font-family:'Jost',sans-serif; font-size:.7rem; font-weight:500; letter-spacing:.22em; text-transform:uppercase; border:none; cursor:none; transition:background .3s, opacity .3s; margin-top:8px; }
+.auth-submit:hover { background:var(--gold-light); }
+.auth-submit:disabled { opacity:.5; }
+.auth-error { background:rgba(224,112,112,.1); border:1px solid rgba(224,112,112,.3); color:#e08080; padding:10px 14px; font-size:.74rem; margin-bottom:16px; line-height:1.5; }
+.auth-switch { font-size:.74rem; color:rgba(245,240,232,.5); text-align:center; margin-top:22px; }
+.auth-switch a { color:var(--gold); text-decoration:none; border-bottom:1px solid rgba(201,169,110,.3); }
+.auth-switch a:hover { border-color:var(--gold); }
