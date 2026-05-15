@@ -70,21 +70,18 @@ export function HomePage() {
         <div className="hiw-steps">
           <div className="hiw-step reveal">
             <div className="hiw-step-num">01</div>
-            <span className="hiw-step-icon">🔍</span>
             <h3 className="hiw-step-title">Discover</h3>
             <p className="hiw-step-desc">Browse our curated catalog, take the quiz, or use the Scent Finder. Get matched with fragrances built for your taste.</p>
           </div>
           <div className="hiw-arrow">→</div>
           <div className="hiw-step reveal">
             <div className="hiw-step-num">02</div>
-            <span className="hiw-step-icon">💧</span>
             <h3 className="hiw-step-title">Sample</h3>
             <p className="hiw-step-desc">Order 2ml, 5ml, 10ml, or 30ml of anything that interests you. Authentic, decanted, and small enough to be honest about. Try three at a time.</p>
           </div>
           <div className="hiw-arrow">→</div>
           <div className="hiw-step reveal">
             <div className="hiw-step-num">03</div>
-            <span className="hiw-step-icon">📦</span>
             <h3 className="hiw-step-title">Commit</h3>
             <p className="hiw-step-desc">Found the one? We source the full bottle for you at a discount — authenticated, delivered, and no boutique markup. Or just keep restocking the sample size you love.</p>
           </div>
@@ -164,10 +161,10 @@ export function HomePage() {
           <blockquote className="mission-quote">"Fragrance is the fastest way to change how you <em>carry yourself.</em>"</blockquote>
           <p className="mission-body">Scent Layer exists for one reason — to help you smell better and feel more confident. We curate the fragrances worth wearing, help you understand how they work, and source them for you at a price that makes sense. No boutique markup. No gatekeeping. Just the right scent for the right person.</p>
           <div className="mission-values">
-            <div className="mission-value"><span className="mission-value-icon">🎯</span><span className="mission-value-label">Curated</span></div>
-            <div className="mission-value"><span className="mission-value-icon">🤝</span><span className="mission-value-label">Sourced</span></div>
-            <div className="mission-value"><span className="mission-value-icon">💡</span><span className="mission-value-label">Guided</span></div>
-            <div className="mission-value"><span className="mission-value-icon">✓</span><span className="mission-value-label">Authenticated</span></div>
+            <div className="mission-value"><span className="mission-value-label">Curated</span></div>
+            <div className="mission-value"><span className="mission-value-label">Sampled</span></div>
+            <div className="mission-value"><span className="mission-value-label">Sourced</span></div>
+            <div className="mission-value"><span className="mission-value-label">Authenticated</span></div>
           </div>
         </div>
       </section>
@@ -177,10 +174,10 @@ export function HomePage() {
           <div><p className="section-label" style={{ color: 'var(--gold)' }}>The Architecture</p><h2 className="section-title" style={{ color: 'var(--cream)' }}>Every scent is<br/><em>built in layers.</em></h2></div>
         </div>
         <div className="notes-grid">
-          <div className="note-card"><span className="note-num">01</span><span className="note-icon">🌸</span><h3 className="note-name">Top Notes</h3><p className="note-desc">The opening act — bright, citrus, light florals. What you smell in the first 15 minutes.</p></div>
-          <div className="note-card"><span className="note-num">02</span><span className="note-icon">🌿</span><h3 className="note-name">Heart Notes</h3><p className="note-desc">The soul of the fragrance. Florals, spices, green accords that emerge as the top fades.</p></div>
-          <div className="note-card"><span className="note-num">03</span><span className="note-icon">🪵</span><h3 className="note-name">Base Notes</h3><p className="note-desc">What lingers for hours — woods, resins, musks that define your signature trail.</p></div>
-          <div className="note-card"><span className="note-num">04</span><span className="note-icon">✨</span><h3 className="note-name">Your Skin</h3><p className="note-desc">Every fragrance transforms uniquely on your chemistry. That's the final layer.</p></div>
+          <div className="note-card"><span className="note-num">01</span><h3 className="note-name">Top Notes</h3><p className="note-desc">The opening act — bright, citrus, light florals. What you smell in the first 15 minutes.</p></div>
+          <div className="note-card"><span className="note-num">02</span><h3 className="note-name">Heart Notes</h3><p className="note-desc">The soul of the fragrance. Florals, spices, green accords that emerge as the top fades.</p></div>
+          <div className="note-card"><span className="note-num">03</span><h3 className="note-name">Base Notes</h3><p className="note-desc">What lingers for hours — woods, resins, musks that define your signature trail.</p></div>
+          <div className="note-card"><span className="note-num">04</span><h3 className="note-name">Your Skin</h3><p className="note-desc">Every fragrance transforms uniquely on your chemistry. That's the final layer.</p></div>
         </div>
       </section>
 
@@ -201,10 +198,10 @@ export function HomePage() {
             <h2 className="fotm-title">The Monthly<br/><em>Scent Club.</em></h2>
             <p className="fotm-body">Every month, one bottle. Sourced, authenticated, and delivered to your door at a members-only price. Niche and designer picks you'd never find on your own — curated for those who take fragrance seriously.</p>
             <div className="fotm-perks">
-              <div className="fotm-perk"><span className="fotm-perk-icon">📦</span><div><strong>Monthly drop</strong><span>One full-size bottle, sourced exclusively for members</span></div></div>
-              <div className="fotm-perk"><span className="fotm-perk-icon">💰</span><div><strong>Members pricing</strong><span>Significantly below retail — always</span></div></div>
-              <div className="fotm-perk"><span className="fotm-perk-icon">✓</span><div><strong>Authenticated</strong><span>Every bottle verified before it ships</span></div></div>
-              <div className="fotm-perk"><span className="fotm-perk-icon">🎯</span><div><strong>Personalized</strong><span>Picks informed by your quiz results and preferences</span></div></div>
+              <div className="fotm-perk"><div><strong>Monthly drop</strong><span>One full-size bottle, sourced exclusively for members</span></div></div>
+              <div className="fotm-perk"><div><strong>Members pricing</strong><span>Significantly below retail — always</span></div></div>
+              <div className="fotm-perk"><div><strong>Authenticated</strong><span>Every bottle verified before it ships</span></div></div>
+              <div className="fotm-perk"><div><strong>Personalized</strong><span>Picks informed by your quiz results and preferences</span></div></div>
             </div>
             <div className="fotm-form">
               <input className="fotm-input" id="fotmEmail" placeholder="Your email address" type="email" />
@@ -239,17 +236,16 @@ export function HomePage() {
           <div className="sourcing-step reveal"><div className="sourcing-step-num">04</div><h3 className="sourcing-step-title">Love it? Get the bottle.</h3><p className="sourcing-step-desc">If you find your signature, we source the full bottle at a discount — typically 20–40% below retail. Or just reorder the sample size you wear most.</p></div>
         </div>
         <div className="auth-strip">
-          <div className="auth-item"><span className="auth-icon">🔍</span><div><strong>Decanted from authentics</strong><span>Every bottle batch-coded and verified before we pour</span></div></div>
+          <div className="auth-item"><div><strong>Decanted from authentics</strong><span>Every bottle batch-coded and verified before we pour</span></div></div>
           <div className="auth-divider" />
-          <div className="auth-item"><span className="auth-icon">🧪</span><div><strong>Sealed glass atomizers</strong><span>Labeled, dated, and pressure-tested before shipping</span></div></div>
+          <div className="auth-item"><div><strong>Sealed glass atomizers</strong><span>Labeled, dated, and pressure-tested before shipping</span></div></div>
           <div className="auth-divider" />
-          <div className="auth-item"><span className="auth-icon">↩️</span><div><strong>Satisfaction guaranteed</strong><span>Something off? We make it right — no questions</span></div></div>
+          <div className="auth-item"><div><strong>Satisfaction guaranteed</strong><span>Something off? We make it right — no questions</span></div></div>
         </div>
       </section>
 
       <section className="referral">
         <div className="referral-inner">
-          <div className="referral-icon">🤝</div>
           <h2 className="referral-title">Refer a friend,<br/><em>both smell better.</em></h2>
           <p className="referral-body">When we launch, every referral earns you and your friend a discount on your first sourcing order. The more people you bring in, the more you save. Fragrance is better shared anyway.</p>
           <div className="referral-form">

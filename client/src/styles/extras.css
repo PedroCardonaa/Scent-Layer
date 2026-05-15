@@ -41,7 +41,9 @@
 
 .occasions-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
 .occ-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,169,110,.07); overflow:hidden; }
-.occ-visual { height:110px; display:flex; align-items:center; justify-content:center; font-size:2.5rem; }
+.occ-visual { height:110px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+.occ-visual::before { content:''; position:absolute; inset:0; background:radial-gradient(circle at 50% 60%, rgba(201,169,110,0.18), transparent 70%); }
+.occ-visual-label { position:relative; font-family:'Cormorant Garamond', serif; font-size:1.5rem; font-weight:300; font-style:italic; letter-spacing:0.03em; color:rgba(245,240,232,0.55); }
 .occ-body { padding:24px; }
 .occ-name { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:300; margin-bottom:8px; color:var(--cream); }
 .occ-vibe { font-size:.7rem; color:rgba(245,240,232,.4); margin-bottom:18px; line-height:1.7; }

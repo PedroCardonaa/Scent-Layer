@@ -97,12 +97,12 @@ const LIST_TABS = [
 ];
 
 const OCCASIONS = [
-  { name: 'First Date', emoji: '🕯️', bg: 'linear-gradient(160deg,#2a1a20,#4a2838)', vibe: 'Warm and close to skin. You want to be noticed when they lean in, not from across the room.',     picks: [{ id: 2, note: 'The ultimate' },   { id: 4, note: 'Understated' },     { id: 5, note: 'Cinematic' }] },
-  { name: 'Job Interview', emoji: '💼', bg: 'linear-gradient(160deg,#1a2030,#2a3848)', vibe: 'Confident but invisible. Be remembered for your answers, not your scent. One spray, pulse points only.', picks: [{ id: 14, note: 'Safest pick' },   { id: 9, note: 'Clean & sharp' },   { id: 3, note: 'Quietly elegant' }] },
-  { name: 'Night Out', emoji: '🌙', bg: 'linear-gradient(160deg,#1a1228,#302040)',     vibe: 'Project. This is the time to go bold — the room is loud, the lighting is low, and you want your trail to linger.', picks: [{ id: 1, note: 'Commands the room' },{ id: 8, note: 'Rich & warm' }, { id: 7, note: 'Bold & sensual' }] },
-  { name: 'Summer Wedding', emoji: '🌸', bg: 'linear-gradient(160deg,#1a2820,#304838)', vibe: 'Elegant and occasion-appropriate. Complement the event, don\'t compete with it.',                                  picks: [{ id: 12, note: 'Perfect for it' },  { id: 3, note: 'Clean elegance' }, { id: 13, note: 'Sophisticated' }] },
-  { name: 'Travel', emoji: '✈️', bg: 'linear-gradient(160deg,#202818,#384030)',         vibe: 'Light and adaptable. 5ml or 10ml decants are your best friend — check the spray calculator.',                       picks: [{ id: 15, note: 'Versatile everywhere' },{ id: 9, note: 'Fresh & easy' },   { id: 14, note: 'Ultra-portable' }] },
-  { name: 'Casual Weekend', emoji: '☀️', bg: 'linear-gradient(160deg,#282018,#403828)', vibe: 'No rules. This is the moment for something you genuinely love wearing.',                                            picks: [{ id: 4, note: 'Weekend classic' },{ id: 6, note: 'Easy all-day' }, { id: 11, note: 'Effortless' }] },
+  { name: 'First Date',     bg: 'linear-gradient(160deg,#2a1a20,#4a2838)', vibe: 'Warm and close to skin. You want to be noticed when they lean in, not from across the room.',     picks: [{ id: 2, note: 'The ultimate' },   { id: 4, note: 'Understated' },     { id: 5, note: 'Cinematic' }] },
+  { name: 'Job Interview',  bg: 'linear-gradient(160deg,#1a2030,#2a3848)', vibe: 'Confident but invisible. Be remembered for your answers, not your scent. One spray, pulse points only.', picks: [{ id: 14, note: 'Safest pick' },   { id: 9, note: 'Clean & sharp' },   { id: 3, note: 'Quietly elegant' }] },
+  { name: 'Night Out',      bg: 'linear-gradient(160deg,#1a1228,#302040)', vibe: 'Project. This is the time to go bold — the room is loud, the lighting is low, and you want your trail to linger.', picks: [{ id: 1, note: 'Commands the room' },{ id: 8, note: 'Rich & warm' }, { id: 7, note: 'Bold & sensual' }] },
+  { name: 'Summer Wedding', bg: 'linear-gradient(160deg,#1a2820,#304838)', vibe: 'Elegant and occasion-appropriate. Complement the event, don\'t compete with it.',                                  picks: [{ id: 12, note: 'Perfect for it' },  { id: 3, note: 'Clean elegance' }, { id: 13, note: 'Sophisticated' }] },
+  { name: 'Travel',         bg: 'linear-gradient(160deg,#202818,#384030)', vibe: 'Light and adaptable. 5ml or 10ml decants are your best friend — check the spray calculator.',                     picks: [{ id: 15, note: 'Versatile everywhere' },{ id: 9, note: 'Fresh & easy' },   { id: 14, note: 'Ultra-portable' }] },
+  { name: 'Casual Weekend', bg: 'linear-gradient(160deg,#282018,#403828)', vibe: 'No rules. This is the moment for something you genuinely love wearing.',                                          picks: [{ id: 4, note: 'Weekend classic' },{ id: 6, note: 'Easy all-day' }, { id: 11, note: 'Effortless' }] },
 ];
 
 const GLOSSARY = [
@@ -228,7 +228,7 @@ export function ExtrasPage() {
           <div className="occasions-grid">
             {OCCASIONS.map(o => (
               <div key={o.name} className="occ-card">
-                <div className="occ-visual" style={{ background: o.bg }}>{o.emoji}</div>
+                <div className="occ-visual" style={{ background: o.bg }}><span className="occ-visual-label">{o.name}</span></div>
                 <div className="occ-body">
                   <h3 className="occ-name">{o.name}</h3>
                   <p className="occ-vibe">{o.vibe}</p>
