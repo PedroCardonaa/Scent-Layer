@@ -1,9 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
 import { ProductCard } from '../components/ProductCard.jsx';
 import { HeroBottle, SotwBottle } from '../components/BottleSvg.jsx';
+import { Marquee } from '../components/ui/Marquee.jsx';
+import { BorderBeam } from '../components/ui/BorderBeam.jsx';
+import { AnimatedBeam } from '../components/ui/AnimatedBeam.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useScrollReveal } from '../hooks/useScrollReveal.js';
 import { api } from '../lib/api.js';
@@ -24,6 +27,11 @@ export function HomePage() {
     const fn = FILTERS.find(f => f.key === filter)?.match ?? (() => true);
     return fragrances.filter(fn).slice(0, 8);
   }, [fragrances, filter]);
+
+  const hiwRef = useRef(null);
+  const hiwStep1Ref = useRef(null);
+  const hiwStep2Ref = useRef(null);
+  const hiwStep3Ref = useRef(null);
 
   useScrollReveal('.product-card,.tool-card,.note-card,.mission-value,.proof-card,.reveal', [visible.length]);
 
@@ -65,26 +73,28 @@ export function HomePage() {
       <section className="hiw">
         <div>
           <p className="section-label" style={{ color: 'var(--gold)' }}>How It Works</p>
-          <h2 className="section-title" style={{ color: 'var(--cream)' }}>Three steps to your<br/><em>signature scent.</em></h2>
+          <h2 className="section-title" style={{ color: 'var(--cream)' }}>Three steps to your<br/><em className="gradient-em">signature scent.</em></h2>
         </div>
-        <div className="hiw-steps">
-          <div className="hiw-step reveal">
+        <div className="hiw-steps" ref={hiwRef}>
+          <div className="hiw-step reveal" ref={hiwStep1Ref}>
             <div className="hiw-step-num">01</div>
             <h3 className="hiw-step-title">Discover</h3>
             <p className="hiw-step-desc">Browse our curated catalog, take the quiz, or use the Scent Finder. Get matched with fragrances built for your taste.</p>
           </div>
-          <div className="hiw-arrow">→</div>
-          <div className="hiw-step reveal">
+          <div className="hiw-arrow" aria-hidden="true" style={{ opacity: 0 }}>→</div>
+          <div className="hiw-step reveal" ref={hiwStep2Ref}>
             <div className="hiw-step-num">02</div>
             <h3 className="hiw-step-title">Sample</h3>
             <p className="hiw-step-desc">Order 2ml, 5ml, 10ml, or 30ml of anything that interests you. Authentic, decanted, and small enough to be honest about. Try three at a time.</p>
           </div>
-          <div className="hiw-arrow">→</div>
-          <div className="hiw-step reveal">
+          <div className="hiw-arrow" aria-hidden="true" style={{ opacity: 0 }}>→</div>
+          <div className="hiw-step reveal" ref={hiwStep3Ref}>
             <div className="hiw-step-num">03</div>
             <h3 className="hiw-step-title">Commit</h3>
             <p className="hiw-step-desc">Found the one? We source the full bottle for you at a discount — authenticated, delivered, and no boutique markup. Or just keep restocking the sample size you love.</p>
           </div>
+          <AnimatedBeam containerRef={hiwRef} fromRef={hiwStep1Ref} toRef={hiwStep2Ref} duration={3.6} delay={0} />
+          <AnimatedBeam containerRef={hiwRef} fromRef={hiwStep2Ref} toRef={hiwStep3Ref} duration={3.6} delay={1.4} />
         </div>
         <div className="hiw-cta">
           <p>Ready to start sampling?</p>
@@ -104,17 +114,23 @@ export function HomePage() {
           <button className="btn-dark" type="button" onClick={() => openSampleModal('Baccarat Rouge 540 — Maison Francis Kurkdjian')}>Order a 2ml Sample</button>
           <button type="button" className="source-link" style={{ display: 'inline-block', width: 'auto', marginLeft: 12, borderTop: 'none', padding: 0, color: 'rgba(245,240,232,0.45)' }} onClick={() => openSourceModal('Baccarat Rouge 540 — Maison Francis Kurkdjian')}>or full bottle →</button>
         </div>
-        <div className="sotw-visual"><SotwBottle /></div>
+        <div className="sotw-visual">
+          <SotwBottle />
+          <BorderBeam size={260} duration={9} colorFrom="#c9a96e" colorTo="#e8d5a8" />
+        </div>
       </section>
 
       <div className="marquee-wrapper">
-        <div className="marquee-track">
-          {[...Array(2)].flatMap((_, i) => [
-            '2ml · 5ml · 10ml · 30ml','Niche Fragrances','Designer Houses','Samples From 2ml','Creed · Byredo · Le Labo','MFK · Maison Margiela','Authenticated · Decanted','Or Source Full Bottles'
-          ].map((t, j) => (
-            <span key={`${i}-${j}`} className="marquee-item"><span className="marquee-dot" />{t}</span>
-          )))}
-        </div>
+        <Marquee duration="40s" gap="2.25rem" pauseOnHover repeat={4} className="py-2">
+          {['2ml · 5ml · 10ml · 30ml','Niche Fragrances','Designer Houses','Samples From 2ml','Creed · Byredo · Le Labo','MFK · Maison Margiela','Authenticated · Decanted','Or Source Full Bottles'].map((t, j) => (
+            <span key={j} className="marquee-item"><span className="marquee-dot" />{t}</span>
+          ))}
+        </Marquee>
+        <Marquee duration="55s" gap="2.25rem" reverse pauseOnHover repeat={4} className="py-2 opacity-50">
+          {['Editorial Decants','Sample First','Then Commit','Le Labo · Byredo','Tom Ford · Dior','Frederic Malle · Diptyque','Hand-Decanted','Glass Atomizers'].map((t, j) => (
+            <span key={j} className="marquee-item"><span className="marquee-dot" />{t}</span>
+          ))}
+        </Marquee>
       </div>
 
       <section className="section" id="collection">
@@ -158,7 +174,7 @@ export function HomePage() {
       <section className="mission">
         <div className="mission-inner">
           <p className="section-label" style={{ color: 'var(--gold)', marginBottom: 28 }}>Our Mission</p>
-          <blockquote className="mission-quote">"Fragrance is the fastest way to change how you <em>carry yourself.</em>"</blockquote>
+          <blockquote className="mission-quote">"Fragrance is the fastest way to change how you <em className="gradient-em">carry yourself.</em>"</blockquote>
           <p className="mission-body">Scent Layer exists for one reason — to help you smell better and feel more confident. We curate the fragrances worth wearing, help you understand how they work, and source them for you at a price that makes sense. No boutique markup. No gatekeeping. Just the right scent for the right person.</p>
           <div className="mission-values">
             <div className="mission-value"><span className="mission-value-label">Curated</span></div>
@@ -171,7 +187,7 @@ export function HomePage() {
 
       <section className="notes-section">
         <div className="section-header" style={{ marginBottom: 0 }}>
-          <div><p className="section-label" style={{ color: 'var(--gold)' }}>The Architecture</p><h2 className="section-title" style={{ color: 'var(--cream)' }}>Every scent is<br/><em>built in layers.</em></h2></div>
+          <div><p className="section-label" style={{ color: 'var(--gold)' }}>The Architecture</p><h2 className="section-title" style={{ color: 'var(--cream)' }}>Every scent is<br/><em className="gradient-em">built in layers.</em></h2></div>
         </div>
         <div className="notes-grid">
           <div className="note-card"><span className="note-num">01</span><h3 className="note-name">Top Notes</h3><p className="note-desc">The opening act — bright, citrus, light florals. What you smell in the first 15 minutes.</p></div>
@@ -195,7 +211,7 @@ export function HomePage() {
         <div className="fotm-inner">
           <div className="fotm-left">
             <p className="fotm-badge">Coming Soon</p>
-            <h2 className="fotm-title">The Monthly<br/><em>Scent Club.</em></h2>
+            <h2 className="fotm-title">The Monthly<br/><em className="gradient-em">Scent Club.</em></h2>
             <p className="fotm-body">Every month, one bottle. Sourced, authenticated, and delivered to your door at a members-only price. Niche and designer picks you'd never find on your own — curated for those who take fragrance seriously.</p>
             <div className="fotm-perks">
               <div className="fotm-perk"><div><strong>Monthly drop</strong><span>One full-size bottle, sourced exclusively for members</span></div></div>
@@ -219,6 +235,8 @@ export function HomePage() {
               <div className="fotm-card-row"><span>Retail price</span><span className="fotm-strike">$295</span></div>
               <div className="fotm-card-row"><span>Member price</span><span className="fotm-price">Members only</span></div>
               <div className="fotm-card-footer">Join the waitlist to unlock pricing</div>
+              <BorderBeam size={300} duration={10} colorFrom="#c9a96e" colorTo="#e8d5a8" />
+              <BorderBeam size={300} duration={10} delay={5} colorFrom="#e8d5a8" colorTo="#c9a96e" />
             </div>
           </div>
         </div>
@@ -246,7 +264,7 @@ export function HomePage() {
 
       <section className="referral">
         <div className="referral-inner">
-          <h2 className="referral-title">Refer a friend,<br/><em>both smell better.</em></h2>
+          <h2 className="referral-title">Refer a friend,<br/><em className="gradient-em">both smell better.</em></h2>
           <p className="referral-body">When we launch, every referral earns you and your friend a discount on your first sourcing order. The more people you bring in, the more you save. Fragrance is better shared anyway.</p>
           <div className="referral-form">
             <input className="fotm-input" id="referralEmail" placeholder="Your email — we'll send your referral link at launch" type="email" />

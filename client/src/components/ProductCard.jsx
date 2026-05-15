@@ -1,12 +1,13 @@
 import { useApp } from '../context/AppContext.jsx';
 import { ProductBottle } from './BottleSvg.jsx';
+import { MagicCard } from './ui/MagicCard.jsx';
 
 export function ProductCard({ fragrance: p }) {
   const { wishlistIds, toggleWishlist, openSampleModal, openSourceModal } = useApp();
   const saved = wishlistIds.includes(p.id);
   const label = `${p.name} — ${p.brand}`;
   return (
-    <div className="product-card">
+    <MagicCard className="product-card" spotlightColor="rgba(201,169,110,0.22)" spotlightSize={240}>
       <div className="product-img">
         <div className={`product-bg ${p.bg}`} />
         <ProductBottle />
@@ -38,6 +39,6 @@ export function ProductCard({ fragrance: p }) {
         </div>
         <button type="button" className="source-link" onClick={() => openSourceModal(label)}>or source a full bottle →</button>
       </div>
-    </div>
+    </MagicCard>
   );
 }

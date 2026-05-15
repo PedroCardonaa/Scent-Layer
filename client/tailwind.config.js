@@ -28,9 +28,26 @@ export default {
           from: { opacity: '0', transform: 'translateY(8px)' },
           to:   { opacity: '1', transform: 'translateY(0)' },
         },
+        'marquee': {
+          from: { transform: 'translateX(0)' },
+          to:   { transform: 'translateX(calc(-100% - var(--marquee-gap, 1rem)))' },
+        },
+        'marquee-reverse': {
+          from: { transform: 'translateX(calc(-100% - var(--marquee-gap, 1rem)))' },
+          to:   { transform: 'translateX(0)' },
+        },
+        'border-beam': {
+          to: { 'offset-distance': '100%' },
+        },
+        'gradient-shift': {
+          from: { 'background-position': '0% 50%' },
+          to:   { 'background-position': '200% 50%' },
+        },
       },
       animation: {
         'fade-up': 'fade-up 0.35s ease',
+        'marquee': 'marquee var(--marquee-duration, 40s) linear infinite',
+        'marquee-reverse': 'marquee-reverse var(--marquee-duration, 40s) linear infinite',
       },
     },
   },

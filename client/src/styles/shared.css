@@ -193,6 +193,20 @@ footer { background: var(--deep2); padding: 80px 60px 40px; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
 @keyframes drift   { from{transform:translate(0,0) scale(1)} to{transform:translate(30px,-20px) scale(1.1)} }
 @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+@keyframes gradient-shift { from { background-position: 0% 50%; } to { background-position: 200% 50%; } }
+@keyframes border-beam { to { offset-distance: 100%; } }
+
+/* SHIMMERING GOLD ITALICS — apply .gradient-em to any <em> you want to glow */
+.gradient-em {
+  background: linear-gradient(120deg, var(--gold) 0%, var(--gold-light) 35%, var(--gold) 70%, var(--gold-light) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: gradient-shift 6s linear infinite;
+  font-style: italic;
+}
 
 /* ===================== RESPONSIVE ===================== */
 @media(max-width:1024px) {
