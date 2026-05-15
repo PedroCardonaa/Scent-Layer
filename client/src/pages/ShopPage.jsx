@@ -88,15 +88,15 @@ export function ShopPage() {
 
       <div className="shop-hero">
         <p className="shop-hero-label">The Collection</p>
-        <h1 className="shop-hero-title">Niche &amp; designer<br/><em>fragrances.</em></h1>
-        <p className="shop-hero-sub">Every bottle sourced on request. Find your scent, then let us get it for you.</p>
+        <h1 className="shop-hero-title">Niche &amp; designer<br/><em>fragrances. Sampled.</em></h1>
+        <p className="shop-hero-sub">Order any fragrance as a 2ml, 5ml, 10ml, or 30ml sample. Authentic decants. Sourcing the full bottle is optional — sampling first is encouraged.</p>
       </div>
 
       <section className="calc-section" id="calc">
         <div className="calc-header">
           <div>
-            <h2 className="calc-title">How long will<br/><em>your bottle last?</em></h2>
-            <p className="calc-sub">Pick a size and your daily sprays — we'll tell you exactly what to expect.</p>
+            <h2 className="calc-title">How long will<br/><em>this sample last?</em></h2>
+            <p className="calc-sub">Pick a size and your daily sprays — we'll tell you exactly what to expect. Most signature picks start at 5ml or 10ml.</p>
           </div>
         </div>
         <div className="calc-body">

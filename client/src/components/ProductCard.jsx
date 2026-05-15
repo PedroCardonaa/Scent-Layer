@@ -2,8 +2,9 @@ import { useApp } from '../context/AppContext.jsx';
 import { ProductBottle } from './BottleSvg.jsx';
 
 export function ProductCard({ fragrance: p }) {
-  const { wishlistIds, toggleWishlist, openSourceModal } = useApp();
+  const { wishlistIds, toggleWishlist, openSampleModal, openSourceModal } = useApp();
   const saved = wishlistIds.includes(p.id);
+  const label = `${p.name} — ${p.brand}`;
   return (
     <div className="product-card">
       <div className="product-img">
@@ -21,9 +22,9 @@ export function ProductCard({ fragrance: p }) {
           <button
             type="button"
             className="product-action-btn"
-            onClick={() => openSourceModal(`${p.name} — ${p.brand}`)}
-            title="Source this"
-            aria-label="Source this"
+            onClick={() => openSampleModal(label)}
+            title="Order a sample"
+            aria-label="Order a sample"
           >↗</button>
         </div>
       </div>
@@ -33,8 +34,9 @@ export function ProductCard({ fragrance: p }) {
         <p className="product-notes-preview">{p.top}</p>
         <div className="product-footer">
           <span className="product-family">{p.family} · {p.type}</span>
-          <button type="button" className="source-btn" onClick={() => openSourceModal(`${p.name} — ${p.brand}`)}>Source It</button>
+          <button type="button" className="sample-btn" onClick={() => openSampleModal(label)}>Order Sample</button>
         </div>
+        <button type="button" className="source-link" onClick={() => openSourceModal(label)}>or source a full bottle →</button>
       </div>
     </div>
   );

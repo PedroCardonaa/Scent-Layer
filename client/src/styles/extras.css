@@ -34,7 +34,10 @@
 .top10-name { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:300; margin-bottom:4px; color:var(--cream); }
 .top10-notes { font-size:.66rem; color:rgba(245,240,232,.35); }
 .top10-right { text-align:right; }
-.top10-why { font-size:.7rem; color:rgba(245,240,232,.35); line-height:1.6; max-width:240px; margin-bottom:8px; }
+.top10-why { font-size:.7rem; color:rgba(245,240,232,.35); line-height:1.6; max-width:240px; margin-bottom:10px; }
+.top10-actions { display:flex; flex-direction:column; align-items:stretch; gap:0; }
+.top10-actions .sample-btn { font-size:.58rem; padding:7px 12px; }
+.top10-actions .source-link { color:rgba(245,240,232,0.4); border-top:none; padding:4px 0 0; }
 
 .occasions-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
 .occ-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,169,110,.07); overflow:hidden; }

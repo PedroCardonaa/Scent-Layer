@@ -146,7 +146,7 @@ const EDU = [
 ];
 
 export function ExtrasPage() {
-  const { fragrances, openSourceModal } = useApp();
+  const { fragrances, openSampleModal, openSourceModal } = useApp();
   const { hash } = useLocation();
   const [tab, setTab] = useState(() => {
     const t = hash.replace('#', '');
@@ -206,7 +206,10 @@ export function ExtrasPage() {
                   </div>
                   <div className="top10-right">
                     <div className="top10-why">{item.why}</div>
-                    <button type="button" className="source-btn" onClick={() => openSourceModal(`${p.name} — ${p.brand}`)} style={{ fontSize: '.58rem' }}>Source It</button>
+                    <div className="top10-actions">
+                      <button type="button" className="sample-btn" onClick={() => openSampleModal(`${p.name} — ${p.brand}`)}>Order Sample</button>
+                      <button type="button" className="source-link" style={{ marginTop: 6, borderTop: 'none', padding: '4px 0 0' }} onClick={() => openSourceModal(`${p.name} — ${p.brand}`)}>or full bottle →</button>
+                    </div>
                   </div>
                 </div>
               );
@@ -239,7 +242,7 @@ export function ExtrasPage() {
                           <div className="occ-pick-name">{p.name}</div>
                           <div className="occ-pick-brand">{p.brand} · {pk.note}</div>
                         </div>
-                        <button type="button" className="occ-pick-btn" onClick={() => openSourceModal(`${p.name} — ${p.brand}`)}>Source</button>
+                        <button type="button" className="occ-pick-btn" onClick={() => openSampleModal(`${p.name} — ${p.brand}`)}>Sample</button>
                       </div>
                     );
                   })}

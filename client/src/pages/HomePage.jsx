@@ -18,7 +18,7 @@ const FILTERS = [
 ];
 
 export function HomePage() {
-  const { fragrances, openSourceModal, showToast } = useApp();
+  const { fragrances, openSampleModal, openSourceModal, showToast } = useApp();
   const [filter, setFilter] = useState('all');
   const visible = useMemo(() => {
     const fn = FILTERS.find(f => f.key === filter)?.match ?? (() => true);
@@ -42,16 +42,16 @@ export function HomePage() {
 
   return (
     <>
-      <div className="demo-banner">✦ Live Demo<span>·</span>Scent Layer — Coming Soon<span>·</span>Niche & Designer Fragrances, Sourced For You</div>
+      <div className="demo-banner">✦ Live Demo<span>·</span>Scent Layer — Coming Soon<span>·</span>Sample Niche & Designer Fragrances From 2ml</div>
       <Nav theme="light" />
 
       <section className="hero">
         <div className="hero-left">
-          <p className="hero-eyebrow">Niche · Designer · Curated</p>
-          <h1 className="hero-title">Smell better.<br/><em>Feel more</em><br/>confident.</h1>
-          <p className="hero-sub">Discover the fragrance that speaks before you do. Curated niche and designer scents — sourced for you, at a discount.</p>
+          <p className="hero-eyebrow">Samples From 2ml · Niche &amp; Designer</p>
+          <h1 className="hero-title">Try before<br/><em>you commit</em><br/>to the bottle.</h1>
+          <p className="hero-sub">Sample any niche or designer fragrance in 2ml, 5ml, 10ml, or 30ml — authentic, decanted from full bottles. Find your signature without gambling $300 on a guess.</p>
           <div className="hero-actions">
-            <Link to="/shop" className="btn-dark">Explore Collection</Link>
+            <Link to="/shop" className="btn-dark">Browse &amp; Sample</Link>
             <Link to="/profile#personalize" className="btn-ghost">Find My Scent</Link>
           </div>
         </div>
@@ -65,32 +65,32 @@ export function HomePage() {
       <section className="hiw">
         <div>
           <p className="section-label" style={{ color: 'var(--gold)' }}>How It Works</p>
-          <h2 className="section-title" style={{ color: 'var(--cream)' }}>Three steps to your<br/><em>perfect bottle.</em></h2>
+          <h2 className="section-title" style={{ color: 'var(--cream)' }}>Three steps to your<br/><em>signature scent.</em></h2>
         </div>
         <div className="hiw-steps">
           <div className="hiw-step reveal">
             <div className="hiw-step-num">01</div>
             <span className="hiw-step-icon">🔍</span>
             <h3 className="hiw-step-title">Discover</h3>
-            <p className="hiw-step-desc">Browse our curated catalog. Use the Scent Finder, take the quiz, or build a layer — find the fragrance that's made for you.</p>
+            <p className="hiw-step-desc">Browse our curated catalog, take the quiz, or use the Scent Finder. Get matched with fragrances built for your taste.</p>
           </div>
           <div className="hiw-arrow">→</div>
           <div className="hiw-step reveal">
             <div className="hiw-step-num">02</div>
-            <span className="hiw-step-icon">📩</span>
-            <h3 className="hiw-step-title">Request</h3>
-            <p className="hiw-step-desc">Found it? Hit "Source It" and send us the details. We'll confirm availability and give you a price — usually within 24 hours.</p>
+            <span className="hiw-step-icon">💧</span>
+            <h3 className="hiw-step-title">Sample</h3>
+            <p className="hiw-step-desc">Order 2ml, 5ml, 10ml, or 30ml of anything that interests you. Authentic, decanted, and small enough to be honest about. Try three at a time.</p>
           </div>
           <div className="hiw-arrow">→</div>
           <div className="hiw-step reveal">
             <div className="hiw-step-num">03</div>
             <span className="hiw-step-icon">📦</span>
-            <h3 className="hiw-step-title">Receive</h3>
-            <p className="hiw-step-desc">We source your full-size, authenticated bottle at a discount and deliver it. No boutique markup. No middleman mystery.</p>
+            <h3 className="hiw-step-title">Commit</h3>
+            <p className="hiw-step-desc">Found the one? We source the full bottle for you at a discount — authenticated, delivered, and no boutique markup. Or just keep restocking the sample size you love.</p>
           </div>
         </div>
         <div className="hiw-cta">
-          <p>Ready to find your scent?</p>
+          <p>Ready to start sampling?</p>
           <Link to="/shop" className="btn-gold">Browse the Collection</Link>
         </div>
       </section>
@@ -104,7 +104,8 @@ export function HomePage() {
           <div className="sotw-notes">
             <span className="sotw-note">Jasmine</span><span className="sotw-note">Saffron</span><span className="sotw-note">Ambergris</span><span className="sotw-note">Cedar</span>
           </div>
-          <button className="btn-dark" type="button" onClick={() => openSourceModal('Baccarat Rouge 540 — Maison Francis Kurkdjian')}>Source This Bottle</button>
+          <button className="btn-dark" type="button" onClick={() => openSampleModal('Baccarat Rouge 540 — Maison Francis Kurkdjian')}>Order a 2ml Sample</button>
+          <button type="button" className="source-link" style={{ display: 'inline-block', width: 'auto', marginLeft: 12, borderTop: 'none', padding: 0, color: 'rgba(245,240,232,0.45)' }} onClick={() => openSourceModal('Baccarat Rouge 540 — Maison Francis Kurkdjian')}>or full bottle →</button>
         </div>
         <div className="sotw-visual"><SotwBottle /></div>
       </section>
@@ -112,7 +113,7 @@ export function HomePage() {
       <div className="marquee-wrapper">
         <div className="marquee-track">
           {[...Array(2)].flatMap((_, i) => [
-            'Niche Fragrances','Designer Houses','Sourced On Request','Creed · Byredo · Le Labo','MFK · Maison Margiela','Authenticated · Discounted'
+            '2ml · 5ml · 10ml · 30ml','Niche Fragrances','Designer Houses','Samples From 2ml','Creed · Byredo · Le Labo','MFK · Maison Margiela','Authenticated · Decanted','Or Source Full Bottles'
           ].map((t, j) => (
             <span key={`${i}-${j}`} className="marquee-item"><span className="marquee-dot" />{t}</span>
           )))}
@@ -153,7 +154,7 @@ export function HomePage() {
         <div className="proof-grid">
           <div className="proof-card reveal"><div className="proof-stars">★★★★★</div><p className="proof-quote">"Found my signature scent in 5 minutes using the quiz. Never would have discovered Santal 33 on my own — now I get compliments every single day."</p><p className="proof-name">Marcus T. — Miami</p></div>
           <div className="proof-card reveal"><div className="proof-stars">★★★★★</div><p className="proof-quote">"The Layer Builder is genius. I combined Aventus and Tobacco Vanille and the analysis was spot on — it's become my winter evening blend."</p><p className="proof-name">Sofia R. — New York</p></div>
-          <div className="proof-card reveal"><div className="proof-stars">★★★★★</div><p className="proof-quote">"Got a 100ml Baccarat Rouge sourced for way less than retail. Took 2 days and it arrived authenticated. Scent Layer is the move."</p><p className="proof-name">Jordan K. — Los Angeles</p></div>
+          <div className="proof-card reveal"><div className="proof-stars">★★★★★</div><p className="proof-quote">"Sampled three niche fragrances in 5ml decants before committing. Saved myself $400 on a Baccarat Rouge bottle that wasn't actually my thing. Layered Santal 33 instead — sourced the full bottle through them."</p><p className="proof-name">Jordan K. — Los Angeles</p></div>
         </div>
       </section>
 
@@ -184,10 +185,13 @@ export function HomePage() {
       </section>
 
       <section className="source-cta section">
-        <p className="section-label" style={{ textAlign: 'center' }}>Can't find it? We'll source it.</p>
-        <h2 className="section-title" style={{ textAlign: 'center', marginBottom: 16 }}>Found the one<br/>you <em>want?</em></h2>
-        <p style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--taupe)', maxWidth: 420, margin: '0 auto 40px', lineHeight: 1.8 }}>Send us the bottle you're after and we'll source it at a discount — full-size, authenticated, delivered.</p>
-        <div style={{ textAlign: 'center' }}><button type="button" className="btn-dark" onClick={() => openSourceModal('')}>Request a Bottle</button></div>
+        <p className="section-label" style={{ textAlign: 'center' }}>Try anything from 2ml — or skip straight to the full bottle.</p>
+        <h2 className="section-title" style={{ textAlign: 'center', marginBottom: 16 }}>Know what you<br/><em>want?</em></h2>
+        <p style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--taupe)', maxWidth: 460, margin: '0 auto 40px', lineHeight: 1.8 }}>Order a sample of any fragrance — designer, niche, or anything we don't list. Found your signature already? We'll source the full bottle at a discount.</p>
+        <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <button type="button" className="btn-dark" onClick={() => openSampleModal('')}>Order a Sample</button>
+          <button type="button" className="btn-ghost" onClick={() => openSourceModal('')}>Source a Full Bottle</button>
+        </div>
       </section>
 
       <section className="fotm">
@@ -225,19 +229,19 @@ export function HomePage() {
 
       <section className="sourcing-detail">
         <div className="sourcing-header">
-          <p className="section-label" style={{ color: 'var(--gold)' }}>Sourcing &amp; Authenticity</p>
-          <h2 className="section-title" style={{ color: 'var(--cream)' }}>How we get your<br/><em>bottle to you.</em></h2>
+          <p className="section-label" style={{ color: 'var(--gold)' }}>Samples &amp; Authenticity</p>
+          <h2 className="section-title" style={{ color: 'var(--cream)' }}>Authentic decants.<br/><em>Real bottles. Smaller pour.</em></h2>
         </div>
         <div className="sourcing-grid">
-          <div className="sourcing-step reveal"><div className="sourcing-step-num">01</div><h3 className="sourcing-step-title">You request it</h3><p className="sourcing-step-desc">Hit "Source It" on any fragrance or use the contact form. Tell us the name, size, and concentration. That's all we need to get started.</p></div>
-          <div className="sourcing-step reveal"><div className="sourcing-step-num">02</div><h3 className="sourcing-step-title">We find it</h3><p className="sourcing-step-desc">We tap our network of trusted suppliers, gray market sources, and private sellers to find your bottle at the best available price — typically 20–40% below retail.</p></div>
-          <div className="sourcing-step reveal"><div className="sourcing-step-num">03</div><h3 className="sourcing-step-title">We verify it</h3><p className="sourcing-step-desc">Every bottle goes through an authentication check before it leaves our hands. Batch codes, fill levels, packaging — we know what to look for.</p></div>
-          <div className="sourcing-step reveal"><div className="sourcing-step-num">04</div><h3 className="sourcing-step-title">You receive it</h3><p className="sourcing-step-desc">We confirm pricing and timeline with you first — no surprises. Once agreed, your bottle ships directly to you. Packaged properly. Tracked.</p></div>
+          <div className="sourcing-step reveal"><div className="sourcing-step-num">01</div><h3 className="sourcing-step-title">You order a sample</h3><p className="sourcing-step-desc">Pick a fragrance and a size — 2ml, 5ml, 10ml, or 30ml. Same juice as the boutique counter, just decanted into a wearable pour.</p></div>
+          <div className="sourcing-step reveal"><div className="sourcing-step-num">02</div><h3 className="sourcing-step-title">We decant from authenticated stock</h3><p className="sourcing-step-desc">Every sample is poured from a verified bottle we've checked ourselves — batch codes, fill levels, packaging. No reformulations, no fakes.</p></div>
+          <div className="sourcing-step reveal"><div className="sourcing-step-num">03</div><h3 className="sourcing-step-title">It ships to you</h3><p className="sourcing-step-desc">Glass atomizers, labeled with name and date filled. Shipped the same week. Try three at once and live with them for a few weeks.</p></div>
+          <div className="sourcing-step reveal"><div className="sourcing-step-num">04</div><h3 className="sourcing-step-title">Love it? Get the bottle.</h3><p className="sourcing-step-desc">If you find your signature, we source the full bottle at a discount — typically 20–40% below retail. Or just reorder the sample size you wear most.</p></div>
         </div>
         <div className="auth-strip">
-          <div className="auth-item"><span className="auth-icon">🔍</span><div><strong>Batch code verified</strong><span>Every bottle checked against manufacturer records</span></div></div>
+          <div className="auth-item"><span className="auth-icon">🔍</span><div><strong>Decanted from authentics</strong><span>Every bottle batch-coded and verified before we pour</span></div></div>
           <div className="auth-divider" />
-          <div className="auth-item"><span className="auth-icon">📋</span><div><strong>Trusted suppliers only</strong><span>We don't work with anyone we haven't vetted</span></div></div>
+          <div className="auth-item"><span className="auth-icon">🧪</span><div><strong>Sealed glass atomizers</strong><span>Labeled, dated, and pressure-tested before shipping</span></div></div>
           <div className="auth-divider" />
           <div className="auth-item"><span className="auth-icon">↩️</span><div><strong>Satisfaction guaranteed</strong><span>Something off? We make it right — no questions</span></div></div>
         </div>

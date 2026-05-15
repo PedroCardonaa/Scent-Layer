@@ -4,6 +4,7 @@ import { AppProvider } from './context/AppContext.jsx';
 import { Cursor } from './components/Cursor.jsx';
 import { Toast } from './components/Toast.jsx';
 import { SourceModal } from './components/SourceModal.jsx';
+import { SampleModal } from './components/SampleModal.jsx';
 
 import { HomePage } from './pages/HomePage.jsx';
 import { ShopPage } from './pages/ShopPage.jsx';
@@ -40,6 +41,7 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
       </Routes>
+      <SampleModal />
       <SourceModal />
       <Toast />
     </AppProvider>

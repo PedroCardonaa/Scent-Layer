@@ -10,6 +10,7 @@ export function AppProvider({ children }) {
   const [wishlistIds, setWishlistIds] = useState([]);
   const [toast, setToastState] = useState({ text: '', visible: false });
   const [sourceModal, setSourceModal] = useState({ open: false, prefill: '' });
+  const [sampleModal, setSampleModal] = useState({ open: false, prefill: '' });
   const toastTimeout = useRef(null);
 
   // ── Catalog: always load from API ─────────────────────────────────
@@ -49,9 +50,13 @@ export function AppProvider({ children }) {
     toastTimeout.current = setTimeout(() => setToastState(s => ({ ...s, visible: false })), 2800);
   }, []);
 
-  // ── Source modal ──────────────────────────────────────────────────
+  // ── Source modal (full bottles, secondary) ────────────────────────
   const openSourceModal = useCallback((prefill = '') => setSourceModal({ open: true, prefill }), []);
   const closeSourceModal = useCallback(() => setSourceModal({ open: false, prefill: '' }), []);
+
+  // ── Sample modal (primary — samples-first messaging) ──────────────
+  const openSampleModal = useCallback((prefill = '') => setSampleModal({ open: true, prefill }), []);
+  const closeSampleModal = useCallback(() => setSampleModal({ open: false, prefill: '' }), []);
 
   // ── Auth ──────────────────────────────────────────────────────────
   const login = useCallback(async (email, password) => {
@@ -109,7 +114,8 @@ export function AppProvider({ children }) {
     wishlistIds, toggleWishlist, refreshWishlist,
     toast, showToast,
     sourceModal, openSourceModal, closeSourceModal,
-  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, toast, showToast, sourceModal, openSourceModal, closeSourceModal]);
+    sampleModal, openSampleModal, closeSampleModal,
+  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, toast, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

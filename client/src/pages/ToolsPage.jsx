@@ -36,6 +36,7 @@ export function ToolsPage() {
 
 // ─── LAYER BUILDER ─────────────────────────────────────────────────────
 function LayerBuilder({ fragrances }) {
+  const { openSampleModal } = useApp();
   const [slots, setSlots] = useState([{ id: 1, scent: null, query: '' }, { id: 2, scent: null, query: '' }]);
   const [nextId, setNextId] = useState(3);
   const [result, setResult] = useState(null);
@@ -139,6 +140,23 @@ function LayerBuilder({ fragrances }) {
                 <div className="occasions">{result.occasions.map(o => <span key={o} className="occasion-tag">{o}</span>)}</div>
               </div>
               <div className="result-section"><p className="result-section-title">Pro Tip</p><p className="result-text">{result.tip}</p></div>
+              <div className="result-section">
+                <p className="result-section-title">Sample The Blend</p>
+                <p className="result-text" style={{ marginBottom: 12 }}>Order samples of each component before committing to full bottles.</p>
+                <div className="blend-samples">
+                  {slots.filter(s => s.scent).map((s) => (
+                    <button
+                      key={s.id}
+                      type="button"
+                      className="blend-sample-btn"
+                      onClick={() => openSampleModal(`${s.scent.name} — ${s.scent.brand}`)}
+                    >
+                      <span className="blend-sample-name">{s.scent.name}</span>
+                      <span className="blend-sample-cta">Sample →</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -209,7 +227,7 @@ function Compare({ fragrances }) {
 
   const a = fragrances.find(f => f.id === aId);
   const b = fragrances.find(f => f.id === bId);
-  const { showToast } = useApp();
+  const { showToast, openSampleModal, openSourceModal } = useApp();
 
   async function run() {
     if (aId === bId) { showToast('Pick two different fragrances'); return; }
@@ -257,17 +275,28 @@ function Compare({ fragrances }) {
               <div className="compare-card-brand">{a.brand}</div>
               <div className="compare-card-name">{a.name}</div>
               <CompareRows fragrance={a} />
+              <div className="compare-card-actions">
+                <button type="button" className="sample-btn" onClick={() => openSampleModal(`${a.name} — ${a.brand}`)}>Order Sample</button>
+                <button type="button" className="source-link" style={{ marginTop: 10 }} onClick={() => openSourceModal(`${a.name} — ${a.brand}`)}>or full bottle →</button>
+              </div>
             </div>
             <div className="compare-card">
               <div className="compare-card-brand">{b.brand}</div>
               <div className="compare-card-name">{b.name}</div>
               <CompareRows fragrance={b} />
+              <div className="compare-card-actions">
+                <button type="button" className="sample-btn" onClick={() => openSampleModal(`${b.name} — ${b.brand}`)}>Order Sample</button>
+                <button type="button" className="source-link" style={{ marginTop: 10 }} onClick={() => openSourceModal(`${b.name} — ${b.brand}`)}>or full bottle →</button>
+              </div>
             </div>
             <div className="compare-verdict">
               <p className="compare-verdict-label">AI Verdict</p>
               <p className="compare-verdict-text">
                 {loading ? 'Analyzing…' : error ? <span className="error-text">{error}</span> : verdict}
               </p>
+              {verdict && !loading && (
+                <p className="compare-verdict-hint">Still on the fence? Sample both in 5ml decants before deciding — that's what they're for.</p>
+              )}
             </div>
           </div>
         )}
@@ -292,7 +321,7 @@ function CompareRows({ fragrance: p }) {
 
 // ─── SIMILAR ───────────────────────────────────────────────────────────
 function Similar() {
-  const { openSourceModal } = useApp();
+  const { openSampleModal, openSourceModal } = useApp();
   const [input, setInput] = useState('');
   const [echo, setEcho] = useState('');
   const [recs, setRecs] = useState(null);
@@ -346,16 +375,22 @@ function Similar() {
           <div className="similar-result">
             <h3 className="similar-result-title">If you love <em>{echo}</em>, try these:</h3>
             <div className="similar-cards">
-              {recs.map((r, i) => (
-                <div key={i} className="similar-card">
-                  <p className="similar-card-rank">{r.rank}</p>
-                  <h3 className="similar-card-name">{r.name}</h3>
-                  <p className="similar-card-brand">{r.brand}</p>
-                  <p className="similar-card-why">{r.why}</p>
-                  <p className="similar-card-match">✦ {r.match}</p>
-                  <button type="button" className="source-btn" style={{ marginTop: 14 }} onClick={() => openSourceModal(`${r.name} — ${r.brand}`)}>Source It</button>
-                </div>
-              ))}
+              {recs.map((r, i) => {
+                const label = `${r.name} — ${r.brand}`;
+                return (
+                  <div key={i} className="similar-card">
+                    <p className="similar-card-rank">{r.rank}</p>
+                    <h3 className="similar-card-name">{r.name}</h3>
+                    <p className="similar-card-brand">{r.brand}</p>
+                    <p className="similar-card-why">{r.why}</p>
+                    <p className="similar-card-match">✦ {r.match}</p>
+                    <div className="similar-card-actions">
+                      <button type="button" className="sample-btn" onClick={() => openSampleModal(label)}>Order Sample</button>
+                      <button type="button" className="source-link" style={{ marginTop: 10 }} onClick={() => openSourceModal(label)}>or full bottle →</button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

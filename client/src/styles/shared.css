@@ -108,6 +108,32 @@ nav.dark  .nav-hamburger span { background: var(--cream); }
 .source-btn { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 1px; transition: color 0.3s; background: none; border-top: none; border-left: none; border-right: none; cursor: none; font-family: 'Jost', sans-serif; }
 .source-btn:hover { color: var(--gold); }
 
+/* SAMPLE-FIRST CTAS */
+.sample-btn { font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cream); background: var(--ink); padding: 7px 14px; transition: background 0.25s; border: 1px solid var(--ink); cursor: none; font-family: 'Jost', sans-serif; font-weight: 500; }
+.sample-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--deep2); }
+.source-link { display: block; width: 100%; margin-top: 12px; padding: 6px 0 0; text-align: center; font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--taupe); background: none; border: none; border-top: 1px solid rgba(139,125,107,0.15); cursor: none; font-family: 'Jost', sans-serif; transition: color 0.25s; }
+.source-link:hover { color: var(--gold); }
+.shop-product-grid .source-link { color: rgba(245,240,232,0.4); border-top-color: rgba(245,240,232,0.07); }
+.shop-product-grid .source-link:hover { color: var(--gold); }
+
+/* SAMPLE MODAL */
+.sample-modal { max-width: 560px; }
+.sample-size-label { font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold); margin: 4px 0 12px; }
+.sample-sizes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 24px; }
+.sample-size { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px 8px; background: var(--cream); border: 1px solid rgba(139,125,107,0.25); cursor: none; transition: all 0.25s; font-family: 'Jost', sans-serif; }
+.sample-size:hover:not(.active) { border-color: rgba(201,169,110,0.6); }
+.sample-size.active { background: rgba(201,169,110,0.12); border-color: var(--gold); }
+.sample-size-ml { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 300; color: var(--ink); }
+.sample-size.active .sample-size-ml { color: var(--gold); }
+.sample-size-sprays { font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--taupe); }
+.sample-size-desc { font-size: 0.62rem; color: var(--taupe); text-align: center; line-height: 1.35; margin-top: 2px; }
+.modal-switch { display: block; width: 100%; padding: 12px 0 0; margin-top: 16px; background: none; border: none; border-top: 1px solid rgba(139,125,107,0.15); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--taupe); cursor: none; font-family: 'Jost', sans-serif; transition: color 0.25s; }
+.modal-switch:hover { color: var(--gold); }
+
+@media(max-width: 480px) {
+  .sample-sizes { grid-template-columns: 1fr 1fr; }
+}
+
 /* BUTTONS */
 .btn-dark  { display: inline-block; padding: 15px 36px; background: var(--ink); color: var(--cream); font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase; text-decoration: none; transition: background 0.3s; font-family: 'Jost', sans-serif; border: none; cursor: none; }
 .btn-dark:hover  { background: var(--gold); }

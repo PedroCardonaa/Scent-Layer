@@ -4,7 +4,7 @@ import { structuredCall } from '../services/anthropic.js';
 
 const router = Router();
 
-const VOICE = `You are the AI fragrance expert for Scent Layer, a luxury fragrance discovery and sourcing platform. Write in an editorial, evocative tone — confident, warm, never corny. Match the brand voice of niche perfumery copy: short sentences, sensory verbs, no marketing speak, no exclamation points. Be specific about notes and occasions. Never recommend purchasing; the platform sources bottles on request.`;
+const VOICE = `You are the AI fragrance expert for Scent Layer, a fragrance sampling platform. Users primarily order authentic 2ml, 5ml, 10ml, or 30ml decants to try before committing to a full bottle (full-bottle sourcing exists as a secondary option). Write in an editorial, evocative tone — confident, warm, never corny. Match the brand voice of niche perfumery copy: short sentences, sensory verbs, no marketing speak, no exclamation points. Be specific about notes and occasions. When relevant, gently nudge toward sampling first (especially for polarizing or expensive scents) rather than committing to full bottles blind.`;
 
 // ─── LAYER BUILDER ─────────────────────────────────────────────────────
 const fragranceShape = z.object({
@@ -53,7 +53,7 @@ router.post('/compare', async (req, res, next) => {
     const { a, b } = z.object({ a: fragranceShape, b: fragranceShape }).parse(req.body);
     const result = await structuredCall({
       system: VOICE,
-      user: `Compare these two fragrances for someone deciding between them:\n\nA) ${a.name} — ${a.brand} (${a.family})\n   Top: ${a.top}\n   Heart: ${a.heart}\n   Base: ${a.base}\n\nB) ${b.name} — ${b.brand} (${b.family})\n   Top: ${b.top}\n   Heart: ${b.heart}\n   Base: ${b.base}\n\nWrite a single-paragraph verdict (4-6 sentences) that names each by their full name, contrasts what they do best, and ends with concrete guidance on when to reach for each. No bullet points.`,
+      user: `Compare these two fragrances for someone deciding between them:\n\nA) ${a.name} — ${a.brand} (${a.family})\n   Top: ${a.top}\n   Heart: ${a.heart}\n   Base: ${a.base}\n\nB) ${b.name} — ${b.brand} (${b.family})\n   Top: ${b.top}\n   Heart: ${b.heart}\n   Base: ${b.base}\n\nWrite a single-paragraph verdict (4-6 sentences) that names each by their full name, contrasts what they do best, and ends with concrete guidance on when to reach for each. If the choice is close or the fragrances are polarizing on skin, suggest sampling both before committing. No bullet points.`,
       toolName: 'compare_verdict',
       maxTokens: 700,
       schema: {
@@ -112,19 +112,35 @@ router.post('/quiz', async (req, res, next) => {
     const pairs = questions.map((q, i) => `Q${i + 1}: ${q}\n→ ${answers[i] ?? '(skipped)'}`).join('\n\n');
     const result = await structuredCall({
       system: VOICE,
-      user: `Based on these quiz answers, recommend ONE signature fragrance for this person. Pick a real, well-known fragrance (designer or niche — anything from Creed, Le Labo, Byredo, MFK, Dior, YSL, Tom Ford, Maison Margiela, Armani, Carolina Herrera, Viktor & Rolf, Escentric Molecules, Frederic Malle, Diptyque, Chanel, Guerlain, etc.). Write the description so it directly references their answers — make it feel personalized, not generic.\n\n${pairs}`,
+      user: `Based on these quiz answers, recommend ONE primary signature fragrance for this person PLUS three alternates they should also try as samples to compare. Pick real, well-known fragrances (designer or niche — anything from Creed, Le Labo, Byredo, MFK, Dior, YSL, Tom Ford, Maison Margiela, Armani, Carolina Herrera, Viktor & Rolf, Escentric Molecules, Frederic Malle, Diptyque, Chanel, Guerlain, etc.). Write the primary description so it directly references their answers — make it feel personalized, not generic. The three alternates should be meaningfully different from each other so they get a range to sample, but all genuinely matching the answers. Do not repeat the primary in the alternates.\n\n${pairs}`,
       toolName: 'quiz_recommendation',
-      maxTokens: 700,
+      maxTokens: 1200,
       schema: {
         type: 'object',
         properties: {
-          name: { type: 'string', description: 'The fragrance name only.' },
+          name: { type: 'string', description: 'The primary fragrance name only.' },
           brand: { type: 'string' },
           description: { type: 'string', description: '4-6 sentences explaining why this fragrance matches their answers. Speak directly to them.' },
           tags: { type: 'array', items: { type: 'string' }, minItems: 3, maxItems: 5 },
           why: { type: 'string', description: 'One-sentence summary of the core reasoning.' },
+          alternates: {
+            type: 'array',
+            minItems: 3,
+            maxItems: 3,
+            description: 'Three additional fragrances they should also sample. Each meaningfully different from the primary and each other.',
+            items: {
+              type: 'object',
+              properties: {
+                name: { type: 'string' },
+                brand: { type: 'string' },
+                why: { type: 'string', description: '1-2 sentences on why this alternate suits them.' },
+                match: { type: 'string', description: 'Short phrase naming the shared quality (e.g. "Same warm woody base, lighter projection").' },
+              },
+              required: ['name', 'brand', 'why', 'match'],
+            },
+          },
         },
-        required: ['name', 'brand', 'description', 'tags', 'why'],
+        required: ['name', 'brand', 'description', 'tags', 'why', 'alternates'],
       },
     });
     res.json(result);

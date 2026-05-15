@@ -62,5 +62,9 @@ model SourceRequest {
   email     String
   fragrance String?
   message   String?
+  kind      String   @default("sample") // "sample" | "bottle"
+  size      String?  // "2ml" | "5ml" | "10ml" | "30ml" for samples; free-text for bottles
   createdAt DateTime @default(now())
+
+  @@index([kind, createdAt])
 }
