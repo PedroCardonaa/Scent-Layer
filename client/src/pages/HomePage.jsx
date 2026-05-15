@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
@@ -6,7 +6,6 @@ import { ProductCard } from '../components/ProductCard.jsx';
 import { HeroBottle, SotwBottle } from '../components/BottleSvg.jsx';
 import { Marquee } from '../components/ui/Marquee.jsx';
 import { BorderBeam } from '../components/ui/BorderBeam.jsx';
-import { AnimatedBeam } from '../components/ui/AnimatedBeam.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useScrollReveal } from '../hooks/useScrollReveal.js';
 import { api } from '../lib/api.js';
@@ -27,11 +26,6 @@ export function HomePage() {
     const fn = FILTERS.find(f => f.key === filter)?.match ?? (() => true);
     return fragrances.filter(fn).slice(0, 8);
   }, [fragrances, filter]);
-
-  const hiwRef = useRef(null);
-  const hiwStep1Ref = useRef(null);
-  const hiwStep2Ref = useRef(null);
-  const hiwStep3Ref = useRef(null);
 
   useScrollReveal('.product-card,.tool-card,.note-card,.mission-value,.proof-card,.reveal', [visible.length]);
 
@@ -67,38 +61,6 @@ export function HomePage() {
           <div className="hero-orb orb-1" />
           <div className="hero-orb orb-2" />
           <div className="hero-bottle"><HeroBottle /></div>
-        </div>
-      </section>
-
-      <section className="hiw">
-        <div>
-          <p className="section-label" style={{ color: 'var(--gold)' }}>How It Works</p>
-          <h2 className="section-title" style={{ color: 'var(--cream)' }}>Three steps to your<br/><em className="gradient-em">signature scent.</em></h2>
-        </div>
-        <div className="hiw-steps" ref={hiwRef}>
-          <div className="hiw-step reveal" ref={hiwStep1Ref}>
-            <div className="hiw-step-num">01</div>
-            <h3 className="hiw-step-title">Discover</h3>
-            <p className="hiw-step-desc">Browse our curated catalog, take the quiz, or use the Scent Finder. Get matched with fragrances built for your taste.</p>
-          </div>
-          <div className="hiw-arrow" aria-hidden="true" style={{ opacity: 0 }}>→</div>
-          <div className="hiw-step reveal" ref={hiwStep2Ref}>
-            <div className="hiw-step-num">02</div>
-            <h3 className="hiw-step-title">Sample</h3>
-            <p className="hiw-step-desc">Order 2ml, 5ml, 10ml, or 30ml of anything that interests you. Authentic, decanted, and small enough to be honest about. Try three at a time.</p>
-          </div>
-          <div className="hiw-arrow" aria-hidden="true" style={{ opacity: 0 }}>→</div>
-          <div className="hiw-step reveal" ref={hiwStep3Ref}>
-            <div className="hiw-step-num">03</div>
-            <h3 className="hiw-step-title">Commit</h3>
-            <p className="hiw-step-desc">Found the one? We source the full bottle for you at a discount — authenticated, delivered, and no boutique markup. Or just keep restocking the sample size you love.</p>
-          </div>
-          <AnimatedBeam containerRef={hiwRef} fromRef={hiwStep1Ref} toRef={hiwStep2Ref} duration={3.6} delay={0} />
-          <AnimatedBeam containerRef={hiwRef} fromRef={hiwStep2Ref} toRef={hiwStep3Ref} duration={3.6} delay={1.4} />
-        </div>
-        <div className="hiw-cta">
-          <p>Ready to start sampling?</p>
-          <Link to="/shop" className="btn-gold">Browse the Collection</Link>
         </div>
       </section>
 
