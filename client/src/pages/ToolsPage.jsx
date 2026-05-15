@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
+import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '../components/ui/Command.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
 
@@ -166,14 +167,6 @@ function LayerBuilder({ fragrances }) {
 }
 
 function SlotInput({ slot, index, fragrances, onSelect, onRemove, onQuery }) {
-  const matches = useMemo(() => {
-    if (!slot.query.trim()) return [];
-    const q = slot.query.toLowerCase();
-    return fragrances
-      .filter(c => [c.name, c.brand, c.top, c.heart, c.base].join(' ').toLowerCase().includes(q))
-      .slice(0, 6);
-  }, [slot.query, fragrances]);
-
   return (
     <div className={`scent-slot ${slot.scent ? 'filled' : ''}`}>
       <div className="slot-header">
@@ -189,25 +182,32 @@ function SlotInput({ slot, index, fragrances, onSelect, onRemove, onQuery }) {
           </div>
         </div>
       ) : (
-        <div className="scent-input-wrap">
-          <input
-            className="scent-input"
+        <Command
+          // cmdk handles its own filtering; pass the catalog and let it work
+          shouldFilter
+          className="relative"
+        >
+          <CommandInput
             value={slot.query}
-            onChange={(e) => onQuery(e.target.value)}
+            onValueChange={onQuery}
             placeholder="Search fragrance or brand…"
-            autoComplete="off"
           />
-          {matches.length > 0 && (
-            <div className="suggestions">
-              {matches.map(m => (
-                <div key={m.id} className="sug-item" onClick={() => onSelect(m)}>
-                  <span className="sug-name">{m.name} — {m.brand}</span>
-                  <span className="sug-notes">{m.top}</span>
-                </div>
+          {slot.query.trim() && (
+            <CommandList className="absolute left-0 right-0 top-full z-20 mt-px max-h-[220px] overflow-y-auto bg-deep border border-gold/20">
+              <CommandEmpty>No matches in the catalog. Try a different name.</CommandEmpty>
+              {fragrances.map(c => (
+                <CommandItem
+                  key={c.id}
+                  value={`${c.name} ${c.brand} ${c.top} ${c.heart} ${c.base}`}
+                  onSelect={() => onSelect(c)}
+                >
+                  <span className="text-cream">{c.name} — {c.brand}</span>
+                  <span className="text-[0.65rem] text-taupe">{c.top}</span>
+                </CommandItem>
               ))}
-            </div>
+            </CommandList>
           )}
-        </div>
+        </Command>
       )}
     </div>
   );

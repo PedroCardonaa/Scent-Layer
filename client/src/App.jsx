@@ -2,7 +2,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { AppProvider } from './context/AppContext.jsx';
 import { Cursor } from './components/Cursor.jsx';
-import { Toast } from './components/Toast.jsx';
+import { Toaster } from './components/Toaster.jsx';
 import { SourceModal } from './components/SourceModal.jsx';
 import { SampleModal } from './components/SampleModal.jsx';
 
@@ -43,7 +43,7 @@ export default function App() {
       </Routes>
       <SampleModal />
       <SourceModal />
-      <Toast />
+      <Toaster />
     </AppProvider>
   );
 }

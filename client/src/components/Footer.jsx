@@ -41,10 +41,10 @@ export function Footer() {
       <div className="footer-bottom">
         <p className="footer-copy">© 2026 Scent Layer. All rights reserved.</p>
         <div className="footer-social">
+          <a href="mailto:scentlayer@gmail.com">scentlayer@gmail.com</a>
           <a href="#" onClick={(e) => { e.preventDefault(); openSourceModal(''); }}>Source a Bottle</a>
           <a href="#">Instagram</a>
           <a href="#">TikTok</a>
-          <a href="#">Pinterest</a>
         </div>
       </div>
     </footer>

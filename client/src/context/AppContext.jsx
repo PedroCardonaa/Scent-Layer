@@ -1,4 +1,5 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import { api, getToken, setToken } from '../lib/api.js';
 
 const AppContext = createContext(null);
@@ -8,10 +9,8 @@ export function AppProvider({ children }) {
   const [authLoading, setAuthLoading] = useState(true);
   const [fragrances, setFragrances] = useState([]);
   const [wishlistIds, setWishlistIds] = useState([]);
-  const [toast, setToastState] = useState({ text: '', visible: false });
   const [sourceModal, setSourceModal] = useState({ open: false, prefill: '' });
   const [sampleModal, setSampleModal] = useState({ open: false, prefill: '' });
-  const toastTimeout = useRef(null);
 
   // ── Catalog: always load from API ─────────────────────────────────
   useEffect(() => {
@@ -44,10 +43,10 @@ export function AppProvider({ children }) {
   }, []);
 
   // ── Toast ─────────────────────────────────────────────────────────
+  // Existing callers pass small HTML strings (e.g. `<span>Saved</span> to wishlist`).
+  // We render that as innerHTML inside a Sonner toast so callers keep their old API.
   const showToast = useCallback((text) => {
-    if (toastTimeout.current) clearTimeout(toastTimeout.current);
-    setToastState({ text, visible: true });
-    toastTimeout.current = setTimeout(() => setToastState(s => ({ ...s, visible: false })), 2800);
+    toast(<span dangerouslySetInnerHTML={{ __html: text }} />);
   }, []);
 
   // ── Source modal (full bottles, secondary) ────────────────────────
@@ -112,10 +111,10 @@ export function AppProvider({ children }) {
     user, authLoading, login, signup, logout, saveQuizResult,
     fragrances,
     wishlistIds, toggleWishlist, refreshWishlist,
-    toast, showToast,
+    showToast,
     sourceModal, openSourceModal, closeSourceModal,
     sampleModal, openSampleModal, closeSampleModal,
-  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, toast, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal]);
+  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
 import { ProductCard } from '../components/ProductCard.jsx';
+import { NumberTicker } from '../components/ui/NumberTicker.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useScrollReveal } from '../hooks/useScrollReveal.js';
 
@@ -132,9 +133,9 @@ export function ShopPage() {
             <div className="calc-duration">{lifestyle.duration}</div>
             <div className="calc-context">{lifestyle.context}</div>
             <div className="calc-breakdown">
-              <div className="calc-stat"><div className="calc-stat-val">{bottleSprays.toLocaleString()}</div><div className="calc-stat-label">Total Sprays</div></div>
-              <div className="calc-stat"><div className="calc-stat-val">{days.toLocaleString()}</div><div className="calc-stat-label">Days</div></div>
-              <div className="calc-stat"><div className="calc-stat-val">{perDay}</div><div className="calc-stat-label">Per Day</div></div>
+              <div className="calc-stat"><div className="calc-stat-val"><NumberTicker value={bottleSprays} /></div><div className="calc-stat-label">Total Sprays</div></div>
+              <div className="calc-stat"><div className="calc-stat-val"><NumberTicker value={days} /></div><div className="calc-stat-label">Days</div></div>
+              <div className="calc-stat"><div className="calc-stat-val"><NumberTicker value={perDay} duration={250} /></div><div className="calc-stat-label">Per Day</div></div>
             </div>
             <div className="calc-lifestyle">{lifestyle.tip}</div>
           </div>
