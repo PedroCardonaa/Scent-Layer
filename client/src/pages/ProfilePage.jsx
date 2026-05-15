@@ -4,6 +4,32 @@ import { Nav } from '../components/Nav.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
 
+function ReferralBlock({ showToast }) {
+  async function joinWaitlist() {
+    const el = document.getElementById('profileReferralEmail');
+    const email = el?.value?.trim();
+    if (!email || !email.includes('@')) { showToast('Please enter a valid email'); return; }
+    try {
+      await api('/api/waitlist', { method: 'POST', body: { email, type: 'referral' } });
+      if (el) el.value = '';
+      showToast('<span>You\'re on the list!</span> We\'ll send your link at launch.');
+    } catch (e) { showToast(e.message); }
+  }
+  return (
+    <section className="referral">
+      <div className="referral-inner">
+        <h2 className="referral-title">Refer a friend,<br/><em className="gradient-em">both smell better.</em></h2>
+        <p className="referral-body">When we launch, every referral earns you and your friend a discount on your first sourcing order. The more people you bring in, the more you save.</p>
+        <div className="referral-form">
+          <input className="fotm-input" id="profileReferralEmail" placeholder="Your email — we'll send your referral link at launch" type="email" />
+          <button className="fotm-btn" type="button" onClick={joinWaitlist}>Reserve My Spot</button>
+        </div>
+        <p className="fotm-note">Launch pricing and referral details coming soon.</p>
+      </div>
+    </section>
+  );
+}
+
 const QUIZ_COLORS = ['#7a5c40','#4a6855','#9a7030','#503868','#5a4a70','#3a5858','#6a4830','#485a3a'];
 
 const QUESTIONS = [
@@ -63,6 +89,8 @@ export function ProfilePage() {
           openSourceModal={openSourceModal}
         />
       </div>
+
+      <ReferralBlock showToast={showToast} />
     </>
   );
 }

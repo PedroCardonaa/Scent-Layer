@@ -32,7 +32,7 @@ const TIME_OPTS   = ['Morning','Daytime','Evening','Night'];
 const MOOD_OPTS   = ['Romantic','Confident','Relaxed','Bold','Minimal'];
 
 export function ShopPage() {
-  const { fragrances } = useApp();
+  const { fragrances, openSampleModal, openSourceModal } = useApp();
   const [params] = useSearchParams();
 
   // Spray calc state
@@ -169,6 +169,16 @@ export function ShopPage() {
             : filteredFragrances.map(p => <ProductCard key={p.id} fragrance={p} />)}
         </div>
       </div>
+
+      <section className="source-cta section">
+        <p className="section-label" style={{ textAlign: 'center', color: 'var(--gold)' }}>Try anything from 2ml — or skip straight to the full bottle.</p>
+        <h2 className="section-title" style={{ textAlign: 'center', marginBottom: 16, color: 'var(--cream)' }}>Know what you<br/><em className="gradient-em">want?</em></h2>
+        <p style={{ textAlign: 'center', fontSize: '0.82rem', color: 'rgba(245,240,232,0.5)', maxWidth: 460, margin: '0 auto 40px', lineHeight: 1.8 }}>Order a sample of any fragrance — designer, niche, or anything we don't list. Found your signature already? We'll source the full bottle at a discount.</p>
+        <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <button type="button" className="btn-gold" onClick={() => openSampleModal('')}>Order a Sample</button>
+          <button type="button" className="btn-ghost" style={{ color: 'var(--cream)', borderColor: 'rgba(245,240,232,0.3)' }} onClick={() => openSourceModal('')}>Source a Full Bottle</button>
+        </div>
+      </section>
 
       <Footer />
     </>

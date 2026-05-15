@@ -133,20 +133,6 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="mission">
-        <div className="mission-inner">
-          <p className="section-label" style={{ color: 'var(--gold)', marginBottom: 28 }}>Our Mission</p>
-          <blockquote className="mission-quote">"Fragrance is the fastest way to change how you <em className="gradient-em">carry yourself.</em>"</blockquote>
-          <p className="mission-body">Scent Layer exists for one reason — to help you smell better and feel more confident. We curate the fragrances worth wearing, help you understand how they work, and source them for you at a price that makes sense. No boutique markup. No gatekeeping. Just the right scent for the right person.</p>
-          <div className="mission-values">
-            <div className="mission-value"><span className="mission-value-label">Curated</span></div>
-            <div className="mission-value"><span className="mission-value-label">Sampled</span></div>
-            <div className="mission-value"><span className="mission-value-label">Sourced</span></div>
-            <div className="mission-value"><span className="mission-value-label">Authenticated</span></div>
-          </div>
-        </div>
-      </section>
-
       <section className="notes-section">
         <div className="section-header" style={{ marginBottom: 0 }}>
           <div><p className="section-label" style={{ color: 'var(--gold)' }}>The Architecture</p><h2 className="section-title" style={{ color: 'var(--cream)' }}>Every scent is<br/><em className="gradient-em">built in layers.</em></h2></div>
@@ -156,16 +142,6 @@ export function HomePage() {
           <div className="note-card"><span className="note-num">02</span><h3 className="note-name">Heart Notes</h3><p className="note-desc">The soul of the fragrance. Florals, spices, green accords that emerge as the top fades.</p></div>
           <div className="note-card"><span className="note-num">03</span><h3 className="note-name">Base Notes</h3><p className="note-desc">What lingers for hours — woods, resins, musks that define your signature trail.</p></div>
           <div className="note-card"><span className="note-num">04</span><h3 className="note-name">Your Skin</h3><p className="note-desc">Every fragrance transforms uniquely on your chemistry. That's the final layer.</p></div>
-        </div>
-      </section>
-
-      <section className="source-cta section">
-        <p className="section-label" style={{ textAlign: 'center' }}>Try anything from 2ml — or skip straight to the full bottle.</p>
-        <h2 className="section-title" style={{ textAlign: 'center', marginBottom: 16 }}>Know what you<br/><em>want?</em></h2>
-        <p style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--taupe)', maxWidth: 460, margin: '0 auto 40px', lineHeight: 1.8 }}>Order a sample of any fragrance — designer, niche, or anything we don't list. Found your signature already? We'll source the full bottle at a discount.</p>
-        <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
-          <button type="button" className="btn-dark" onClick={() => openSampleModal('')}>Order a Sample</button>
-          <button type="button" className="btn-ghost" onClick={() => openSourceModal('')}>Source a Full Bottle</button>
         </div>
       </section>
 
@@ -201,38 +177,6 @@ export function HomePage() {
               <BorderBeam size={300} duration={10} delay={5} colorFrom="#e8d5a8" colorTo="#c9a96e" />
             </div>
           </div>
-        </div>
-      </section>
-
-      <section className="sourcing-detail">
-        <div className="sourcing-header">
-          <p className="section-label" style={{ color: 'var(--gold)' }}>Samples &amp; Authenticity</p>
-          <h2 className="section-title" style={{ color: 'var(--cream)' }}>Authentic decants.<br/><em>Real bottles. Smaller pour.</em></h2>
-        </div>
-        <div className="sourcing-grid">
-          <div className="sourcing-step reveal"><div className="sourcing-step-num">01</div><h3 className="sourcing-step-title">You order a sample</h3><p className="sourcing-step-desc">Pick a fragrance and a size — 2ml, 5ml, 10ml, or 30ml. Same juice as the boutique counter, just decanted into a wearable pour.</p></div>
-          <div className="sourcing-step reveal"><div className="sourcing-step-num">02</div><h3 className="sourcing-step-title">We decant from authenticated stock</h3><p className="sourcing-step-desc">Every sample is poured from a verified bottle we've checked ourselves — batch codes, fill levels, packaging. No reformulations, no fakes.</p></div>
-          <div className="sourcing-step reveal"><div className="sourcing-step-num">03</div><h3 className="sourcing-step-title">It ships to you</h3><p className="sourcing-step-desc">Glass atomizers, labeled with name and date filled. Shipped the same week. Try three at once and live with them for a few weeks.</p></div>
-          <div className="sourcing-step reveal"><div className="sourcing-step-num">04</div><h3 className="sourcing-step-title">Love it? Get the bottle.</h3><p className="sourcing-step-desc">If you find your signature, we source the full bottle at a discount — typically 20–40% below retail. Or just reorder the sample size you wear most.</p></div>
-        </div>
-        <div className="auth-strip">
-          <div className="auth-item"><div><strong>Decanted from authentics</strong><span>Every bottle batch-coded and verified before we pour</span></div></div>
-          <div className="auth-divider" />
-          <div className="auth-item"><div><strong>Sealed glass atomizers</strong><span>Labeled, dated, and pressure-tested before shipping</span></div></div>
-          <div className="auth-divider" />
-          <div className="auth-item"><div><strong>Satisfaction guaranteed</strong><span>Something off? We make it right — no questions</span></div></div>
-        </div>
-      </section>
-
-      <section className="referral">
-        <div className="referral-inner">
-          <h2 className="referral-title">Refer a friend,<br/><em className="gradient-em">both smell better.</em></h2>
-          <p className="referral-body">When we launch, every referral earns you and your friend a discount on your first sourcing order. The more people you bring in, the more you save. Fragrance is better shared anyway.</p>
-          <div className="referral-form">
-            <input className="fotm-input" id="referralEmail" placeholder="Your email — we'll send your referral link at launch" type="email" />
-            <button className="fotm-btn" type="button" onClick={() => joinWaitlist('referral', 'referralEmail')}>Reserve My Spot</button>
-          </div>
-          <p className="fotm-note">Launch pricing and referral details coming soon.</p>
         </div>
       </section>
 

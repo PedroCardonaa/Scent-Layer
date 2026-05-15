@@ -22,6 +22,7 @@ export function Nav({ theme = 'light', children }) {
             <li><NavLink to="/shop">Shop</NavLink></li>
             <li><NavLink to="/tools">Tools</NavLink></li>
             <li><NavLink to="/explore">Explore</NavLink></li>
+            <li><NavLink to="/about">About</NavLink></li>
             <li><NavLink to="/profile">{user ? 'Wishlist' : 'Sign In'}</NavLink></li>
           </ul>
         )}
@@ -43,6 +44,7 @@ export function Nav({ theme = 'light', children }) {
         <Link to="/shop" onClick={() => setOpen(false)}>Shop</Link>
         <Link to="/tools" onClick={() => setOpen(false)}>Tools</Link>
         <Link to="/explore" onClick={() => setOpen(false)}>Explore</Link>
+        <Link to="/about" onClick={() => setOpen(false)}>About</Link>
         <Link to={profileHref} className="drawer-wishlist" onClick={() => setOpen(false)}>
           {user ? '♡ My Wishlist' : '♡ Sign In'}
         </Link>
