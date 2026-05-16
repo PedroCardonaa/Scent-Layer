@@ -40,6 +40,11 @@
 .sotw-visual { display: flex; align-items: center; justify-content: center; height: 280px; background: linear-gradient(160deg,#3a2e24,#6b5040); position: relative; overflow: hidden; }
 .sotw-visual::before { content:''; position:absolute; inset:0; background:radial-gradient(circle at 60% 40%, rgba(201,169,110,0.2), transparent 60%); }
 
+/* Wrapper for the ProductRevealCard that lives in the SOTW slot */
+.sotw-card-wrap { display: flex; align-items: center; justify-content: center; max-width: 440px; margin-left: auto; }
+.sotw-card-wrap > * { width: 100%; }
+@media(max-width:900px){ .sotw-card-wrap { max-width: none; margin-left: 0; } }
+
 /* TOOLS PROMO */
 .tools-promo { padding: 100px 60px; background: var(--cream); }
 .tools-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; margin-top: 60px; }

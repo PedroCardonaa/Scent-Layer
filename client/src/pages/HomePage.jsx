@@ -6,6 +6,7 @@ import { ProductCard } from '../components/ProductCard.jsx';
 import { HeroBottle, SotwBottle } from '../components/BottleSvg.jsx';
 import { Marquee } from '../components/ui/Marquee.jsx';
 import { BorderBeam } from '../components/ui/BorderBeam.jsx';
+import { ProductRevealCard } from '../components/ui/ProductRevealCard.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useScrollReveal } from '../hooks/useScrollReveal.js';
 import { api } from '../lib/api.js';
@@ -76,9 +77,22 @@ export function HomePage() {
           <button className="btn-dark" type="button" onClick={() => openSampleModal('Baccarat Rouge 540 — Maison Francis Kurkdjian')}>Order a 2ml Sample</button>
           <button type="button" className="source-link" style={{ display: 'inline-block', width: 'auto', marginLeft: 12, borderTop: 'none', padding: 0, color: 'rgba(245,240,232,0.45)' }} onClick={() => openSourceModal('Baccarat Rouge 540 — Maison Francis Kurkdjian')}>or full bottle →</button>
         </div>
-        <div className="sotw-visual">
-          <SotwBottle />
-          <BorderBeam size={260} duration={9} colorFrom="#c9a96e" colorTo="#e8d5a8" />
+        <div className="sotw-card-wrap">
+          <ProductRevealCard
+            fragrance={{
+              name: 'Baccarat Rouge 540',
+              brand: 'Maison Francis Kurkdjian',
+              family: 'Oriental',
+              top: 'Jasmine, Saffron',
+              heart: 'Amberwood, Ambergris',
+              base: 'Fir Resin, Cedar',
+              season: ['Fall', 'Winter'],
+            }}
+            image="https://images.unsplash.com/photo-1541643600914-78b084683601?w=900&h=900&fit=crop&q=80"
+            description="The fragrance that redefined modern luxury. An incandescent amber floral — jasmine and saffron over a cedar and ambergris base that glows for hours on skin."
+            onOrderSample={() => openSampleModal('Baccarat Rouge 540 — Maison Francis Kurkdjian')}
+            onSourceBottle={() => openSourceModal('Baccarat Rouge 540 — Maison Francis Kurkdjian')}
+          />
         </div>
       </section>
 
