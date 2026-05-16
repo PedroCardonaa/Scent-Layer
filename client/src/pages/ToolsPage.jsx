@@ -16,11 +16,11 @@ export function ToolsPage() {
     return 'builder';
   });
 
-  useEffect(() => { document.body.classList.add('dark'); return () => document.body.classList.remove('dark'); }, []);
+  // Theme is now centralized in AppContext — page no longer touches body.dark.
 
   return (
     <>
-      <Nav theme="dark">
+      <Nav>
         <div className="tools-nav">
           <button type="button" className={`tool-tab ${tab === 'builder' ? 'active' : ''}`} onClick={() => setTab('builder')}>Layer Builder</button>
           <button type="button" className={`tool-tab ${tab === 'compare' ? 'active' : ''}`} onClick={() => setTab('compare')}>Compare</button>

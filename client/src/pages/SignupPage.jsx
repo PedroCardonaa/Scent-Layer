@@ -11,7 +11,7 @@ export function SignupPage() {
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => { document.body.classList.add('dark'); return () => document.body.classList.remove('dark'); }, []);
+  // Theme is now centralized in AppContext — page no longer touches body.dark.
   useEffect(() => { if (user) navigate('/profile', { replace: true }); }, [user, navigate]);
 
   async function submit(e) {
@@ -29,7 +29,7 @@ export function SignupPage() {
 
   return (
     <>
-      <Nav theme="dark" />
+      <Nav />
       <div className="auth-page">
         <form className="auth-card" onSubmit={submit}>
           <p className="auth-eyebrow">Join Scent Layer</p>

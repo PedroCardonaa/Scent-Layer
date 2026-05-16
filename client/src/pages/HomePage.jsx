@@ -33,7 +33,7 @@ export function HomePage() {
 
   useScrollReveal('.product-card,.tool-card,.note-card,.mission-value,.proof-card,.reveal', [visible.length]);
 
-  useEffect(() => { document.body.classList.remove('dark'); }, []);
+  // Theme is now centralized in AppContext — page no longer touches body.dark.
 
   async function joinWaitlist(type, inputId) {
     const el = document.getElementById(inputId);
@@ -49,7 +49,7 @@ export function HomePage() {
   return (
     <>
       <div className="demo-banner">✦ Live Demo<span>·</span>Scent Layer — Coming Soon<span>·</span>Sample Niche & Designer Fragrances From 2ml</div>
-      <Nav theme="light" />
+      <Nav />
 
       <section className="hero">
         <div className="hero-left">

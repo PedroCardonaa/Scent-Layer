@@ -48,7 +48,7 @@ export function ShopPage() {
   }));
   const [search, setSearch] = useState('');
 
-  useEffect(() => { document.body.classList.add('dark'); return () => document.body.classList.remove('dark'); }, []);
+  // Theme is now centralized in AppContext — page no longer touches body.dark.
 
   const days = Math.floor(bottleSprays / Math.max(1, perDay));
   const lifestyle = LIFESTYLE.find(l => days <= l.maxDays) ?? LIFESTYLE[LIFESTYLE.length - 1];
@@ -85,7 +85,7 @@ export function ShopPage() {
 
   return (
     <>
-      <Nav theme="dark" />
+      <Nav />
 
       <div className="shop-hero">
         <p className="shop-hero-label">The Collection</p>

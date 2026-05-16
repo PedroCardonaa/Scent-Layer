@@ -156,7 +156,7 @@ export function ExtrasPage() {
   const [listKey, setListKey] = useState('compliments');
   const [glossaryQ, setGlossaryQ] = useState('');
 
-  useEffect(() => { document.body.classList.add('dark'); return () => document.body.classList.remove('dark'); }, []);
+  // Theme is now centralized in AppContext — page no longer touches body.dark.
 
   // Keep the active tab in sync with the URL hash so footer links like
   // /explore#sourcing work even when the user is already on /explore.
@@ -175,7 +175,7 @@ export function ExtrasPage() {
 
   return (
     <>
-      <Nav theme="dark" />
+      <Nav />
 
       <div className="page-hero">
         <p className="page-hero-label">Explore</p>

@@ -22,6 +22,44 @@ export function AppProvider({ children }) {
     return next;
   });
 
+  // ── Theme ─────────────────────────────────────────────────────────
+  // User preference is one of 'system' | 'light' | 'dark'. The "effective"
+  // theme — what's actually applied to body.dark — collapses 'system' down
+  // to whatever the OS reports via prefers-color-scheme.
+  const [themePref, setThemePrefState] = useState(() => {
+    if (typeof window === 'undefined') return 'system';
+    return localStorage.getItem('sl_theme') || 'system';
+  });
+
+  const setThemePref = useCallback((pref) => {
+    setThemePrefState(pref);
+    try { localStorage.setItem('sl_theme', pref); } catch { /* noop */ }
+  }, []);
+
+  // Resolve preference → applied class, and re-resolve when the OS pref changes.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const apply = () => {
+      const effective = themePref === 'system'
+        ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : themePref;
+      document.body.classList.toggle('dark', effective === 'dark');
+    };
+    apply();
+    if (themePref !== 'system') return; // only listen when in system mode
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    mq.addEventListener('change', apply);
+    return () => mq.removeEventListener('change', apply);
+  }, [themePref]);
+
+  // Convenience: a derived effective theme for components that need to know
+  // whether they're in dark or light right now (e.g., Nav).
+  const effectiveTheme = (() => {
+    if (themePref !== 'system') return themePref;
+    if (typeof window === 'undefined') return 'light';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  })();
+
   // ── Catalog: prefer the API, fall back to the static catalog ──────
   // The fallback keeps the UI populated when the backend isn't reachable
   // (local dev without the server running, DB unseeded, frontend-only
@@ -138,7 +176,8 @@ export function AppProvider({ children }) {
     sourceModal, openSourceModal, closeSourceModal,
     sampleModal, openSampleModal, closeSampleModal,
     visitCount,
-  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount]);
+    themePref, setThemePref, effectiveTheme,
+  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

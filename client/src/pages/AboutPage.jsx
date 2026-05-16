@@ -8,12 +8,12 @@ import { useScrollReveal } from '../hooks/useScrollReveal.js';
 export function AboutPage() {
   const { openSampleModal, openSourceModal } = useApp();
 
-  useEffect(() => { document.body.classList.add('dark'); return () => document.body.classList.remove('dark'); }, []);
+  // Theme is now centralized in AppContext — page no longer touches body.dark.
   useScrollReveal('.reveal,.sourcing-step,.mission-value');
 
   return (
     <>
-      <Nav theme="dark" />
+      <Nav />
 
       <ParallaxScrolling title="Scent" eyebrow="About Scent Layer" />
 

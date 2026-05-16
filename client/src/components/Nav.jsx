@@ -1,11 +1,19 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext.jsx';
+import { ToggleTheme } from './ui/ToggleTheme.jsx';
 
-export function Nav({ theme = 'light', children }) {
+/**
+ * Nav reads its own theme class from the global effectiveTheme so it
+ * always matches the body. The legacy `theme` prop is still accepted
+ * for callers that haven't been updated, but if omitted (preferred),
+ * the Nav follows the user's chosen theme.
+ */
+export function Nav({ theme: themeOverride, children }) {
   const [open, setOpen] = useState(false);
-  const { wishlistIds, user } = useApp();
+  const { wishlistIds, user, effectiveTheme } = useApp();
   const { pathname } = useLocation();
+  const theme = themeOverride ?? effectiveTheme;
 
   useEffect(() => { setOpen(false); document.body.style.overflow = ''; }, [pathname]);
   useEffect(() => { document.body.style.overflow = open ? 'hidden' : ''; }, [open]);
@@ -26,9 +34,12 @@ export function Nav({ theme = 'light', children }) {
             <li><NavLink to="/profile">{user ? 'Wishlist' : 'Sign In'}</NavLink></li>
           </ul>
         )}
-        <Link to={profileHref} className="nav-profile">
-          {profileLabel} <span className="wishlist-count">{wishlistIds.length}</span>
-        </Link>
+        <div className="nav-right">
+          <ToggleTheme />
+          <Link to={profileHref} className="nav-profile">
+            {profileLabel} <span className="wishlist-count">{wishlistIds.length}</span>
+          </Link>
+        </div>
         <button
           className={`nav-hamburger ${open ? 'open' : ''}`}
           onClick={() => setOpen(v => !v)}
@@ -48,6 +59,7 @@ export function Nav({ theme = 'light', children }) {
         <Link to={profileHref} className="drawer-wishlist" onClick={() => setOpen(false)}>
           {user ? '♡ My Wishlist' : '♡ Sign In'}
         </Link>
+        <div className="drawer-theme-toggle"><ToggleTheme /></div>
       </div>
     </>
   );

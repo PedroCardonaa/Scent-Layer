@@ -43,14 +43,14 @@ const QUESTIONS = [
 export function ProfilePage() {
   const { user, authLoading, logout, fragrances, wishlistIds, toggleWishlist, openSampleModal, openSourceModal, showToast, saveQuizResult } = useApp();
 
-  useEffect(() => { document.body.classList.remove('dark'); }, []);
+  // Theme is now centralized in AppContext — page no longer touches body.dark.
 
-  if (authLoading) return (<><Nav theme="light"/><div className="profile-gate"><p>Loading…</p></div></>);
+  if (authLoading) return (<><Nav/><div className="profile-gate"><p>Loading…</p></div></>);
 
   if (!user) {
     return (
       <>
-        <Nav theme="light" />
+        <Nav />
         <div className="profile-gate">
           <div className="profile-gate-icon">✦</div>
           <h1 className="profile-gate-title">Sign in to access your <em>profile.</em></h1>
@@ -66,7 +66,7 @@ export function ProfilePage() {
 
   return (
     <>
-      <Nav theme="light" />
+      <Nav />
 
       <div className="profile-hero">
         <div>
