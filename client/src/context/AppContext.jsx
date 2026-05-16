@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { api, getToken, setToken } from '../lib/api.js';
+import { FALLBACK_CATALOG } from '../lib/fallback-catalog.js';
 
 const AppContext = createContext(null);
 
@@ -12,11 +13,24 @@ export function AppProvider({ children }) {
   const [sourceModal, setSourceModal] = useState({ open: false, prefill: '' });
   const [sampleModal, setSampleModal] = useState({ open: false, prefill: '' });
 
-  // ── Catalog: always load from API ─────────────────────────────────
+  // ── Catalog: prefer the API, fall back to the static catalog ──────
+  // The fallback keeps the UI populated when the backend isn't reachable
+  // (local dev without the server running, DB unseeded, frontend-only
+  // Vercel deploys, etc). API wins whenever it returns >0 rows.
   useEffect(() => {
+    let cancelled = false;
+    setFragrances(FALLBACK_CATALOG); // immediate paint
     api('/api/fragrances')
-      .then(d => setFragrances(d.fragrances))
-      .catch(e => console.error('[catalog]', e));
+      .then(d => {
+        if (cancelled) return;
+        if (Array.isArray(d.fragrances) && d.fragrances.length > 0) {
+          setFragrances(d.fragrances);
+        }
+      })
+      .catch(e => {
+        console.warn('[catalog] using fallback catalog —', e.message);
+      });
+    return () => { cancelled = true; };
   }, []);
 
   // ── Auth bootstrap ────────────────────────────────────────────────
