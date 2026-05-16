@@ -13,6 +13,7 @@ import { ShopPage } from './pages/ShopPage.jsx';
 import { ToolsPage } from './pages/ToolsPage.jsx';
 import { ProfilePage } from './pages/ProfilePage.jsx';
 import { ExtrasPage } from './pages/ExtrasPage.jsx';
+import { FragrancePage } from './pages/FragrancePage.jsx';
 import { LoginPage } from './pages/LoginPage.jsx';
 import { SignupPage } from './pages/SignupPage.jsx';
 
@@ -60,6 +61,7 @@ export default function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/explore" element={<ExtrasPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/fragrance/:id" element={<FragrancePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
         </Routes>

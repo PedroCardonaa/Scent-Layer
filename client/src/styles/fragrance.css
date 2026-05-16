@@ -1,0 +1,273 @@
+/* ===== FRAGRANCE DETAIL PAGE =====
+   Theme-adaptive: uses --fg, --fg-soft, --fg-dim, --surface-soft, --hairline
+   from shared.css so it reads correctly on both light and dark themes. */
+
+/* Breadcrumb */
+.fragrance-crumb {
+  padding: 110px 60px 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+}
+.fragrance-crumb a {
+  color: var(--fg-soft);
+  text-decoration: none;
+  transition: color 0.25s;
+}
+.fragrance-crumb a:hover { color: var(--gold); }
+.fragrance-crumb span[aria-hidden="true"] { color: var(--fg-faint); }
+
+/* Hero — image left, content right */
+.fragrance-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  padding: 48px 60px 100px;
+  align-items: start;
+}
+.fragrance-hero-image {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+  overflow: hidden;
+}
+.fragrance-hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: brightness(0.96) saturate(0.92);
+}
+.fragrance-badge {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  background: var(--ink);
+  color: var(--cream);
+  padding: 6px 14px;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.fragrance-hero-body { padding-top: 8px; }
+.fragrance-brand {
+  font-size: 0.66rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+.fragrance-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.8rem, 5vw, 4.2rem);
+  font-weight: 300;
+  line-height: 1.05;
+  color: var(--fg);
+  margin-bottom: 18px;
+}
+.fragrance-meta {
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+  margin-bottom: 32px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.fragrance-meta-sep { color: var(--fg-faint); }
+
+.fragrance-composition {
+  font-size: 0.92rem;
+  line-height: 1.85;
+  color: var(--fg-soft);
+  margin-bottom: 32px;
+  max-width: 520px;
+}
+
+.fragrance-attr-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 40px;
+}
+.fragrance-attr {
+  padding: 14px 16px;
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+}
+.fragrance-attr-label {
+  font-size: 0.55rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.fragrance-attr-value {
+  font-size: 0.78rem;
+  color: var(--fg);
+  line-height: 1.4;
+}
+
+.fragrance-cta-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.fragrance-cta-secondary {
+  background: none;
+  color: var(--fg) !important;
+  border: 1px solid var(--hairline) !important;
+}
+.fragrance-cta-secondary:hover { border-color: var(--gold) !important; color: var(--gold) !important; }
+
+.fragrance-wishlist-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: none;
+  border: 1px solid var(--hairline);
+  color: var(--fg-soft);
+  font-size: 1.1rem;
+  cursor: none;
+  transition: all 0.25s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.fragrance-wishlist-btn:hover,
+.fragrance-wishlist-btn.saved {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--deep2);
+}
+
+/* Pyramid section */
+.fragrance-pyramid {
+  padding: 80px 60px;
+  border-top: 1px solid var(--hairline);
+}
+.fragrance-section-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+.fragrance-section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--fg);
+  margin-bottom: 48px;
+}
+.fragrance-section-title em { font-style: italic; }
+
+.pyramid-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+.note-act {
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+  padding: 40px 32px;
+}
+.note-act-num {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 4rem;
+  font-weight: 300;
+  line-height: 1;
+  color: rgba(201,169,110,0.25);
+  margin-bottom: 18px;
+}
+.note-act-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.note-act-sub {
+  font-size: 0.7rem;
+  color: var(--fg-soft);
+  margin-bottom: 22px;
+  font-style: italic;
+}
+.note-act-notes {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 300;
+  line-height: 1.45;
+  color: var(--fg);
+}
+
+/* Similar scents */
+.fragrance-similar {
+  padding: 80px 60px;
+  border-top: 1px solid var(--hairline);
+}
+.fragrance-similar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+/* Empty / Not-found state */
+.fragrance-empty {
+  padding: 160px 60px 80px;
+  max-width: 520px;
+  margin: 0 auto;
+  text-align: center;
+}
+.fragrance-empty-eyebrow {
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+.fragrance-empty-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--fg);
+  margin-bottom: 14px;
+}
+.fragrance-empty-body { font-size: 0.84rem; color: var(--fg-soft); line-height: 1.85; }
+.link-cta {
+  background: none;
+  border: none;
+  color: var(--gold);
+  cursor: none;
+  border-bottom: 1px solid var(--gold);
+  font-family: 'Jost', sans-serif;
+  font-size: 0.84rem;
+}
+
+@media (max-width: 900px) {
+  .fragrance-crumb { padding: 100px 24px 0; }
+  .fragrance-hero {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 32px 24px 60px;
+  }
+  .fragrance-pyramid, .fragrance-similar { padding: 60px 24px; }
+  .pyramid-grid { grid-template-columns: 1fr; }
+  .fragrance-similar-grid { grid-template-columns: 1fr 1fr; }
+  .fragrance-attr-grid { grid-template-columns: 1fr; gap: 8px; }
+  .fragrance-cta-row { flex-direction: column; align-items: stretch; }
+  .fragrance-wishlist-btn { align-self: flex-end; }
+}
+@media (max-width: 500px) {
+  .fragrance-similar-grid { grid-template-columns: 1fr; }
+}

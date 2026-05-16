@@ -140,6 +140,7 @@ nav.dark  .nav-hamburger span { background: var(--cream); }
 /* PRODUCT GRID */
 .product-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; }
 .product-card { background: var(--cream); position: relative; overflow: hidden; cursor: none; }
+.product-card-link { display: block; color: inherit; text-decoration: none; cursor: none; }
 .product-img { aspect-ratio: 3/4; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; transition: transform 0.6s ease; }
 .product-card:hover .product-img { transform: scale(1.03); }
 .product-bg { position: absolute; inset: 0; }

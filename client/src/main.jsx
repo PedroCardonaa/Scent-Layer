@@ -12,6 +12,7 @@ import './styles/extras.css';
 import './styles/auth.css';
 import './styles/parallax.css';
 import './styles/glow-card.css';
+import './styles/fragrance.css';
 import './styles/tailwind.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
