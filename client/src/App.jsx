@@ -5,6 +5,8 @@ import { Cursor } from './components/Cursor.jsx';
 import { Toaster } from './components/Toaster.jsx';
 import { SourceModal } from './components/SourceModal.jsx';
 import { SampleModal } from './components/SampleModal.jsx';
+import { CookieConsent } from './components/CookieConsent.jsx';
+import { trackPageView } from './lib/analytics.js';
 
 import { HomePage } from './pages/HomePage.jsx';
 import { ShopPage } from './pages/ShopPage.jsx';
@@ -31,11 +33,25 @@ function ScrollToHash() {
   return null;
 }
 
+/**
+ * Fires a GA page_view on every client-side route change. The underlying
+ * gtag is only loaded after the user grants consent, so this is a no-op
+ * for users who declined or haven't decided yet.
+ */
+function PageviewTracker() {
+  const { pathname, hash } = useLocation();
+  useEffect(() => {
+    trackPageView(pathname + hash);
+  }, [pathname, hash]);
+  return null;
+}
+
 export default function App() {
   return (
     <AppProvider>
       <Cursor />
       <ScrollToHash />
+      <PageviewTracker />
       <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -51,6 +67,7 @@ export default function App() {
       <SampleModal />
       <SourceModal />
       <Toaster />
+      <CookieConsent />
     </AppProvider>
   );
 }

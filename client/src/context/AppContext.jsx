@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { toast } from 'sonner';
 import { api, getToken, setToken } from '../lib/api.js';
 import { FALLBACK_CATALOG } from '../lib/fallback-catalog.js';
+import { initGA } from '../lib/analytics.js';
 
 const AppContext = createContext(null);
 
@@ -59,6 +60,24 @@ export function AppProvider({ children }) {
     if (typeof window === 'undefined') return 'light';
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   })();
+
+  // ── Analytics consent ─────────────────────────────────────────────
+  // null = user hasn't decided yet → show banner.
+  // 'granted' = user accepted → load GA.
+  // 'denied' = user rejected → never load GA, never show banner again.
+  const [analyticsConsent, setAnalyticsConsentState] = useState(() => {
+    if (typeof window === 'undefined') return null;
+    return localStorage.getItem('sl_analytics_consent'); // 'granted' | 'denied' | null
+  });
+
+  const setAnalyticsConsent = useCallback((value) => {
+    setAnalyticsConsentState(value);
+    try { localStorage.setItem('sl_analytics_consent', value); } catch { /* noop */ }
+  }, []);
+
+  useEffect(() => {
+    if (analyticsConsent === 'granted') initGA();
+  }, [analyticsConsent]);
 
   // ── Catalog: prefer the API, fall back to the static catalog ──────
   // The fallback keeps the UI populated when the backend isn't reachable
@@ -177,7 +196,8 @@ export function AppProvider({ children }) {
     sampleModal, openSampleModal, closeSampleModal,
     visitCount,
     themePref, setThemePref, effectiveTheme,
-  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme]);
+    analyticsConsent, setAnalyticsConsent,
+  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme, analyticsConsent, setAnalyticsConsent]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

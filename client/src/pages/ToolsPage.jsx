@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '../components/ui/Command.jsx';
@@ -167,10 +167,22 @@ function LayerBuilder({ fragrances }) {
 }
 
 function SlotInput({ slot, index, fragrances, onSelect, onRemove, onQuery }) {
-  // Pre-filter substring matches; predictable behavior, no fuzzy surprises.
-  // cmdk handles keyboard nav + ARIA, but we own which items make it into the
-  // list. Showing the full catalog when the input is empty so the user can
-  // browse — first 6 fragrances initially, all matches as they type.
+  // Open when the input is focused; close on click outside or on selection.
+  // The dropdown shows every catalog item that matches the (substring) query —
+  // when the query is empty we show the full catalog so the user can browse
+  // by scrolling. cmdk still owns keyboard nav + ARIA semantics.
+  const [open, setOpen] = useState(false);
+  const wrapperRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function handleOutside(e) {
+      if (!wrapperRef.current?.contains(e.target)) setOpen(false);
+    }
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, [open]);
+
   const q = slot.query.trim().toLowerCase();
   const matches = q
     ? fragrances.filter(c =>
@@ -178,7 +190,11 @@ function SlotInput({ slot, index, fragrances, onSelect, onRemove, onQuery }) {
           .join(' ').toLowerCase().includes(q)
       )
     : fragrances;
-  const visible = matches.slice(0, 6);
+
+  function handleSelect(c) {
+    onSelect(c);
+    setOpen(false);
+  }
 
   return (
     <div className={`scent-slot ${slot.scent ? 'filled' : ''}`}>
@@ -195,36 +211,36 @@ function SlotInput({ slot, index, fragrances, onSelect, onRemove, onQuery }) {
           </div>
         </div>
       ) : (
-        <Command shouldFilter={false} className="relative">
-          <CommandInput
-            value={slot.query}
-            onValueChange={onQuery}
-            placeholder="Search fragrance, brand, or note…"
-          />
-          <CommandList className="absolute left-0 right-0 top-full z-30 mt-1 max-h-[260px] overflow-y-auto bg-deep border border-gold/30 shadow-[0_10px_40px_rgba(0,0,0,0.45)]">
-            {visible.length === 0 ? (
-              <div className="px-4 py-4 text-[0.74rem] text-cream/40 italic font-serif">
-                No matches in the catalog. Try "Aventus", "Le Labo", or a note like "oud".
-              </div>
-            ) : (
-              visible.map(c => (
-                <CommandItem
-                  key={c.id}
-                  value={String(c.id)}
-                  onSelect={() => onSelect(c)}
-                >
-                  <span className="text-cream">{c.name} — {c.brand}</span>
-                  <span className="text-[0.65rem] text-cream/50">{c.top}</span>
-                </CommandItem>
-              ))
+        <div ref={wrapperRef}>
+          <Command shouldFilter={false} className="relative">
+            <CommandInput
+              value={slot.query}
+              onValueChange={onQuery}
+              onFocus={() => setOpen(true)}
+              placeholder="Click to browse — or type a fragrance, brand, or note"
+            />
+            {open && (
+              <CommandList className="absolute left-0 right-0 top-full z-30 mt-1 max-h-[320px] overflow-y-auto bg-deep border border-gold/30 shadow-[0_10px_40px_rgba(0,0,0,0.45)]">
+                {matches.length === 0 ? (
+                  <div className="px-4 py-4 text-[0.74rem] text-cream/40 italic font-serif">
+                    No matches in the catalog. Try "Aventus", "Le Labo", or a note like "oud".
+                  </div>
+                ) : (
+                  matches.map(c => (
+                    <CommandItem
+                      key={c.id}
+                      value={String(c.id)}
+                      onSelect={() => handleSelect(c)}
+                    >
+                      <span className="text-cream">{c.name} — {c.brand}</span>
+                      <span className="text-[0.65rem] text-cream/50">{c.top}</span>
+                    </CommandItem>
+                  ))
+                )}
+              </CommandList>
             )}
-            {matches.length > 6 && (
-              <div className="px-4 py-2 text-[0.62rem] tracking-[0.18em] uppercase text-cream/40 border-t border-white/[0.05]">
-                +{matches.length - 6} more — keep typing to narrow
-              </div>
-            )}
-          </CommandList>
-        </Command>
+          </Command>
+        </div>
       )}
     </div>
   );

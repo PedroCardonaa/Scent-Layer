@@ -253,6 +253,44 @@ footer { background: var(--deep2); padding: 80px 60px 40px; }
 .demo-banner { background: var(--gold); color: var(--deep2); text-align: center; padding: 10px 24px; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; position: relative; z-index: 200; }
 .demo-banner span { opacity: 0.7; margin: 0 12px; }
 
+/* ── COOKIE CONSENT BANNER ──
+   Bottom-left editorial card. Doesn't dominate. Both buttons end the banner. */
+.cookie-consent {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 650;
+  max-width: 360px;
+  background: var(--deep2);
+  border: 1px solid rgba(201,169,110,0.25);
+  color: var(--cream);
+  padding: 22px 26px 20px;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.35);
+  animation: fadeUp 0.45s ease both;
+}
+.cookie-consent-eyebrow { font-size: 0.58rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+.cookie-consent-body { font-size: 0.78rem; line-height: 1.7; color: rgba(245,240,232,0.65); margin-bottom: 18px; }
+.cookie-consent-actions { display: flex; gap: 10px; align-items: center; }
+.cookie-consent-accept,
+.cookie-consent-decline {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 10px 18px;
+  border: 1px solid;
+  cursor: none;
+  transition: all 0.25s;
+}
+.cookie-consent-accept { background: var(--gold); color: var(--deep2); border-color: var(--gold); }
+.cookie-consent-accept:hover { background: var(--gold-light); border-color: var(--gold-light); }
+.cookie-consent-decline { background: none; color: rgba(245,240,232,0.6); border-color: rgba(245,240,232,0.2); }
+.cookie-consent-decline:hover { color: var(--cream); border-color: var(--cream); }
+
+@media (max-width: 600px) {
+  .cookie-consent { left: 16px; right: 16px; bottom: 16px; max-width: none; padding: 18px 20px; }
+}
+
 /* ANIMATIONS */
 @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
 @keyframes drift   { from{transform:translate(0,0) scale(1)} to{transform:translate(30px,-20px) scale(1.1)} }
