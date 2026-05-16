@@ -1,23 +1,21 @@
 import { useEffect } from 'react';
 import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
+import { ParallaxScrolling } from '../components/ui/ParallaxScrolling.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useScrollReveal } from '../hooks/useScrollReveal.js';
 
 export function AboutPage() {
   const { openSampleModal, openSourceModal } = useApp();
 
-  useEffect(() => { document.body.classList.remove('dark'); }, []);
+  useEffect(() => { document.body.classList.add('dark'); return () => document.body.classList.remove('dark'); }, []);
   useScrollReveal('.reveal,.sourcing-step,.mission-value');
 
   return (
     <>
-      <Nav theme="light" />
+      <Nav theme="dark" />
 
-      <div className="page-hero" style={{ background: 'var(--deep2)' }}>
-        <p className="page-hero-label" style={{ color: 'var(--gold)' }}>About Scent Layer</p>
-        <h1 className="page-hero-title" style={{ color: 'var(--cream)' }}>What we do,<br/><em className="gradient-em">and why.</em></h1>
-      </div>
+      <ParallaxScrolling title="Scent" eyebrow="About Scent Layer" />
 
       <section className="mission">
         <div className="mission-inner">
@@ -53,13 +51,13 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="source-cta section" style={{ background: 'var(--warm-white)' }}>
-        <p className="section-label" style={{ textAlign: 'center' }}>Ready when you are.</p>
-        <h2 className="section-title" style={{ textAlign: 'center', marginBottom: 16 }}>Try anything <em className="gradient-em">from 2ml.</em></h2>
-        <p style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--taupe)', maxWidth: 460, margin: '0 auto 40px', lineHeight: 1.8 }}>Browse the catalog, take the quiz, or order a sample of something we don't list — designer, niche, whatever you're chasing.</p>
+      <section className="source-cta section">
+        <p className="section-label" style={{ textAlign: 'center', color: 'var(--gold)' }}>Ready when you are.</p>
+        <h2 className="section-title" style={{ textAlign: 'center', marginBottom: 16, color: 'var(--cream)' }}>Try anything <em className="gradient-em">from 2ml.</em></h2>
+        <p style={{ textAlign: 'center', fontSize: '0.82rem', color: 'rgba(245,240,232,0.5)', maxWidth: 460, margin: '0 auto 40px', lineHeight: 1.8 }}>Browse the catalog, take the quiz, or order a sample of something we don't list — designer, niche, whatever you're chasing.</p>
         <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
-          <button type="button" className="btn-dark" onClick={() => openSampleModal('')}>Order a Sample</button>
-          <button type="button" className="btn-ghost" onClick={() => openSourceModal('')}>Source a Full Bottle</button>
+          <button type="button" className="btn-gold" onClick={() => openSampleModal('')}>Order a Sample</button>
+          <button type="button" className="btn-ghost" style={{ color: 'var(--cream)', borderColor: 'rgba(245,240,232,0.3)' }} onClick={() => openSourceModal('')}>Source a Full Bottle</button>
         </div>
       </section>
 

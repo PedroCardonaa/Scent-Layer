@@ -1,0 +1,136 @@
+/* ===== PARALLAX HERO (21st.dev / Osmo template, adapted) ===== */
+
+.parallax {
+  position: relative;
+  background: var(--deep2);
+  color: var(--cream);
+  isolation: isolate;
+}
+
+.parallax__header {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+}
+
+.parallax__visuals {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.parallax__layers {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+.parallax__layer-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+  /* Slight cool tint so the demo Osmo images sit visually closer to the dark editorial palette */
+  filter: brightness(0.9) saturate(0.85);
+}
+
+.parallax__layer-title {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+  padding: 0 24px;
+}
+
+.parallax__eyebrow {
+  font-size: 0.66rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.parallax__title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(6rem, 18vw, 18rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--cream);
+  letter-spacing: 0.02em;
+  line-height: 0.9;
+  text-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+.parallax__fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(to bottom, transparent, var(--deep2) 90%);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.parallax__black-line-overflow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(201, 169, 110, 0.4) 30%,
+    rgba(201, 169, 110, 0.7) 50%,
+    rgba(201, 169, 110, 0.4) 70%,
+    transparent 100%
+  );
+  z-index: 4;
+  pointer-events: none;
+  transform: translateX(-50%);
+  opacity: 0.5;
+}
+
+.parallax__content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  background: var(--deep2);
+  position: relative;
+  z-index: 5;
+}
+
+.parallax__mark {
+  font-size: 1.5rem;
+  color: var(--gold);
+  letter-spacing: 0.5em;
+  padding-left: 0.5em;
+  opacity: 0.6;
+}
+
+/* Pin the layered hero a little smaller on phones so it doesn't dwarf the page */
+@media (max-width: 600px) {
+  .parallax__header { height: 80vh; min-height: 480px; }
+  .parallax__title  { font-size: clamp(4rem, 24vw, 9rem); }
+  .parallax__eyebrow { font-size: 0.6rem; margin-bottom: 16px; }
+  .parallax__content { padding: 40px 20px; }
+}
+
+/* Respect reduced motion — drop the parallax effect entirely and pin layers in place */
+@media (prefers-reduced-motion: reduce) {
+  .parallax__layers { transform: none !important; }
+  .parallax__layer-img { transform: none !important; }
+}
