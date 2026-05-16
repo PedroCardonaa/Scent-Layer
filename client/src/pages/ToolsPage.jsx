@@ -167,6 +167,19 @@ function LayerBuilder({ fragrances }) {
 }
 
 function SlotInput({ slot, index, fragrances, onSelect, onRemove, onQuery }) {
+  // Pre-filter substring matches; predictable behavior, no fuzzy surprises.
+  // cmdk handles keyboard nav + ARIA, but we own which items make it into the
+  // list. Showing the full catalog when the input is empty so the user can
+  // browse — first 6 fragrances initially, all matches as they type.
+  const q = slot.query.trim().toLowerCase();
+  const matches = q
+    ? fragrances.filter(c =>
+        [c.name, c.brand, c.top, c.heart, c.base, c.family]
+          .join(' ').toLowerCase().includes(q)
+      )
+    : fragrances;
+  const visible = matches.slice(0, 6);
+
   return (
     <div className={`scent-slot ${slot.scent ? 'filled' : ''}`}>
       <div className="slot-header">
@@ -182,31 +195,35 @@ function SlotInput({ slot, index, fragrances, onSelect, onRemove, onQuery }) {
           </div>
         </div>
       ) : (
-        <Command
-          // cmdk handles its own filtering; pass the catalog and let it work
-          shouldFilter
-          className="relative"
-        >
+        <Command shouldFilter={false} className="relative">
           <CommandInput
             value={slot.query}
             onValueChange={onQuery}
-            placeholder="Search fragrance or brand…"
+            placeholder="Search fragrance, brand, or note…"
           />
-          {slot.query.trim() && (
-            <CommandList className="absolute left-0 right-0 top-full z-20 mt-px max-h-[220px] overflow-y-auto bg-deep border border-gold/20">
-              <CommandEmpty>No matches in the catalog. Try a different name.</CommandEmpty>
-              {fragrances.map(c => (
+          <CommandList className="absolute left-0 right-0 top-full z-30 mt-1 max-h-[260px] overflow-y-auto bg-deep border border-gold/30 shadow-[0_10px_40px_rgba(0,0,0,0.45)]">
+            {visible.length === 0 ? (
+              <div className="px-4 py-4 text-[0.74rem] text-cream/40 italic font-serif">
+                No matches in the catalog. Try "Aventus", "Le Labo", or a note like "oud".
+              </div>
+            ) : (
+              visible.map(c => (
                 <CommandItem
                   key={c.id}
-                  value={`${c.name} ${c.brand} ${c.top} ${c.heart} ${c.base}`}
+                  value={String(c.id)}
                   onSelect={() => onSelect(c)}
                 >
                   <span className="text-cream">{c.name} — {c.brand}</span>
-                  <span className="text-[0.65rem] text-taupe">{c.top}</span>
+                  <span className="text-[0.65rem] text-cream/50">{c.top}</span>
                 </CommandItem>
-              ))}
-            </CommandList>
-          )}
+              ))
+            )}
+            {matches.length > 6 && (
+              <div className="px-4 py-2 text-[0.62rem] tracking-[0.18em] uppercase text-cream/40 border-t border-white/[0.05]">
+                +{matches.length - 6} more — keep typing to narrow
+              </div>
+            )}
+          </CommandList>
         </Command>
       )}
     </div>

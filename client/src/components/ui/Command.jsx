@@ -11,7 +11,10 @@ import { cn } from '../../lib/cn.js';
 export const Command = forwardRef(({ className, ...props }, ref) => (
   <CommandPrimitive
     ref={ref}
-    className={cn('flex w-full flex-col overflow-hidden text-cream', className)}
+    // Note: NO `overflow-hidden` here — it would clip the absolutely
+    // positioned CommandList dropdown out of view when callers position
+    // it with `absolute top-full`.
+    className={cn('flex w-full flex-col text-cream', className)}
     {...props}
   />
 ));
