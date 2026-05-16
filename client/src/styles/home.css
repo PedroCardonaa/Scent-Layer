@@ -109,6 +109,15 @@
 .tools-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; margin-top: 60px; }
 .tool-card { background: var(--warm-white); padding: 40px 30px; border: 1px solid rgba(139,125,107,0.1); transition: border-color 0.3s, transform 0.3s; cursor: none; text-decoration: none; display: block; color: inherit; }
 .tool-card:hover { border-color: var(--gold); transform: translateY(-4px); }
+
+/* GlowCard-wrapped variant — used in the homepage Tools Promo. The
+   visual frame is owned by GlowCard; the inner Link just provides
+   content layout and click target. */
+.tools-grid--glow { gap: 18px; }
+.tool-glow { background-color: rgba(250, 248, 244, 0.85) !important; }
+.tool-glow-content { display: flex; flex-direction: column; height: 100%; padding: 28px 22px; text-decoration: none; color: inherit; cursor: none; }
+.tool-glow-content .tool-desc { flex: 1; margin-bottom: 18px; }
+@media (max-width: 900px) { .tools-grid--glow { gap: 12px; } }
 .tool-icon { font-size: 2rem; margin-bottom: 18px; display: block; }
 .tool-name { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 300; margin-bottom: 10px; }
 .tool-desc { font-size: 0.75rem; line-height: 1.8; color: var(--taupe); margin-bottom: 20px; }

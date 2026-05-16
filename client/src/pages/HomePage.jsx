@@ -9,6 +9,7 @@ import { ExitIntentModal } from '../components/ExitIntentModal.jsx';
 import { Marquee } from '../components/ui/Marquee.jsx';
 import { BorderBeam } from '../components/ui/BorderBeam.jsx';
 import { ProductRevealCard } from '../components/ui/ProductRevealCard.jsx';
+import { GlowCard } from '../components/ui/GlowCard.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useScrollReveal } from '../hooks/useScrollReveal.js';
 import { api } from '../lib/api.js';
@@ -138,11 +139,39 @@ export function HomePage() {
         <div className="section-header" style={{ marginBottom: 0 }}>
           <div><p className="section-label">Tools</p><h2 className="section-title">Built to help you<br/><em>find your scent.</em></h2></div>
         </div>
-        <div className="tools-grid">
-          <Link to="/tools" className="tool-card"><span className="tool-icon">◈</span><h3 className="tool-name">Layer Builder</h3><p className="tool-desc">Combine 2–4 fragrances and get an AI analysis of how they interact — blend name, character, and wear occasions.</p><span className="tool-arrow">Try it →</span></Link>
-          <Link to="/shop#finder" className="tool-card"><span className="tool-icon">⌕</span><h3 className="tool-name">Scent Finder</h3><p className="tool-desc">Filter by notes family, season, time of day, or mood. Don't know the name — find it by feeling instead.</p><span className="tool-arrow">Explore →</span></Link>
-          <Link to="/profile#personalize" className="tool-card"><span className="tool-icon">✦</span><h3 className="tool-name">Scent Quiz</h3><p className="tool-desc">Answer 5 questions about your personality, lifestyle, and preferences — get a curated recommendation.</p><span className="tool-arrow">Personalize →</span></Link>
-          <Link to="/shop#calc" className="tool-card"><span className="tool-icon">⏱</span><h3 className="tool-name">Spray Calculator</h3><p className="tool-desc">Pick a bottle size and your daily sprays — find out exactly how long it lasts and what lifestyle it fits.</p><span className="tool-arrow">Calculate →</span></Link>
+        <div className="tools-grid tools-grid--glow">
+          <GlowCard customSize glowColor="gold" className="tool-glow">
+            <Link to="/tools" className="tool-glow-content">
+              <span className="tool-icon">◈</span>
+              <h3 className="tool-name">Layer Builder</h3>
+              <p className="tool-desc">Combine 2–4 fragrances and get an AI analysis of how they interact — blend name, character, and wear occasions.</p>
+              <span className="tool-arrow">Try it →</span>
+            </Link>
+          </GlowCard>
+          <GlowCard customSize glowColor="gold" className="tool-glow">
+            <Link to="/shop#finder" className="tool-glow-content">
+              <span className="tool-icon">⌕</span>
+              <h3 className="tool-name">Scent Finder</h3>
+              <p className="tool-desc">Filter by notes family, season, time of day, or mood. Don't know the name — find it by feeling instead.</p>
+              <span className="tool-arrow">Explore →</span>
+            </Link>
+          </GlowCard>
+          <GlowCard customSize glowColor="gold" className="tool-glow">
+            <Link to="/profile#personalize" className="tool-glow-content">
+              <span className="tool-icon">✦</span>
+              <h3 className="tool-name">Scent Quiz</h3>
+              <p className="tool-desc">Answer 5 questions about your personality, lifestyle, and preferences — get a curated recommendation.</p>
+              <span className="tool-arrow">Personalize →</span>
+            </Link>
+          </GlowCard>
+          <GlowCard customSize glowColor="gold" className="tool-glow">
+            <Link to="/shop#calc" className="tool-glow-content">
+              <span className="tool-icon">⏱</span>
+              <h3 className="tool-name">Spray Calculator</h3>
+              <p className="tool-desc">Pick a bottle size and your daily sprays — find out exactly how long it lasts and what lifestyle it fits.</p>
+              <span className="tool-arrow">Calculate →</span>
+            </Link>
+          </GlowCard>
         </div>
       </section>
 
