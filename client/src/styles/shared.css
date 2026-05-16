@@ -11,6 +11,28 @@
   --deep2: #1a1210;
   --muted: #b0a090;
   --green: #7a9e7e;
+
+  /* ── Theme-adaptive tokens ──────────────────────────────────────
+     Swap with body.dark. Use these in sections WITHOUT their own
+     dark/light background so text stays legible on either theme.
+     Sections that hardcode a dark background (e.g. .hiw, .notes-section,
+     .fotm, .footer) should keep using --cream directly. */
+  --fg:           var(--ink);                  /* primary text */
+  --fg-soft:      var(--taupe);                /* secondary text */
+  --fg-dim:       rgba(26,22,18,0.45);         /* tertiary / labels */
+  --fg-faint:     rgba(26,22,18,0.30);         /* placeholders / hairlines */
+  --surface-soft: rgba(26,22,18,0.04);         /* faint card / input wash */
+  --surface-2:    rgba(26,22,18,0.06);
+  --hairline:     rgba(26,22,18,0.12);
+}
+body.dark {
+  --fg:           var(--cream);
+  --fg-soft:      rgba(245,240,232,0.55);
+  --fg-dim:       rgba(245,240,232,0.40);
+  --fg-faint:     rgba(245,240,232,0.30);
+  --surface-soft: rgba(255,255,255,0.04);
+  --surface-2:    rgba(255,255,255,0.06);
+  --hairline:     rgba(201,169,110,0.15);
 }
 html { scroll-behavior: smooth; }
 body { background: var(--warm-white); color: var(--ink); font-family: 'Jost', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }

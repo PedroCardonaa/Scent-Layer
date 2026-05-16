@@ -113,7 +113,7 @@ function LayerBuilder({ fragrances }) {
             <div className="result-empty">
               <div className="result-empty-icon">◈</div>
               <p className="result-empty-text">Your blend analysis will appear here</p>
-              <p style={{ fontSize: '0.7rem', color: 'rgba(245,240,232,0.3)' }}>Add at least two fragrances to begin</p>
+              <p style={{ fontSize: '0.7rem', color: 'var(--fg-faint)' }}>Add at least two fragrances to begin</p>
             </div>
           )}
           {loading && (

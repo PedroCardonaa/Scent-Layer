@@ -34,7 +34,7 @@ export function AboutPage() {
       <section className="sourcing-detail">
         <div className="sourcing-header">
           <p className="section-label" style={{ color: 'var(--gold)' }}>Samples &amp; Authenticity</p>
-          <h2 className="section-title" style={{ color: 'var(--cream)' }}>Authentic decants.<br/><em className="gradient-em">Real bottles. Smaller pour.</em></h2>
+          <h2 className="section-title" style={{ color: 'var(--fg)' }}>Authentic decants.<br/><em className="gradient-em">Real bottles. Smaller pour.</em></h2>
         </div>
         <div className="sourcing-grid">
           <div className="sourcing-step reveal"><div className="sourcing-step-num">01</div><h3 className="sourcing-step-title">You order a sample</h3><p className="sourcing-step-desc">Pick a fragrance and a size — 2ml, 5ml, 10ml, or 30ml. Same juice as the boutique counter, just decanted into a wearable pour.</p></div>
@@ -53,11 +53,11 @@ export function AboutPage() {
 
       <section className="source-cta section">
         <p className="section-label" style={{ textAlign: 'center', color: 'var(--gold)' }}>Ready when you are.</p>
-        <h2 className="section-title" style={{ textAlign: 'center', marginBottom: 16, color: 'var(--cream)' }}>Try anything <em className="gradient-em">from 2ml.</em></h2>
-        <p style={{ textAlign: 'center', fontSize: '0.82rem', color: 'rgba(245,240,232,0.5)', maxWidth: 460, margin: '0 auto 40px', lineHeight: 1.8 }}>Browse the catalog, take the quiz, or order a sample of something we don't list — designer, niche, whatever you're chasing.</p>
+        <h2 className="section-title" style={{ textAlign: 'center', marginBottom: 16, color: 'var(--fg)' }}>Try anything <em className="gradient-em">from 2ml.</em></h2>
+        <p style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--fg-soft)', maxWidth: 460, margin: '0 auto 40px', lineHeight: 1.8 }}>Browse the catalog, take the quiz, or order a sample of something we don't list — designer, niche, whatever you're chasing.</p>
         <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
           <button type="button" className="btn-gold" onClick={() => openSampleModal('')}>Order a Sample</button>
-          <button type="button" className="btn-ghost" style={{ color: 'var(--cream)', borderColor: 'rgba(245,240,232,0.3)' }} onClick={() => openSourceModal('')}>Source a Full Bottle</button>
+          <button type="button" className="btn-ghost" style={{ color: 'var(--fg)', borderColor: 'var(--hairline)' }} onClick={() => openSourceModal('')}>Source a Full Bottle</button>
         </div>
       </section>
 
