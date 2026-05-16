@@ -4,6 +4,8 @@ import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
 import { ProductCard } from '../components/ProductCard.jsx';
 import { HeroBottle, SotwBottle } from '../components/BottleSvg.jsx';
+import { NewsletterStrip } from '../components/NewsletterStrip.jsx';
+import { ExitIntentModal } from '../components/ExitIntentModal.jsx';
 import { Marquee } from '../components/ui/Marquee.jsx';
 import { BorderBeam } from '../components/ui/BorderBeam.jsx';
 import { ProductRevealCard } from '../components/ui/ProductRevealCard.jsx';
@@ -59,11 +61,19 @@ export function HomePage() {
           </div>
         </div>
         <div className="hero-right">
+          <img
+            className="hero-lifestyle"
+            src="https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=1200&h=1600&fit=crop&q=80"
+            alt="A person applying fragrance to the inside of the wrist"
+            loading="eager"
+          />
+          <div className="hero-tint" aria-hidden="true" />
           <div className="hero-orb orb-1" />
           <div className="hero-orb orb-2" />
-          <div className="hero-bottle"><HeroBottle /></div>
         </div>
       </section>
+
+      <NewsletterStrip />
 
       <section className="sotw">
         <div>
@@ -141,9 +151,39 @@ export function HomePage() {
           <div><p className="section-label">Early Feedback</p><h2 className="section-title">What people<br/><em>are saying.</em></h2></div>
         </div>
         <div className="proof-grid">
-          <div className="proof-card reveal"><div className="proof-stars">★★★★★</div><p className="proof-quote">"Found my signature scent in 5 minutes using the quiz. Never would have discovered Santal 33 on my own — now I get compliments every single day."</p><p className="proof-name">Marcus T. — Miami</p></div>
-          <div className="proof-card reveal"><div className="proof-stars">★★★★★</div><p className="proof-quote">"The Layer Builder is genius. I combined Aventus and Tobacco Vanille and the analysis was spot on — it's become my winter evening blend."</p><p className="proof-name">Sofia R. — New York</p></div>
-          <div className="proof-card reveal"><div className="proof-stars">★★★★★</div><p className="proof-quote">"Sampled three niche fragrances in 5ml decants before committing. Saved myself $400 on a Baccarat Rouge bottle that wasn't actually my thing. Layered Santal 33 instead — sourced the full bottle through them."</p><p className="proof-name">Jordan K. — Los Angeles</p></div>
+          <div className="proof-card reveal">
+            <div className="proof-stars">★★★★★</div>
+            <p className="proof-quote">"Found my signature scent in 5 minutes using the quiz. Never would have discovered Santal 33 on my own — now I get compliments every single day."</p>
+            <div className="proof-author">
+              <img className="proof-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&h=160&fit=crop&q=80" alt="Marcus T." loading="lazy" />
+              <div className="proof-author-meta">
+                <p className="proof-name">Marcus T.</p>
+                <p className="proof-location">Miami</p>
+              </div>
+            </div>
+          </div>
+          <div className="proof-card reveal">
+            <div className="proof-stars">★★★★★</div>
+            <p className="proof-quote">"The Layer Builder is genius. I combined Aventus and Tobacco Vanille and the analysis was spot on — it's become my winter evening blend."</p>
+            <div className="proof-author">
+              <img className="proof-avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=160&h=160&fit=crop&q=80" alt="Sofia R." loading="lazy" />
+              <div className="proof-author-meta">
+                <p className="proof-name">Sofia R.</p>
+                <p className="proof-location">New York</p>
+              </div>
+            </div>
+          </div>
+          <div className="proof-card reveal">
+            <div className="proof-stars">★★★★★</div>
+            <p className="proof-quote">"Sampled three niche fragrances in 5ml decants before committing. Saved myself $400 on a Baccarat Rouge bottle that wasn't actually my thing. Layered Santal 33 instead — sourced the full bottle through them."</p>
+            <div className="proof-author">
+              <img className="proof-avatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=160&h=160&fit=crop&q=80" alt="Jordan K." loading="lazy" />
+              <div className="proof-author-meta">
+                <p className="proof-name">Jordan K.</p>
+                <p className="proof-location">Los Angeles</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -208,6 +248,8 @@ export function HomePage() {
       </section>
 
       <Footer />
+
+      <ExitIntentModal />
     </>
   );
 }

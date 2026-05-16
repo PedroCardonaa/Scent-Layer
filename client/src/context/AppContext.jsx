@@ -12,6 +12,15 @@ export function AppProvider({ children }) {
   const [wishlistIds, setWishlistIds] = useState([]);
   const [sourceModal, setSourceModal] = useState({ open: false, prefill: '' });
   const [sampleModal, setSampleModal] = useState({ open: false, prefill: '' });
+  // Visit counter — bumped once per app mount. Used to gate "returning visitor"
+  // UX like the exit-intent popup so first-time browsers don't get hit on entry.
+  const [visitCount] = useState(() => {
+    if (typeof window === 'undefined') return 0;
+    const prev = parseInt(localStorage.getItem('sl_visit_count') || '0', 10) || 0;
+    const next = prev + 1;
+    try { localStorage.setItem('sl_visit_count', String(next)); } catch { /* noop */ }
+    return next;
+  });
 
   // ── Catalog: prefer the API, fall back to the static catalog ──────
   // The fallback keeps the UI populated when the backend isn't reachable
@@ -128,7 +137,8 @@ export function AppProvider({ children }) {
     showToast,
     sourceModal, openSourceModal, closeSourceModal,
     sampleModal, openSampleModal, closeSampleModal,
-  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal]);
+    visitCount,
+  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
