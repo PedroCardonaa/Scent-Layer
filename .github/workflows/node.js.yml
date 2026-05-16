@@ -1,0 +1,31 @@
+# Build verification for the Scent Layer monorepo.
+# Runs on every push and PR to main. Installs all workspace deps, builds
+# the Vite client, and generates the Prisma client for the Express server.
+# No test step yet — add one here when a test suite exists.
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - run: npm ci
+      - name: Build client (Vite)
+        run: npm --workspace client run build
+      - name: Generate Prisma client
+        run: npm --workspace server run build
