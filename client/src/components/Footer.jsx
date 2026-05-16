@@ -25,6 +25,7 @@ export function Footer() {
             <li><Link to="/explore">Top 10 Lists</Link></li>
             <li><Link to="/explore#occasions">Occasion Pairings</Link></li>
             <li><Link to="/explore#101">Fragrance 101</Link></li>
+            <li><Link to="/explore#sourcing">About Sourcing</Link></li>
             <li><Link to="/about">About Scent Layer</Link></li>
           </ul>
         </div>

@@ -10,6 +10,7 @@ const TABS = [
   { key: 'concentration', label: 'Concentration Guide' },
   { key: '101',           label: 'Fragrance 101' },
   { key: 'glossary',      label: 'Glossary' },
+  { key: 'sourcing',      label: 'About Sourcing' },
 ];
 
 const LISTS = {
@@ -156,6 +157,13 @@ export function ExtrasPage() {
   const [glossaryQ, setGlossaryQ] = useState('');
 
   useEffect(() => { document.body.classList.add('dark'); return () => document.body.classList.remove('dark'); }, []);
+
+  // Keep the active tab in sync with the URL hash so footer links like
+  // /explore#sourcing work even when the user is already on /explore.
+  useEffect(() => {
+    const t = hash.replace('#', '');
+    if (t && TABS.find(x => x.key === t)) setTab(t);
+  }, [hash]);
 
   const filteredGlossary = useMemo(() => {
     const q = glossaryQ.trim().toLowerCase();
@@ -306,6 +314,83 @@ export function ExtrasPage() {
                     <div className="glossary-def">{g.def}</div>
                   </div>
                 ))}
+          </div>
+        </div>
+      )}
+
+      {tab === 'sourcing' && (
+        <div className="ext-page" id="sourcing">
+          <div className="ext-intro">
+            <p className="ext-label">How Scent Layer Works</p>
+            <h2 className="ext-title">Sourcing &amp; <em>transparency.</em></h2>
+            <p className="ext-sub">Where the samples come from, how full-bottle sourcing works, and the legal disclaimers that come with operating in this space honestly.</p>
+          </div>
+
+          <div className="sourcing-process">
+            <div className="sourcing-process-col">
+              <p className="sourcing-process-label">Sample orders</p>
+              <h3 className="sourcing-process-title">Decanted from <em>authentic full bottles.</em></h3>
+              <ol className="sourcing-steps-list">
+                <li><span className="sourcing-step-tag">01</span><div><strong>We acquire the full-size bottle</strong> from authorized retailers, brand boutiques, or trusted suppliers. Every source is vetted before we work with them.</div></li>
+                <li><span className="sourcing-step-tag">02</span><div><strong>We authenticate before we pour.</strong> Batch codes are cross-referenced against the manufacturer, packaging is inspected, the scent itself is profile-checked against a reference bottle.</div></li>
+                <li><span className="sourcing-step-tag">03</span><div><strong>We decant into glass atomizers</strong> — 2ml, 5ml, 10ml, or 30ml — in a clean environment. Each sample is labeled with fragrance name, size, and fill date.</div></li>
+                <li><span className="sourcing-step-tag">04</span><div><strong>It ships in protective packaging</strong> within the week, tracked. Samples are recommended to be used within 12 months of fill date for best fidelity.</div></li>
+              </ol>
+            </div>
+            <div className="sourcing-process-col">
+              <p className="sourcing-process-label">Full-bottle sourcing</p>
+              <h3 className="sourcing-process-title">A request-based <em>concierge service.</em></h3>
+              <ol className="sourcing-steps-list">
+                <li><span className="sourcing-step-tag">01</span><div><strong>You tell us what you want</strong> — name, brand, size, concentration, batch year if you care. Anything we can find, we'll quote.</div></li>
+                <li><span className="sourcing-step-tag">02</span><div><strong>We find it through our network</strong> — boutique distributors, parallel-import suppliers, brand-direct contacts. We aim for 20–40% below manufacturer retail, but availability and pricing vary by bottle.</div></li>
+                <li><span className="sourcing-step-tag">03</span><div><strong>We authenticate the specific bottle</strong> before we confirm. If anything looks off, we don't ship it — we either swap for a verified one or refund.</div></li>
+                <li><span className="sourcing-step-tag">04</span><div><strong>You confirm the quote, we ship.</strong> No surprises on price. Full tracking. We stand behind authenticity — full refund if a bottle ever proves inauthentic.</div></li>
+              </ol>
+            </div>
+          </div>
+
+          <div className="disclaimer">
+            <p className="disclaimer-label">Disclaimers</p>
+            <h3 className="disclaimer-title">The honest <em>fine print.</em></h3>
+            <p className="disclaimer-lede">Scent Layer operates in a sampling and concierge-sourcing model. The points below are real and worth understanding before you place an order.</p>
+            <ul className="disclaimer-list">
+              <li>
+                <strong>Trademark notice.</strong>
+                All brand names, fragrance names, and logos referenced on this site are the property of their respective owners. Scent Layer is not affiliated with, endorsed by, sponsored by, or licensed by any of the perfume houses listed. Names are used solely to identify products you may want to sample or source.
+              </li>
+              <li>
+                <strong>Sample decanting.</strong>
+                Sample-size bottles (2ml–30ml) are decanted by Scent Layer from authentic full-size bottles we have acquired and verified. Brands do not sell these sizes themselves — these are not factory pours. The juice inside is unchanged; the bottle is ours.
+              </li>
+              <li>
+                <strong>Sourcing channels.</strong>
+                Full-bottle requests are filled through a mix of authorized retailers, parallel imports, and trusted secondary-market suppliers. This is standard for fragrance concierge work and is how we deliver below-retail pricing. Items sourced outside the manufacturer's authorized channel may not be covered by the manufacturer's warranty, even when fully authentic.
+              </li>
+              <li>
+                <strong>Authenticity guarantee.</strong>
+                Every bottle and sample is authenticated before it ships. If you receive something we sourced and it is not what we represented it to be, contact us — we will refund or replace it. This guarantee is the foundation of our business.
+              </li>
+              <li>
+                <strong>Skin sensitivity.</strong>
+                Fragrance ingredients can cause allergic reactions in a small percentage of users. Before applying any fragrance broadly, test on a small skin area (inner wrist) and wait 24 hours. Discontinue use if irritation occurs. Scent Layer is not liable for individual allergic responses to fragrance ingredients.
+              </li>
+              <li>
+                <strong>Pricing &amp; availability.</strong>
+                Sample pricing is fixed at the size selected at order. Full-bottle sourcing pricing depends on current market availability and is confirmed in writing before any bottle is purchased on your behalf. We will never charge you for a bottle without a confirmed quote you've accepted.
+              </li>
+              <li>
+                <strong>Returns.</strong>
+                Decanted samples cannot be returned once opened, for hygiene reasons. Unopened full-size bottles may be returned within 14 days of delivery for a refund, less shipping. Detailed return terms are confirmed at order time.
+              </li>
+              <li>
+                <strong>Color &amp; performance variation.</strong>
+                Fragrance smells different on every skin chemistry and develops differently depending on temperature, humidity, and time of day. A sample that doesn't work for you doesn't mean it's defective — it means it's not for you. That's exactly what sampling is for.
+              </li>
+            </ul>
+
+            <p className="disclaimer-footer">
+              Questions about a specific bottle, batch year, or process detail not covered here? Email <a href="mailto:scentlayer@gmail.com">scentlayer@gmail.com</a>. We'll answer honestly before any order is placed.
+            </p>
           </div>
         </div>
       )}

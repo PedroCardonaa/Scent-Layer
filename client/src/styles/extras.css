@@ -85,6 +85,39 @@
 .glossary-def { font-size:.76rem; line-height:1.8; color:rgba(245,240,232,.52); }
 .glossary-empty { text-align:center; padding:60px; font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-style:italic; color:rgba(245,240,232,.2); }
 
+/* ===== SOURCING TAB ===== */
+
+/* Two-column process layout (Samples / Full Bottles) */
+.sourcing-process { display:grid; grid-template-columns:1fr 1fr; gap:48px; margin-bottom:64px; }
+.sourcing-process-col { background:rgba(255,255,255,.03); border:1px solid rgba(201,169,110,.1); padding:40px 36px; }
+.sourcing-process-label { font-size:.58rem; letter-spacing:.28em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; }
+.sourcing-process-title { font-family:'Cormorant Garamond',serif; font-size:1.55rem; font-weight:300; line-height:1.25; color:var(--cream); margin-bottom:28px; }
+.sourcing-process-title em { font-style:italic; color:var(--gold); }
+.sourcing-steps-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:18px; }
+.sourcing-steps-list li { display:grid; grid-template-columns:40px 1fr; gap:16px; align-items:start; }
+.sourcing-step-tag { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:300; color:rgba(201,169,110,.45); line-height:1; padding-top:2px; }
+.sourcing-steps-list li > div { font-size:.78rem; line-height:1.85; color:rgba(245,240,232,.55); }
+.sourcing-steps-list strong { display:block; color:var(--cream); font-weight:400; margin-bottom:4px; font-size:.82rem; }
+
+/* Disclaimer block */
+.disclaimer { background:rgba(255,255,255,.02); border:1px solid rgba(201,169,110,.1); padding:48px 44px; }
+.disclaimer-label { font-size:.58rem; letter-spacing:.28em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; }
+.disclaimer-title { font-family:'Cormorant Garamond',serif; font-size:clamp(1.6rem,2.6vw,2.2rem); font-weight:300; color:var(--cream); margin-bottom:18px; }
+.disclaimer-title em { font-style:italic; color:var(--gold); }
+.disclaimer-lede { font-size:.82rem; line-height:1.85; color:rgba(245,240,232,.5); max-width:620px; margin-bottom:36px; }
+.disclaimer-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:20px; }
+.disclaimer-list li { padding:20px 24px; background:rgba(0,0,0,.18); border-left:2px solid rgba(201,169,110,.35); font-size:.76rem; line-height:1.85; color:rgba(245,240,232,.55); }
+.disclaimer-list li strong { display:block; margin-bottom:6px; color:var(--gold); font-weight:400; font-size:.62rem; letter-spacing:.22em; text-transform:uppercase; }
+.disclaimer-footer { margin-top:36px; padding-top:24px; border-top:1px solid rgba(245,240,232,.07); font-size:.76rem; line-height:1.8; color:rgba(245,240,232,.45); }
+.disclaimer-footer a { color:var(--gold); text-decoration:none; border-bottom:1px solid rgba(201,169,110,.3); }
+.disclaimer-footer a:hover { border-bottom-color:var(--gold); }
+
+@media(max-width:900px){
+  .sourcing-process { grid-template-columns:1fr; gap:24px; margin-bottom:48px; }
+  .sourcing-process-col { padding:32px 24px; }
+  .disclaimer { padding:36px 24px; }
+}
+
 @media(max-width:900px){
   .page-hero,.ext-page { padding-left:24px; padding-right:24px; }
   .tab-strip { padding:0 24px; }
