@@ -1,8 +1,13 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { structuredCall } from '../services/anthropic.js';
+import { aiLimiter } from '../middleware/rate-limit.js';
 
 const router = Router();
+
+// Every AI endpoint is rate-limited so a runaway script can't drain
+// the Anthropic budget. 30 requests / 10 min / IP.
+router.use(aiLimiter);
 
 const VOICE = `You are the AI fragrance expert for Scent Layer, a fragrance sampling platform. Users primarily order authentic 2ml, 5ml, 10ml, or 30ml decants to try before committing to a full bottle (full-bottle sourcing exists as a secondary option). Write in an editorial, evocative tone — confident, warm, never corny. Match the brand voice of niche perfumery copy: short sentences, sensory verbs, no marketing speak, no exclamation points. Be specific about notes and occasions. When relevant, gently nudge toward sampling first (especially for polarizing or expensive scents) rather than committing to full bottles blind.`;
 

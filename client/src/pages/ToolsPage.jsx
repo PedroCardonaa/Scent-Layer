@@ -3,7 +3,9 @@ import { useLocation } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '../components/ui/Command.jsx';
 import { useApp } from '../context/AppContext.jsx';
+import { useDocumentMeta } from '../lib/seo.js';
 import { api } from '../lib/api.js';
+import { trackEvent } from '../lib/analytics.js';
 
 const SLOT_COLORS = ['#7a5c40', '#4a6855', '#9a7030', '#503868'];
 
@@ -17,6 +19,11 @@ export function ToolsPage() {
   });
 
   // Theme is now centralized in AppContext — page no longer touches body.dark.
+
+  useDocumentMeta({
+    title: 'AI Fragrance Tools — Layer Builder, Compare, Similar Scents',
+    description: 'AI-powered tools to find your signature scent. Layer fragrances, compare options side-by-side, or discover alternatives to something you already love.',
+  });
 
   return (
     <>
@@ -73,6 +80,7 @@ function LayerBuilder({ fragrances }) {
         top: s.scent.top, heart: s.scent.heart, base: s.scent.base,
       }));
       const r = await api('/api/ai/layer', { method: 'POST', body: { fragrances: payload } });
+      trackEvent('layer_analyze', { count: payload.length });
       setResult(r);
     } catch (e) {
       setError(e.message || 'Analysis failed');
@@ -268,6 +276,7 @@ function Compare({ fragrances }) {
     try {
       const shape = (f) => ({ name: f.name, brand: f.brand, family: f.family, top: f.top, heart: f.heart, base: f.base });
       const r = await api('/api/ai/compare', { method: 'POST', body: { a: shape(a), b: shape(b) } });
+      trackEvent('compare_run', { a: a.name, b: b.name });
       setVerdict(r.verdict);
     } catch (e) {
       setError(e.message || 'Comparison failed');
@@ -367,6 +376,7 @@ function Similar() {
     setLoading(true); setRecs(null); setError(null); setEcho(val);
     try {
       const r = await api('/api/ai/similar', { method: 'POST', body: { fragrance: val } });
+      trackEvent('similar_search', { query: val });
       setRecs(r.recommendations);
     } catch (e) {
       setError(e.message || 'Could not find alternatives');

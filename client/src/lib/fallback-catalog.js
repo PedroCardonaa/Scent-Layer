@@ -6,10 +6,14 @@
 //   - The frontend is deployed standalone (e.g., Vercel) without a backend
 //
 // The real source of truth is server/prisma/seed.js — keep these in sync.
+//
+// `imageUrl` is a per-fragrance Unsplash placeholder. Real product
+// photography goes here once you have it. The FragrancePage falls back to
+// a family-based hero photo when imageUrl is null.
 
 export const FALLBACK_CATALOG = [
   { id: 1,  name: 'Aventus',              brand: 'Creed',               type: 'niche',    family: 'Fresh',    top: 'Pineapple, Bergamot, Apple',   heart: 'Birch, Patchouli, Rose',     base: 'Musk, Oak Moss, Ambergris',   season: ['Spring','Summer'],                  time: ['Daytime','Evening'],                            mood: ['Confident','Bold'],     bg: 'p-bg-1',  badge: 'Iconic' },
-  { id: 2,  name: 'Baccarat Rouge 540',   brand: 'MFK',                 type: 'niche',    family: 'Oriental', top: 'Jasmine, Saffron',             heart: 'Amberwood, Ambergris',       base: 'Fir Resin, Cedar',            season: ['Fall','Winter'],                    time: ['Evening','Night'],                              mood: ['Romantic','Confident'], bg: 'p-bg-4',  badge: 'SOTW' },
+  { id: 2,  name: 'Baccarat Rouge 540',   brand: 'MFK',                 type: 'niche',    family: 'Oriental', top: 'Jasmine, Saffron',             heart: 'Amberwood, Ambergris',       base: 'Fir Resin, Cedar',            season: ['Fall','Winter'],                    time: ['Evening','Night'],                              mood: ['Romantic','Confident'], bg: 'p-bg-4',  badge: 'SOTW', imageUrl: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=1200&h=1200&fit=crop&q=80' },
   { id: 3,  name: 'Blanche',              brand: 'Byredo',              type: 'niche',    family: 'Floral',   top: 'Aldehydes, Pink Pepper',       heart: 'Peony, Rose',                base: 'Sandalwood, Musk',            season: ['Spring','Summer'],                  time: ['Morning','Daytime'],                            mood: ['Minimal','Relaxed'],    bg: 'p-bg-2',  badge: null },
   { id: 4,  name: 'Santal 33',            brand: 'Le Labo',             type: 'niche',    family: 'Woody',    top: 'Cardamom, Iris',               heart: 'Violet, Ambrette Seeds',     base: 'Sandalwood, Cedar, Leather',  season: ['Fall','Winter'],                    time: ['Daytime','Evening'],                            mood: ['Confident','Relaxed'],  bg: 'p-bg-6',  badge: 'Bestseller' },
   { id: 5,  name: 'Replica — Jazz Club',  brand: 'Maison Margiela',     type: 'designer', family: 'Oriental', top: 'Rum, Bergamot',                heart: 'Tobacco, Clary Sage',        base: 'Vanilla, Musk',               season: ['Fall','Winter'],                    time: ['Evening','Night'],                              mood: ['Bold','Romantic'],      bg: 'p-bg-8',  badge: null },

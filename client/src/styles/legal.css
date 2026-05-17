@@ -1,0 +1,100 @@
+/* ===== LEGAL PAGES (/privacy, /terms) =====
+   Theme-adaptive, plain editorial reading layout. */
+
+.legal-page {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 130px 32px 80px;
+  color: var(--fg);
+}
+
+.legal-eyebrow {
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 18px;
+}
+
+.legal-title {
+  font-family: 'Lora', serif;
+  font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--fg);
+  margin-bottom: 18px;
+}
+.legal-title em { font-style: italic; color: var(--gold); }
+
+.legal-effective {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+  margin-bottom: 48px;
+}
+
+.legal-section { margin-bottom: 40px; }
+.legal-h2 {
+  font-family: 'Lora', serif;
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: var(--fg);
+  margin-bottom: 12px;
+}
+.legal-section p {
+  font-size: 0.92rem;
+  line-height: 1.85;
+  color: var(--fg-soft);
+  margin-bottom: 14px;
+}
+.legal-section p:last-child { margin-bottom: 0; }
+.legal-section a {
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.3);
+}
+.legal-section a:hover { border-bottom-color: var(--gold); }
+.legal-section code {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.82em;
+  background: var(--surface-soft);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+.legal-list { margin: 8px 0 14px 1.2rem; padding: 0; }
+.legal-list li {
+  font-size: 0.92rem;
+  line-height: 1.85;
+  color: var(--fg-soft);
+  margin-bottom: 8px;
+  list-style: none;
+  position: relative;
+  padding-left: 1.2rem;
+}
+.legal-list li::before {
+  content: '·';
+  color: var(--gold);
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+.legal-list strong { color: var(--fg); font-weight: 500; }
+
+.legal-back {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid var(--hairline);
+  font-size: 0.84rem;
+}
+.legal-back a {
+  color: var(--fg-soft);
+  text-decoration: none;
+  transition: color 0.25s;
+}
+.legal-back a:hover { color: var(--gold); }
+
+@media (max-width: 600px) {
+  .legal-page { padding: 110px 20px 60px; }
+}

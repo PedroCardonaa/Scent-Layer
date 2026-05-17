@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
+import { trackEvent } from '../lib/analytics.js';
 
 function ReferralBlock({ showToast }) {
   async function joinWaitlist() {
@@ -156,6 +157,7 @@ function QuizPanel({ savedResult, onSave, openSampleModal, openSourceModal }) {
     setPhase('thinking');
     try {
       const r = await api('/api/ai/quiz', { method: 'POST', body: { questions: QUESTIONS.map(q => q.q), answers: next } });
+      trackEvent('quiz_complete', { result: r.name });
       setResult(r);
       setPhase('result');
       onSave(r).catch(() => {});

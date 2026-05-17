@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
+import { trackEvent } from '../lib/analytics.js';
 
 /**
  * Slim, high-visibility newsletter capture for the top of the homepage.
@@ -19,6 +20,7 @@ export function NewsletterStrip() {
     setSubmitting(true);
     try {
       await api('/api/waitlist', { method: 'POST', body: { email, type: 'general' } });
+      trackEvent('newsletter_signup', { source: 'newsletter_strip' });
       setDone(true);
       setEmail('');
       showToast('<span>You\'re on the list.</span> First drop, first access.');

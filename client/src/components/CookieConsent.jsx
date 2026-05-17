@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext.jsx';
 
 /**
@@ -20,6 +21,7 @@ export function CookieConsent() {
       <p className="cookie-consent-body">
         We use cookies (Google Analytics) to understand which fragrances and tools resonate with people.
         It helps us pick what to source next. You can decline — nothing else on the site depends on it.
+        Details in our <Link to="/privacy">privacy policy</Link>.
       </p>
       <div className="cookie-consent-actions">
         <button type="button" className="cookie-consent-accept" onClick={() => setAnalyticsConsent('granted')}>

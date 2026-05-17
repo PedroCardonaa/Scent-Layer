@@ -6,6 +6,7 @@ import { ProductCard } from '../components/ProductCard.jsx';
 import { NumberTicker } from '../components/ui/NumberTicker.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useScrollReveal } from '../hooks/useScrollReveal.js';
+import { useDocumentMeta } from '../lib/seo.js';
 
 const SIZES = [
   { ml: 5,   sprays: 85   },
@@ -49,6 +50,11 @@ export function ShopPage() {
   const [search, setSearch] = useState('');
 
   // Theme is now centralized in AppContext — page no longer touches body.dark.
+
+  useDocumentMeta({
+    title: 'Catalog · Niche & Designer Fragrances',
+    description: 'Browse the curated Scent Layer catalog. Filter by family, season, time of day, or mood. Sample in 2ml–30ml or source a full bottle.',
+  });
 
   const days = Math.floor(bottleSprays / Math.max(1, perDay));
   const lifestyle = LIFESTYLE.find(l => days <= l.maxDays) ?? LIFESTYLE[LIFESTYLE.length - 1];

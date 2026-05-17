@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
+import { trackEvent } from '../lib/analytics.js';
 
 const SESSION_KEY = 'sl_exit_intent_shown';
 
@@ -74,6 +75,7 @@ export function ExitIntentModal() {
     setSubmitting(true);
     try {
       await api('/api/waitlist', { method: 'POST', body: { email, type: 'general' } });
+      trackEvent('newsletter_signup', { source: 'exit_intent' });
       close();
       showToast('<span>Locked in.</span> First-drop access reserved.');
     } catch (err) {

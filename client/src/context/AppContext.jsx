@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { toast } from 'sonner';
 import { api, getToken, setToken } from '../lib/api.js';
 import { FALLBACK_CATALOG } from '../lib/fallback-catalog.js';
-import { initGA } from '../lib/analytics.js';
+import { initGA, trackEvent } from '../lib/analytics.js';
 
 const AppContext = createContext(null);
 
@@ -141,12 +141,14 @@ export function AppProvider({ children }) {
   const login = useCallback(async (email, password) => {
     const d = await api('/api/auth/login', { method: 'POST', body: { email, password } });
     setToken(d.token); setUser(d.user); await refreshWishlist();
+    trackEvent('login');
     return d.user;
   }, [refreshWishlist]);
 
   const signup = useCallback(async (email, password) => {
     const d = await api('/api/auth/signup', { method: 'POST', body: { email, password } });
     setToken(d.token); setUser(d.user);
+    trackEvent('sign_up');
     // Migrate any guest wishlist on signup
     try {
       const local = JSON.parse(localStorage.getItem('sl_wishlist_local') || '[]');
@@ -177,12 +179,14 @@ export function AppProvider({ children }) {
         if (isSaved) await api(`/api/wishlist/${id}`, { method: 'DELETE', auth: true });
         else        await api(`/api/wishlist/${id}`, { method: 'POST',   auth: true });
         setWishlistIds(p => isSaved ? p.filter(x => x !== id) : [...p, id]);
+        if (!isSaved) trackEvent('wishlist_add', { fragrance_id: id });
         showToast(isSaved ? 'Removed from wishlist' : '<span>Saved</span> to wishlist ♡');
       } catch (e) { showToast(e.message); }
     } else {
       const next = isSaved ? wishlistIds.filter(x => x !== id) : [...wishlistIds, id];
       setWishlistIds(next);
       localStorage.setItem('sl_wishlist_local', JSON.stringify(next));
+      if (!isSaved) trackEvent('wishlist_add', { fragrance_id: id, guest: true });
       showToast(isSaved ? 'Removed from wishlist' : '<span>Saved</span> to wishlist ♡');
     }
   }, [user, wishlistIds, showToast]);

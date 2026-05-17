@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
+import { trackEvent } from '../lib/analytics.js';
 
 const SAMPLE_SIZES = [
   { ml: '2ml',  label: '~30 sprays',  desc: 'Try it once or twice' },
@@ -51,6 +52,7 @@ export function SampleModal() {
           message: form.message || null,
         },
       });
+      trackEvent('sample_order', { size, fragrance: form.perfume });
       closeSampleModal();
       showToast(`<span>Sample ordered!</span> ${size} of ${form.perfume} — we'll confirm by email.`);
       setForm({ name: '', email: '', perfume: '', message: '' });

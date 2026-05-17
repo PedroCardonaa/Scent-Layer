@@ -12,6 +12,7 @@ import { ProductRevealCard } from '../components/ui/ProductRevealCard.jsx';
 import { GlowCard } from '../components/ui/GlowCard.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useScrollReveal } from '../hooks/useScrollReveal.js';
+import { useDocumentMeta } from '../lib/seo.js';
 import { api } from '../lib/api.js';
 
 const FILTERS = [
@@ -32,6 +33,11 @@ export function HomePage() {
   }, [fragrances, filter]);
 
   useScrollReveal('.product-card,.tool-card,.note-card,.mission-value,.proof-card,.reveal', [visible.length]);
+
+  useDocumentMeta({
+    title: 'Wear Your Story',
+    description: 'Curated niche and designer fragrance samples. Discover your scent in 2ml, 5ml, 10ml, or 30ml decants — authenticated, decanted, delivered. Source full bottles at a discount.',
+  });
 
   // Theme is now centralized in AppContext — page no longer touches body.dark.
 
@@ -99,7 +105,7 @@ export function HomePage() {
               base: 'Fir Resin, Cedar',
               season: ['Fall', 'Winter'],
             }}
-            image="https://images.unsplash.com/photo-1541643600914-78b084683601?w=900&h=900&fit=crop&q=80"
+            image="https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=900&h=900&fit=crop&q=80"
             description="The fragrance that redefined modern luxury. An incandescent amber floral — jasmine and saffron over a cedar and ambergris base that glows for hours on skin."
             onOrderSample={() => openSampleModal('Baccarat Rouge 540 — Maison Francis Kurkdjian')}
             onSourceBottle={() => openSourceModal('Baccarat Rouge 540 — Maison Francis Kurkdjian')}

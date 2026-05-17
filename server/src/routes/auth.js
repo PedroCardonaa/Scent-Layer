@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { prisma } from '../db.js';
 import { signToken, requireAuth } from '../middleware/auth.js';
+import { authLimiter } from '../middleware/rate-limit.js';
 
 const router = Router();
 
@@ -11,7 +12,7 @@ const credentialsSchema = z.object({
   password: z.string().min(8).max(200),
 });
 
-router.post('/signup', async (req, res, next) => {
+router.post('/signup', authLimiter, async (req, res, next) => {
   try {
     const { email, password } = credentialsSchema.parse(req.body);
     const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
@@ -25,7 +26,7 @@ router.post('/signup', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', authLimiter, async (req, res, next) => {
   try {
     const { email, password } = credentialsSchema.parse(req.body);
     const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });

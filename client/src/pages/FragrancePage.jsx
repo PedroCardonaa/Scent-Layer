@@ -4,6 +4,7 @@ import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
 import { ProductCard } from '../components/ProductCard.jsx';
 import { useApp } from '../context/AppContext.jsx';
+import { useDocumentMeta } from '../lib/seo.js';
 
 // One curated Unsplash hero photo per fragrance family. Replace with real
 // brand-commissioned imagery once available. All four URLs are verified
@@ -24,14 +25,13 @@ export function FragrancePage() {
   const numericId = Number(id);
   const fragrance = fragrances.find(f => f.id === numericId);
 
-  // SEO basics — set <title> while on this page
-  useEffect(() => {
-    if (fragrance) {
-      const prev = document.title;
-      document.title = `${fragrance.name} — ${fragrance.brand} · Scent Layer`;
-      return () => { document.title = prev; };
-    }
-  }, [fragrance]);
+  // Rich SEO meta — title, OG description, OG image. Uses the family hero
+  // photo as the OG image so shares look right in iMessage / Discord / etc.
+  useDocumentMeta(fragrance ? {
+    title: `${fragrance.name} — ${fragrance.brand}`,
+    description: `${fragrance.name} by ${fragrance.brand}. ${fragrance.family} composition with ${fragrance.top}. Order a 2ml–30ml sample or source the full bottle.`,
+    type: 'product',
+  } : { title: 'Not Found' });
 
   // Similar = same family, exclude self, up to 3. If fewer, fill with same-mood matches.
   const similar = useMemo(() => {
@@ -73,7 +73,8 @@ export function FragrancePage() {
 
   const label = `${fragrance.name} — ${fragrance.brand}`;
   const saved = wishlistIds.includes(fragrance.id);
-  const heroImage = FAMILY_IMAGE[fragrance.family] ?? FALLBACK_IMAGE;
+  // Per-fragrance imageUrl wins; family-based hero is the fallback.
+  const heroImage = fragrance.imageUrl ?? FAMILY_IMAGE[fragrance.family] ?? FALLBACK_IMAGE;
   const synthDescription = fragrance.description ?? buildSynthDescription(fragrance);
 
   return (

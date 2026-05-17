@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { prisma } from '../db.js';
-import { sendSourceNotification } from '../services/email.js';
+import { sendSourceNotification, sendCustomerConfirmation } from '../services/email.js';
+import { submitLimiter } from '../middleware/rate-limit.js';
 
 const router = Router();
 
@@ -19,7 +20,7 @@ const schema = z.object({
   { message: `Sample requests must pick a size from ${SAMPLE_SIZES.join(', ')}`, path: ['size'] }
 );
 
-router.post('/', async (req, res, next) => {
+router.post('/', submitLimiter, async (req, res, next) => {
   try {
     const data = schema.parse(req.body);
     const request = await prisma.sourceRequest.create({
@@ -32,7 +33,9 @@ router.post('/', async (req, res, next) => {
         size: data.size ?? null,
       },
     });
-    sendSourceNotification(request).catch(e => console.error('[email]', e));
+    // Fire-and-forget both emails so DB save isn't blocked by SMTP latency.
+    sendSourceNotification(request).catch(e => console.error('[email:notify]', e));
+    sendCustomerConfirmation(request).catch(e => console.error('[email:confirm]', e));
     res.json({ ok: true });
   } catch (err) { next(err); }
 });

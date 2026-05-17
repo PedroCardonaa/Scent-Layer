@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /profile
+Disallow: /login
+Disallow: /signup
+Disallow: /api/
+
+Sitemap: https://scentlayer.com/sitemap.xml

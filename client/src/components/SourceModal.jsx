@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
+import { trackEvent } from '../lib/analytics.js';
 
 export function SourceModal() {
   const { sourceModal, closeSourceModal, showToast } = useApp();
@@ -27,8 +28,9 @@ export function SourceModal() {
     try {
       await api('/api/source', {
         method: 'POST',
-        body: { name: form.name, email: form.email, fragrance: form.perfume || null, message: form.message || null },
+        body: { kind: 'bottle', name: form.name, email: form.email, fragrance: form.perfume || null, message: form.message || null },
       });
+      trackEvent('source_request', { fragrance: form.perfume || '' });
       closeSourceModal();
       showToast('<span>Request sent!</span> We\'ll be in touch within 24hrs.');
       setForm({ name: '', email: '', perfume: '', message: '' });
