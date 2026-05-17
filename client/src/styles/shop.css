@@ -5,14 +5,14 @@
    shared.css and swap via `body.dark`. */
 .shop-hero { padding: 140px 60px 60px; border-bottom: 1px solid var(--hairline); }
 .shop-hero-label { font-size:.62rem; letter-spacing:.3em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; }
-.shop-hero-title { font-family:'Italiana',serif; font-size:clamp(2.4rem,5vw,5rem); font-weight:300; line-height:1.05; margin-bottom:16px; color: var(--fg); }
+.shop-hero-title { font-family:'Lora',serif; font-size:clamp(2.4rem,5vw,5rem); font-weight:300; line-height:1.05; margin-bottom:16px; color: var(--fg); }
 .shop-hero-title em { font-style:italic; color:var(--gold); }
 .shop-hero-sub { font-size:.82rem; color:var(--fg-soft); max-width:400px; line-height:1.8; }
 
 /* ── SPRAY CALCULATOR ── */
 .calc-section { padding: 60px; background: rgba(201,169,110,0.06); border-bottom: 1px solid var(--hairline); }
 .calc-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:36px; flex-wrap:wrap; gap:16px; }
-.calc-title { font-family:'Italiana',serif; font-size:clamp(1.6rem,3vw,2.4rem); font-weight:300; color:var(--fg); }
+.calc-title { font-family:'Lora',serif; font-size:clamp(1.6rem,3vw,2.4rem); font-weight:300; color:var(--fg); }
 .calc-title em { font-style:italic; color:var(--gold); }
 .calc-sub { font-size:.72rem; color:var(--fg-dim); margin-top:6px; }
 .calc-body { display:grid; grid-template-columns:1fr 1fr; gap:2px; }
@@ -24,7 +24,7 @@
 .calc-row-label { font-size:.6rem; letter-spacing:.24em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; display:block; }
 
 .size-pills { display:flex; gap:8px; flex-wrap:wrap; }
-.size-pill { padding:10px 18px; background:var(--surface-soft); border:1px solid var(--hairline); font-family:'Manrope',sans-serif; font-size:.72rem; color:var(--fg-soft); cursor:none; transition:all .25s; display:flex; flex-direction:column; align-items:center; gap:3px; min-width:60px; }
+.size-pill { padding:10px 18px; background:var(--surface-soft); border:1px solid var(--hairline); font-family:'Inter',sans-serif; font-size:.72rem; color:var(--fg-soft); cursor:none; transition:all .25s; display:flex; flex-direction:column; align-items:center; gap:3px; min-width:60px; }
 .size-pill .ml { font-size:.9rem; font-weight:400; color:var(--fg); }
 .size-pill .approx { font-size:.55rem; letter-spacing:.1em; color:var(--fg-dim); }
 .size-pill.active { background:rgba(201,169,110,.15); border-color:var(--gold); }
@@ -35,14 +35,14 @@
 .spray-slider { flex:1; -webkit-appearance:none; appearance:none; height:2px; background:var(--hairline); outline:none; border-radius:2px; }
 .spray-slider::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--gold); cursor:pointer; box-shadow:0 0 0 3px rgba(201,169,110,.2); }
 .spray-slider::-moz-range-thumb { width:18px; height:18px; border-radius:50%; background:var(--gold); cursor:pointer; border:none; }
-.spray-val { font-family:'Italiana',serif; font-size:2rem; font-weight:300; color:var(--gold); min-width:36px; text-align:center; }
+.spray-val { font-family:'Lora',serif; font-size:2rem; font-weight:300; color:var(--gold); min-width:36px; text-align:center; }
 .spray-val-label { font-size:.6rem; color:var(--fg-dim); letter-spacing:.1em; }
 
-.calc-duration { font-family:'Italiana',serif; font-size:3.5rem; font-weight:300; line-height:1; color:var(--gold); margin-bottom:6px; }
-.calc-context { font-family:'Italiana',serif; font-size:1.3rem; font-style:italic; color:var(--fg); margin-bottom:20px; line-height:1.3; }
+.calc-duration { font-family:'Lora',serif; font-size:3.5rem; font-weight:300; line-height:1; color:var(--gold); margin-bottom:6px; }
+.calc-context { font-family:'Lora',serif; font-size:1.3rem; font-style:italic; color:var(--fg); margin-bottom:20px; line-height:1.3; }
 .calc-breakdown { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:24px; }
 .calc-stat { background:var(--surface-soft); border:1px solid var(--hairline); padding:14px; text-align:center; }
-.calc-stat-val { font-family:'Italiana',serif; font-size:1.4rem; font-weight:300; color:var(--fg); margin-bottom:4px; }
+.calc-stat-val { font-family:'Lora',serif; font-size:1.4rem; font-weight:300; color:var(--fg); margin-bottom:4px; }
 .calc-stat-label { font-size:.55rem; letter-spacing:.16em; text-transform:uppercase; color:var(--fg-soft); }
 .calc-lifestyle { font-size:.78rem; line-height:1.8; color:var(--fg-soft); padding:16px; background:rgba(201,169,110,.06); border-left:2px solid var(--gold); }
 
@@ -52,14 +52,14 @@
 .finder-filters { display:grid; grid-template-columns:repeat(4,1fr); gap:28px; margin-bottom:24px; }
 .finder-group-label { font-size:.58rem; letter-spacing:.22em; text-transform:uppercase; color:var(--fg-dim); margin-bottom:10px; }
 .chips { display:flex; flex-wrap:wrap; gap:6px; }
-.chip { padding:6px 14px; background:var(--surface-soft); border:1px solid var(--hairline); font-size:.64rem; color:var(--fg-soft); cursor:none; transition:all .25s; font-family:'Manrope',sans-serif; letter-spacing:.08em; }
+.chip { padding:6px 14px; background:var(--surface-soft); border:1px solid var(--hairline); font-size:.64rem; color:var(--fg-soft); cursor:none; transition:all .25s; font-family:'Inter',sans-serif; letter-spacing:.08em; }
 .chip.active { background:rgba(201,169,110,.15); border-color:var(--gold); color:var(--gold); }
 .chip:hover:not(.active) { border-color:var(--gold); color:var(--fg); }
 .finder-search-row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
-.finder-search { flex:1; min-width:200px; background:var(--surface-soft); border:1px solid var(--hairline); color:var(--fg); font-family:'Manrope',sans-serif; font-size:.85rem; padding:13px 20px; outline:none; transition:border-color .3s; }
+.finder-search { flex:1; min-width:200px; background:var(--surface-soft); border:1px solid var(--hairline); color:var(--fg); font-family:'Inter',sans-serif; font-size:.85rem; padding:13px 20px; outline:none; transition:border-color .3s; }
 .finder-search:focus { border-color:var(--gold); }
 .finder-search::placeholder { color:var(--fg-faint); }
-.finder-clear { padding:13px 22px; background:none; border:1px solid var(--hairline); color:var(--fg-soft); font-family:'Manrope',sans-serif; font-size:.62rem; letter-spacing:.16em; text-transform:uppercase; cursor:none; transition:all .25s; white-space:nowrap; }
+.finder-clear { padding:13px 22px; background:none; border:1px solid var(--hairline); color:var(--fg-soft); font-family:'Inter',sans-serif; font-size:.62rem; letter-spacing:.16em; text-transform:uppercase; cursor:none; transition:all .25s; white-space:nowrap; }
 .finder-clear:hover { border-color:var(--gold); color:var(--gold); }
 .active-filters { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; min-height:20px; }
 .active-chip { display:inline-flex; align-items:center; gap:6px; padding:4px 10px 4px 12px; background:rgba(201,169,110,.12); border:1px solid rgba(201,169,110,.3); font-size:.62rem; color:var(--gold); }
@@ -72,7 +72,7 @@
 .shop-product-grid .product-name { color:var(--fg); }
 .shop-product-grid .product-family { color:var(--fg-dim); }
 .shop-product-grid .source-btn { color:var(--fg); }
-.no-results { grid-column:span 4; text-align:center; padding:80px; font-family:'Italiana',serif; font-size:1.8rem; font-style:italic; color:var(--fg-faint); }
+.no-results { grid-column:span 4; text-align:center; padding:80px; font-family:'Lora',serif; font-size:1.8rem; font-style:italic; color:var(--fg-faint); }
 
 @media(max-width:900px) {
   .shop-hero { padding:120px 24px 48px; }

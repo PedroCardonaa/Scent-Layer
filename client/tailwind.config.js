@@ -20,8 +20,8 @@ export default {
         muted: '#b0a090',
       },
       fontFamily: {
-        serif: ['"Italiana"', 'serif'],
-        sans: ['"Manrope"', 'sans-serif'],
+        serif: ['"Lora"', 'serif'],
+        sans: ['"Inter"', 'sans-serif'],
       },
       keyframes: {
         'fade-up': {

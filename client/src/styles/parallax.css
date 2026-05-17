@@ -62,7 +62,7 @@
 }
 
 .parallax__title {
-  font-family: 'Italiana', serif;
+  font-family: 'Lora', serif;
   font-size: clamp(6rem, 18vw, 18rem);
   font-weight: 300;
   font-style: italic;
