@@ -20,8 +20,8 @@ export default {
         muted: '#b0a090',
       },
       fontFamily: {
-        serif: ['"Cormorant Garamond"', 'serif'],
-        sans: ['"Jost"', 'sans-serif'],
+        serif: ['"Italiana"', 'serif'],
+        sans: ['"Manrope"', 'sans-serif'],
       },
       keyframes: {
         'fade-up': {
