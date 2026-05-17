@@ -1,0 +1,294 @@
+/* ===== STORY PAGE (brand manifesto) =====
+   Adapted from 21st.dev's Digital Serenity. Hardcoded dark — this is an
+   intentional brand-mood moment that doesn't follow the theme toggle. */
+
+.story-page {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1210 0%, #000 50%, #2d2420 100%);
+  color: var(--cream);
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+}
+
+.story-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.story-line {
+  stroke: rgba(201, 169, 110, 0.35);
+  stroke-width: 0.5;
+  opacity: 0;
+  stroke-dasharray: 5 5;
+  stroke-dashoffset: 1000;
+  animation: story-grid-draw 2s ease-out forwards;
+}
+.story-dot {
+  fill: var(--gold);
+  opacity: 0;
+  animation: story-pulse-glow 3s ease-in-out infinite;
+}
+
+/* Tiny logo top-left so users can navigate back home */
+.story-logo {
+  position: absolute;
+  top: 24px;
+  left: 32px;
+  z-index: 10;
+  font-family: 'Lora', serif;
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--cream);
+  text-decoration: none;
+  opacity: 0;
+  animation: story-word-appear 1.4s ease-out forwards 4.2s;
+  transition: color 0.3s;
+}
+.story-logo:hover { color: var(--gold); }
+
+/* Corner accents */
+.story-corner {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(201, 169, 110, 0.2);
+  opacity: 0;
+  animation: story-word-appear 1s ease-out forwards;
+}
+.story-corner--tl { top: 16px; left: 16px; }
+.story-corner--tr { top: 16px; right: 16px; }
+.story-corner--bl { bottom: 16px; left: 16px; }
+.story-corner--br { bottom: 16px; right: 16px; }
+.story-corner span {
+  position: absolute;
+  width: 8px; height: 8px;
+  background: var(--gold);
+  opacity: 0.4;
+  border-radius: 50%;
+}
+.story-corner--tl span { top: 0;     left: 0; }
+.story-corner--tr span { top: 0;     right: 0; }
+.story-corner--bl span { bottom: 0;  left: 0; }
+.story-corner--br span { bottom: 0;  right: 0; }
+@media (min-width: 640px) {
+  .story-corner--tl { top: 24px; left: 24px; }
+  .story-corner--tr { top: 24px; right: 24px; }
+  .story-corner--bl { bottom: 24px; left: 24px; }
+  .story-corner--br { bottom: 24px; right: 24px; }
+}
+@media (min-width: 768px) {
+  .story-corner--tl { top: 32px; left: 32px; }
+  .story-corner--tr { top: 32px; right: 32px; }
+  .story-corner--bl { bottom: 32px; left: 32px; }
+  .story-corner--br { bottom: 32px; right: 32px; }
+}
+
+/* Floating particles */
+.story-float {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--gold);
+  border-radius: 50%;
+  opacity: 0;
+  animation: story-float 4s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+/* Layout */
+.story-content {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 80px 24px 60px;
+}
+@media (min-width: 640px) { .story-content { padding: 96px 32px 80px; } }
+@media (min-width: 768px) { .story-content { padding: 128px 64px 96px; } }
+
+.story-top, .story-bottom { text-align: center; }
+
+.story-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 300;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.85;
+}
+@media (max-width: 640px) { .story-eyebrow { font-size: 0.66rem; } }
+
+.story-divider {
+  margin: 16px auto 0;
+  width: 56px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.35;
+}
+.story-bottom .story-divider { margin: 0 auto 16px; }
+
+.story-center {
+  position: relative;
+  text-align: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.story-headline {
+  font-family: 'Lora', serif;
+  font-size: clamp(2.4rem, 6vw, 5rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.05;
+  color: var(--cream);
+  letter-spacing: -0.01em;
+  position: relative;
+}
+.story-headline-row { margin-bottom: 20px; }
+@media (min-width: 768px) { .story-headline-row { margin-bottom: 28px; } }
+
+.story-subheadline {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1.05rem, 2.5vw, 1.6rem);
+  font-style: normal;
+  font-weight: 300;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  color: rgba(245, 240, 232, 0.65);
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.story-line-left, .story-line-right {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 1px;
+  background: var(--gold);
+  transform: translateY(-50%);
+  opacity: 0;
+}
+.story-line-left  { left:  -22px; }
+.story-line-right { right: -22px; }
+@media (min-width: 640px) {
+  .story-line-left  { left:  -34px; width: 18px; }
+  .story-line-right { right: -34px; width: 18px; }
+}
+
+.story-word {
+  display: inline-block;
+  opacity: 0;
+  margin: 0 0.18em;
+  transition: color 0.3s, transform 0.3s;
+  will-change: opacity, transform, filter;
+}
+.story-word:hover {
+  color: var(--gold-light);
+  transform: translateY(-2px);
+}
+
+.story-dots {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  opacity: 0;
+}
+.story-dots span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0.5;
+}
+.story-dots span:nth-child(2) { opacity: 0.8; }
+
+.story-cta {
+  display: inline-block;
+  margin-top: 28px;
+  padding: 12px 28px;
+  border: 1px solid rgba(201, 169, 110, 0.4);
+  background: rgba(201, 169, 110, 0.06);
+  color: var(--cream);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  text-decoration: none;
+  opacity: 0;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+.story-cta:hover {
+  background: var(--gold);
+  color: var(--deep2);
+  border-color: var(--gold);
+}
+
+/* Cursor glow */
+.story-glow {
+  position: fixed;
+  pointer-events: none;
+  border-radius: 9999px;
+  width: 240px; height: 240px;
+  filter: blur(40px);
+  background-image: radial-gradient(circle, rgba(201, 169, 110, 0.18), rgba(201, 169, 110, 0.08), transparent 70%);
+  transform: translate(-50%, -50%);
+  will-change: left, top, opacity;
+  transition: left 70ms linear, top 70ms linear, opacity 300ms ease-out;
+  z-index: 1;
+}
+@media (min-width: 640px) { .story-glow { width: 320px; height: 320px; filter: blur(60px); } }
+@media (min-width: 768px) { .story-glow { width: 384px; height: 384px; filter: blur(80px); } }
+
+/* Click ripple */
+.story-ripple {
+  position: fixed;
+  width: 4px; height: 4px;
+  background: rgba(232, 213, 168, 0.6);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: story-pulse-glow 1s ease-out forwards;
+  z-index: 9999;
+}
+
+/* ── Keyframes ── */
+@keyframes story-word-appear {
+  0%   { opacity: 0; transform: translateY(30px) scale(0.8); filter: blur(10px); }
+  50%  { opacity: 0.8; transform: translateY(10px) scale(0.95); filter: blur(2px); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+@keyframes story-grid-draw {
+  0%   { stroke-dashoffset: 1000; opacity: 0; }
+  50%  { opacity: 0.3; }
+  100% { stroke-dashoffset: 0; opacity: 0.15; }
+}
+@keyframes story-pulse-glow {
+  0%, 100% { opacity: 0.1; transform: scale(1); }
+  50%      { opacity: 0.4; transform: scale(1.15); }
+}
+@keyframes story-float {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.2; }
+  25%      { transform: translateY(-10px) translateX(5px); opacity: 0.7; }
+  50%      { transform: translateY(-5px)  translateX(-3px); opacity: 0.5; }
+  75%      { transform: translateY(-15px) translateX(7px); opacity: 0.9; }
+}
+
+/* Respect reduced motion — show everything in its final state with no animation. */
+@media (prefers-reduced-motion: reduce) {
+  .story-word { opacity: 1 !important; transform: none !important; filter: none !important; animation: none !important; }
+  .story-line { opacity: 0.15 !important; stroke-dashoffset: 0 !important; animation: none !important; }
+  .story-dot, .story-float, .story-corner, .story-logo, .story-cta, .story-dots, .story-line-left, .story-line-right { opacity: 1 !important; animation: none !important; }
+  .story-glow { display: none; }
+  .story-ripple { display: none; }
+}

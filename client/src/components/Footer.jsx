@@ -27,6 +27,7 @@ export function Footer() {
             <li><Link to="/explore#101">Fragrance 101</Link></li>
             <li><Link to="/explore#sourcing">About Sourcing</Link></li>
             <li><Link to="/about">About Scent Layer</Link></li>
+            <li><Link to="/story">The Story</Link></li>
           </ul>
         </div>
         <div className="footer-col">

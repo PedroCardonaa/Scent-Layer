@@ -15,6 +15,7 @@ import { ToolsPage } from './pages/ToolsPage.jsx';
 import { ProfilePage } from './pages/ProfilePage.jsx';
 import { ExtrasPage } from './pages/ExtrasPage.jsx';
 import { FragrancePage } from './pages/FragrancePage.jsx';
+import { StoryPage } from './pages/StoryPage.jsx';
 import { PrivacyPage, TermsPage } from './pages/LegalPage.jsx';
 import { LoginPage } from './pages/LoginPage.jsx';
 import { SignupPage } from './pages/SignupPage.jsx';
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="/explore" element={<ExtrasPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/fragrance/:id" element={<FragrancePage />} />
+          <Route path="/story" element={<StoryPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/login" element={<LoginPage />} />
