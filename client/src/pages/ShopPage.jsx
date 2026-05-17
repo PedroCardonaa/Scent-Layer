@@ -35,20 +35,42 @@ const MOOD_OPTS   = ['Romantic','Confident','Relaxed','Bold','Minimal'];
 
 export function ShopPage() {
   const { fragrances, openSampleModal, openSourceModal } = useApp();
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
 
   // Spray calc state
   const [bottleSprays, setBottleSprays] = useState(510);
   const [perDay, setPerDay] = useState(4);
 
-  // Finder state
-  const [filters, setFilters] = useState(() => ({
-    family: params.get('filter') && FAMILY_OPTS.includes(params.get('filter')) ? [params.get('filter')] : [],
-    season: [],
-    time: [],
-    mood: [],
-  }));
-  const [search, setSearch] = useState('');
+  // Finder state — initialized from URL params so /shop?family=Oriental&season=Winter
+  // works as a shareable filtered link. Saves to URL on every change.
+  const filters = {
+    family: params.getAll('family').filter(v => FAMILY_OPTS.includes(v)),
+    season: params.getAll('season').filter(v => SEASON_OPTS.includes(v)),
+    time:   params.getAll('time').filter(v => TIME_OPTS.includes(v)),
+    mood:   params.getAll('mood').filter(v => MOOD_OPTS.includes(v)),
+  };
+  const search = params.get('q') ?? '';
+
+  // Back-compat: the old links used `?filter=Family` — fold them into the new `family` param.
+  useEffect(() => {
+    const legacy = params.get('filter');
+    if (legacy && FAMILY_OPTS.includes(legacy) && !params.getAll('family').includes(legacy)) {
+      const next = new URLSearchParams(params);
+      next.delete('filter');
+      next.append('family', legacy);
+      setParams(next, { replace: true });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function setFilterParams(nextFilters, nextSearch = search) {
+    const sp = new URLSearchParams();
+    Object.entries(nextFilters).forEach(([group, vals]) => {
+      vals.forEach(v => sp.append(group, v));
+    });
+    if (nextSearch.trim()) sp.set('q', nextSearch);
+    setParams(sp, { replace: true });
+  }
 
   // Theme is now centralized in AppContext — page no longer touches body.dark.
 
@@ -78,14 +100,15 @@ export function ShopPage() {
   useScrollReveal('.shop-product-grid .product-card', [filteredFragrances.length]);
 
   function toggle(group, val) {
-    setFilters(prev => {
-      const arr = prev[group];
-      return { ...prev, [group]: arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val] };
-    });
+    const arr = filters[group];
+    const nextVals = arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val];
+    setFilterParams({ ...filters, [group]: nextVals });
   }
   function clearAll() {
-    setFilters({ family: [], season: [], time: [], mood: [] });
-    setSearch('');
+    setFilterParams({ family: [], season: [], time: [], mood: [] }, '');
+  }
+  function setSearch(value) {
+    setFilterParams(filters, value);
   }
 
   const activeChips = Object.entries(filters).flatMap(([group, vals]) => vals.map(v => ({ group, v })));

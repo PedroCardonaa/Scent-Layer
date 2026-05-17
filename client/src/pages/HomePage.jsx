@@ -10,6 +10,9 @@ import { Marquee } from '../components/ui/Marquee.jsx';
 import { BorderBeam } from '../components/ui/BorderBeam.jsx';
 import { ProductRevealCard } from '../components/ui/ProductRevealCard.jsx';
 import { GlowCard } from '../components/ui/GlowCard.jsx';
+import { QuizMatchCard } from '../components/QuizMatchCard.jsx';
+import { WishlistRecsRow } from '../components/WishlistRecsRow.jsx';
+import { RecentlyViewedRow } from '../components/RecentlyViewedRow.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useScrollReveal } from '../hooks/useScrollReveal.js';
 import { useDocumentMeta } from '../lib/seo.js';
@@ -81,6 +84,14 @@ export function HomePage() {
       </section>
 
       <NewsletterStrip />
+
+      {/* Personalization rows — render only when there's data to show.
+          Each component returns null for empty states so we don't end
+          up with three empty section headers on the homepage for new
+          guests. */}
+      <QuizMatchCard />
+      <RecentlyViewedRow />
+      <WishlistRecsRow />
 
       <section className="sotw">
         <div>

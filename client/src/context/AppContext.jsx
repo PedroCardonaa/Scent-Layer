@@ -64,6 +64,28 @@ export function AppProvider({ children }) {
   const clearCart = useCallback(() => setCartItems([]), []);
   const openCart = useCallback(() => setCartOpen(true), []);
   const closeCart = useCallback(() => setCartOpen(false), []);
+
+  // ── Recently Viewed ──────────────────────────────────────────────
+  // Tracks last 5 fragrance IDs the user has opened. Newest first,
+  // duplicates removed. Persisted to localStorage. Used by the home
+  // page and fragrance detail page to pull users back to things they
+  // were considering.
+  const [recentlyViewed, setRecentlyViewed] = useState(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const parsed = JSON.parse(localStorage.getItem('sl_recently_viewed') || '[]');
+      return Array.isArray(parsed) ? parsed.filter(n => typeof n === 'number') : [];
+    } catch { return []; }
+  });
+
+  const markViewed = useCallback((id) => {
+    if (typeof id !== 'number') return;
+    setRecentlyViewed(prev => {
+      const next = [id, ...prev.filter(x => x !== id)].slice(0, 5);
+      try { localStorage.setItem('sl_recently_viewed', JSON.stringify(next)); } catch { /* noop */ }
+      return next;
+    });
+  }, []);
   // Visit counter — bumped once per app mount. Used to gate "returning visitor"
   // UX like the exit-intent popup so first-time browsers don't get hit on entry.
   const [visitCount] = useState(() => {
@@ -253,7 +275,8 @@ export function AppProvider({ children }) {
     themePref, setThemePref, effectiveTheme,
     analyticsConsent, setAnalyticsConsent,
     cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart,
-  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme, analyticsConsent, setAnalyticsConsent, cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart]);
+    recentlyViewed, markViewed,
+  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme, analyticsConsent, setAnalyticsConsent, cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart, recentlyViewed, markViewed]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

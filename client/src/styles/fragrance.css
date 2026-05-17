@@ -297,6 +297,87 @@
   font-size: 0.84rem;
 }
 
+/* Sticky bottom Add-to-Cart bar — appears when the user has scrolled past
+   the hero's primary CTA (tracked via a sentinel div + IntersectionObserver). */
+.fragrance-sticky-cta {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 24px;
+  background: var(--deep2);
+  border-top: 1px solid rgba(201, 169, 110, 0.25);
+  color: var(--cream);
+  z-index: 400;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.25);
+}
+body:not(.dark) .fragrance-sticky-cta {
+  background: var(--warm-white);
+  color: var(--ink);
+  border-top: 1px solid var(--hairline);
+}
+.fragrance-sticky-cta.visible { transform: translateY(0); }
+.fragrance-sticky-info { min-width: 0; flex: 1; }
+.fragrance-sticky-brand {
+  font-size: 0.55rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 2px;
+}
+.fragrance-sticky-name {
+  font-family: 'Lora', serif;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fragrance-sticky-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.fragrance-sticky-sizes {
+  display: flex;
+  gap: 4px;
+}
+.fragrance-sticky-size {
+  padding: 8px 12px;
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+  color: var(--fg-soft);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.66rem;
+  cursor: none;
+  transition: all 0.2s;
+}
+.fragrance-sticky-size:hover:not(.active) { color: var(--fg); border-color: var(--gold); }
+.fragrance-sticky-size.active { background: var(--gold); color: var(--deep2); border-color: var(--gold); }
+.fragrance-sticky-cart {
+  padding: 12px 22px;
+  background: var(--gold);
+  color: var(--deep2);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border: none;
+  cursor: none;
+  transition: background 0.25s;
+}
+.fragrance-sticky-cart:hover { background: var(--gold-light); }
+
 @media (max-width: 900px) {
   .fragrance-crumb { padding: 100px 24px 0; }
   .fragrance-hero {
@@ -310,6 +391,11 @@
   .fragrance-attr-grid { grid-template-columns: 1fr; gap: 8px; }
   .fragrance-cta-row { flex-direction: column; align-items: stretch; }
   .fragrance-wishlist-btn { align-self: flex-end; }
+
+  /* Compact sticky CTA on small screens — drop the size pills and let
+     the inline Add button use the currently selected size. */
+  .fragrance-sticky-sizes { display: none; }
+  .fragrance-sticky-name { font-size: 0.9rem; }
 }
 @media (max-width: 500px) {
   .fragrance-similar-grid { grid-template-columns: 1fr; }

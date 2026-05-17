@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
 import { ProductCard } from '../components/ProductCard.jsx';
+import { RecentlyViewedRow } from '../components/RecentlyViewedRow.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useDocumentMeta } from '../lib/seo.js';
 
@@ -23,10 +24,33 @@ const FALLBACK_IMAGE = FAMILY_IMAGE.Floral;
 
 export function FragrancePage() {
   const { id } = useParams();
-  const { fragrances, openSampleModal, openSourceModal, toggleWishlist, wishlistIds, addToCart, openCart, showToast } = useApp();
+  const { fragrances, openSampleModal, openSourceModal, toggleWishlist, wishlistIds, addToCart, openCart, showToast, markViewed, recentlyViewed } = useApp();
   const numericId = Number(id);
   const fragrance = fragrances.find(f => f.id === numericId);
   const [size, setSize] = useState('5ml');
+  const [stickyVisible, setStickyVisible] = useState(false);
+
+  // Record this fragrance into Recently Viewed every time the page mounts
+  // for a valid fragrance id. Cap is handled inside markViewed.
+  useEffect(() => {
+    if (fragrance) markViewed(fragrance.id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fragrance?.id]);
+
+  // Sticky bottom CTA appears once the user has scrolled past the
+  // primary CTA in the hero. Observed by IntersectionObserver on a
+  // sentinel element placed just below the hero CTAs.
+  useEffect(() => {
+    if (!fragrance) return;
+    const sentinel = document.getElementById('fragrance-cta-sentinel');
+    if (!sentinel) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => setStickyVisible(!entry.isIntersecting),
+      { threshold: 0, rootMargin: '0px 0px -100% 0px' },
+    );
+    obs.observe(sentinel);
+    return () => obs.disconnect();
+  }, [fragrance?.id]);
 
   // Rich SEO meta — title, OG description, OG image. Uses the family hero
   // photo as the OG image so shares look right in iMessage / Discord / etc.
@@ -169,6 +193,8 @@ export function FragrancePage() {
           >
             or quick-request without the cart →
           </button>
+          {/* Sentinel — when this scrolls out of view, the sticky CTA appears. */}
+          <div id="fragrance-cta-sentinel" aria-hidden="true" />
         </div>
       </section>
 
@@ -193,6 +219,44 @@ export function FragrancePage() {
           </div>
         </section>
       )}
+
+      {/* Recently Viewed — skip the current fragrance, show only if there's
+          more than just this one in the list. */}
+      {recentlyViewed.filter(rid => rid !== fragrance.id).length > 0 && (
+        <RecentlyViewedRow currentId={fragrance.id} />
+      )}
+
+      {/* Sticky bottom Add-to-Cart bar */}
+      <div className={`fragrance-sticky-cta ${stickyVisible ? 'visible' : ''}`} aria-hidden={!stickyVisible}>
+        <div className="fragrance-sticky-info">
+          <p className="fragrance-sticky-brand">{fragrance.brand}</p>
+          <p className="fragrance-sticky-name">{fragrance.name}</p>
+        </div>
+        <div className="fragrance-sticky-actions">
+          <div className="fragrance-sticky-sizes">
+            {SAMPLE_SIZES.map(s => (
+              <button
+                key={s}
+                type="button"
+                className={`fragrance-sticky-size ${size === s ? 'active' : ''}`}
+                onClick={() => setSize(s)}
+                aria-pressed={size === s}
+              >{s}</button>
+            ))}
+          </div>
+          <button
+            type="button"
+            className="fragrance-sticky-cart"
+            onClick={() => {
+              addToCart({ fragranceId: fragrance.id, name: fragrance.name, brand: fragrance.brand, size, qty: 1 });
+              showToast(`<span>Added</span> ${size} of ${fragrance.name} to cart`);
+              openCart();
+            }}
+          >
+            Add {size}
+          </button>
+        </div>
+      </div>
 
       <Footer />
     </>
