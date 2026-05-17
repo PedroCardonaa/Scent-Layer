@@ -8,12 +8,13 @@ import { useApp } from '../context/AppContext.jsx';
 import { useScrollReveal } from '../hooks/useScrollReveal.js';
 import { useDocumentMeta } from '../lib/seo.js';
 
+// Sample sizes — match the four sizes users can actually order via the
+// cart and SampleModal so the spray-calc preview matches reality.
 const SIZES = [
+  { ml: 2,   sprays: 30   },
   { ml: 5,   sprays: 85   },
   { ml: 10,  sprays: 175  },
   { ml: 30,  sprays: 510  },
-  { ml: 50,  sprays: 850  },
-  { ml: 100, sprays: 1700 },
 ];
 
 const LIFESTYLE = [
@@ -103,7 +104,7 @@ export function ShopPage() {
         <div className="calc-header">
           <div>
             <h2 className="calc-title">How long will<br/><em>this sample last?</em></h2>
-            <p className="calc-sub">Pick a size and your daily sprays — we'll tell you exactly what to expect. Most signature picks start at 5ml or 10ml.</p>
+            <p className="calc-sub">Pick a sample size and your daily sprays — we'll tell you exactly how long a 2ml, 5ml, 10ml, or 30ml decant lasts in real life.</p>
           </div>
         </div>
         <div className="calc-body">
