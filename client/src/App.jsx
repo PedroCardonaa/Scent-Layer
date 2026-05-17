@@ -5,6 +5,7 @@ import { Cursor } from './components/Cursor.jsx';
 import { Toaster } from './components/Toaster.jsx';
 import { SourceModal } from './components/SourceModal.jsx';
 import { SampleModal } from './components/SampleModal.jsx';
+import { CartDrawer } from './components/CartDrawer.jsx';
 import { CookieConsent } from './components/CookieConsent.jsx';
 import { trackPageView } from './lib/analytics.js';
 
@@ -71,6 +72,7 @@ export default function App() {
       </Suspense>
       <SampleModal />
       <SourceModal />
+      <CartDrawer />
       <Toaster />
       <CookieConsent />
     </AppProvider>

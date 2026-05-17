@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
+import { ShoppingBag } from 'lucide-react';
 import { useApp } from '../context/AppContext.jsx';
 import { ToggleTheme } from './ui/ToggleTheme.jsx';
 
@@ -11,7 +12,7 @@ import { ToggleTheme } from './ui/ToggleTheme.jsx';
  */
 export function Nav({ theme: themeOverride, children }) {
   const [open, setOpen] = useState(false);
-  const { wishlistIds, user, effectiveTheme } = useApp();
+  const { wishlistIds, user, effectiveTheme, cartCount, openCart } = useApp();
   const { pathname } = useLocation();
   const theme = themeOverride ?? effectiveTheme;
 
@@ -36,6 +37,10 @@ export function Nav({ theme: themeOverride, children }) {
         )}
         <div className="nav-right">
           <ToggleTheme />
+          <button type="button" className="nav-cart" onClick={openCart} aria-label={`Cart (${cartCount} items)`}>
+            <ShoppingBag size={16} strokeWidth={1.5} />
+            {cartCount > 0 && <span className="nav-cart-badge">{cartCount}</span>}
+          </button>
           <Link to={profileHref} className="nav-profile">
             {profileLabel} <span className="wishlist-count">{wishlistIds.length}</span>
           </Link>
@@ -59,6 +64,9 @@ export function Nav({ theme: themeOverride, children }) {
         <Link to={profileHref} className="drawer-wishlist" onClick={() => setOpen(false)}>
           {user ? '♡ My Wishlist' : '♡ Sign In'}
         </Link>
+        <button type="button" className="drawer-cart" onClick={() => { setOpen(false); openCart(); }}>
+          Cart {cartCount > 0 && `(${cartCount})`}
+        </button>
         <div className="drawer-theme-toggle"><ToggleTheme /></div>
       </div>
     </>

@@ -27,6 +27,7 @@ import './styles/parallax.css';
 import './styles/glow-card.css';
 import './styles/fragrance.css';
 import './styles/legal.css';
+import './styles/cart.css';
 import './styles/tailwind.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(

@@ -62,8 +62,14 @@ model SourceRequest {
   email     String
   fragrance String?
   message   String?
-  kind      String   @default("sample") // "sample" | "bottle"
+  kind      String   @default("sample") // "sample" | "bottle" | "cart"
   size      String?  // "2ml" | "5ml" | "10ml" | "30ml" for samples; free-text for bottles
+  // For kind: "cart", `items` holds the line-item payload:
+  //   [{ fragranceId, name, brand, size, qty }, ...]
+  // For "sample" and "bottle" requests, items stays null (the top-level fields
+  // already describe the single-item order).
+  items     Json?
+  address   String?  // Optional shipping line for cart orders
   createdAt DateTime @default(now())
 
   @@index([kind, createdAt])

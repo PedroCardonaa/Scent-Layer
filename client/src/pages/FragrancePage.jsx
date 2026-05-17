@@ -1,10 +1,12 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
 import { ProductCard } from '../components/ProductCard.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useDocumentMeta } from '../lib/seo.js';
+
+const SAMPLE_SIZES = ['2ml', '5ml', '10ml', '30ml'];
 
 // One curated Unsplash hero photo per fragrance family. Replace with real
 // brand-commissioned imagery once available. All four URLs are verified
@@ -21,9 +23,10 @@ const FALLBACK_IMAGE = FAMILY_IMAGE.Floral;
 
 export function FragrancePage() {
   const { id } = useParams();
-  const { fragrances, openSampleModal, openSourceModal, toggleWishlist, wishlistIds } = useApp();
+  const { fragrances, openSampleModal, openSourceModal, toggleWishlist, wishlistIds, addToCart, openCart, showToast } = useApp();
   const numericId = Number(id);
   const fragrance = fragrances.find(f => f.id === numericId);
+  const [size, setSize] = useState('5ml');
 
   // Rich SEO meta — title, OG description, OG image. Uses the family hero
   // photo as the OG image so shares look right in iMessage / Discord / etc.
@@ -113,13 +116,34 @@ export function FragrancePage() {
             <Attribute label="Mood" values={fragrance.mood} />
           </div>
 
+          <div className="fragrance-size-row">
+            <p className="fragrance-size-label">Pick a Sample Size</p>
+            <div className="fragrance-size-pills">
+              {SAMPLE_SIZES.map(s => (
+                <button
+                  key={s}
+                  type="button"
+                  className={`fragrance-size-pill ${size === s ? 'active' : ''}`}
+                  onClick={() => setSize(s)}
+                  aria-pressed={size === s}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="fragrance-cta-row">
             <button
               type="button"
               className="btn-gold"
-              onClick={() => openSampleModal(label)}
+              onClick={() => {
+                addToCart({ fragranceId: fragrance.id, name: fragrance.name, brand: fragrance.brand, size, qty: 1 });
+                showToast(`<span>Added</span> ${size} of ${fragrance.name} to cart`);
+                openCart();
+              }}
             >
-              Order a Sample · From 2ml
+              Add {size} to Cart
             </button>
             <button
               type="button"
@@ -138,6 +162,13 @@ export function FragrancePage() {
               {saved ? '♥' : '♡'}
             </button>
           </div>
+          <button
+            type="button"
+            className="fragrance-quick-link"
+            onClick={() => openSampleModal(label)}
+          >
+            or quick-request without the cart →
+          </button>
         </div>
       </section>
 

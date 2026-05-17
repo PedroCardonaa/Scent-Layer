@@ -122,6 +122,9 @@ nav.dark  .nav-hamburger span { background: var(--cream); }
 .nav-drawer.dark  a { color: var(--cream); }
 .nav-drawer a:hover { color: var(--gold); }
 .nav-drawer .drawer-wishlist { font-family: 'Inter', sans-serif; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 12px 28px; border: 1px solid rgba(201,169,110,0.4); margin-top: 8px; }
+.nav-drawer .drawer-cart { font-family: 'Inter', sans-serif; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 12px 28px; border: 1px solid rgba(201,169,110,0.4); background: none; cursor: none; color: inherit; }
+.nav-drawer.light .drawer-cart { color: var(--ink); }
+.nav-drawer.dark .drawer-cart { color: var(--cream); }
 
 /* SECTION */
 .section { padding: 100px 60px; }

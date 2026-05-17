@@ -13,6 +13,57 @@ export function AppProvider({ children }) {
   const [wishlistIds, setWishlistIds] = useState([]);
   const [sourceModal, setSourceModal] = useState({ open: false, prefill: '' });
   const [sampleModal, setSampleModal] = useState({ open: false, prefill: '' });
+
+  // ── Cart ──────────────────────────────────────────────────────────
+  // Each item is { id, fragranceId, name, brand, size, qty }. `id` is
+  // a uuid so the same fragrance can appear at multiple sizes as separate
+  // line items. Identical fragrance+size combos increment qty instead.
+  // Persisted to localStorage so the cart survives reloads for guests.
+  const [cartItems, setCartItems] = useState(() => {
+    if (typeof window === 'undefined') return [];
+    try { return JSON.parse(localStorage.getItem('sl_cart') || '[]'); }
+    catch { return []; }
+  });
+  const [cartOpen, setCartOpen] = useState(false);
+
+  useEffect(() => {
+    try { localStorage.setItem('sl_cart', JSON.stringify(cartItems)); }
+    catch { /* noop */ }
+  }, [cartItems]);
+
+  const cartCount = cartItems.reduce((sum, it) => sum + it.qty, 0);
+
+  const addToCart = useCallback(({ fragranceId, name, brand, size, qty = 1 }) => {
+    setCartItems(prev => {
+      // Merge identical (fragranceId, size) pairs by incrementing qty.
+      const existingIdx = prev.findIndex(
+        it => it.fragranceId === fragranceId && it.size === size
+      );
+      if (existingIdx !== -1) {
+        const next = [...prev];
+        next[existingIdx] = { ...next[existingIdx], qty: Math.min(20, next[existingIdx].qty + qty) };
+        return next;
+      }
+      return [...prev, {
+        id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
+        fragranceId, name, brand, size, qty,
+      }];
+    });
+    trackEvent('add_to_cart', { fragrance_id: fragranceId, size, qty });
+  }, []);
+
+  const removeFromCart = useCallback((id) => {
+    setCartItems(prev => prev.filter(it => it.id !== id));
+  }, []);
+
+  const updateCartQty = useCallback((id, qty) => {
+    const q = Math.max(1, Math.min(20, Math.floor(qty)));
+    setCartItems(prev => prev.map(it => it.id === id ? { ...it, qty: q } : it));
+  }, []);
+
+  const clearCart = useCallback(() => setCartItems([]), []);
+  const openCart = useCallback(() => setCartOpen(true), []);
+  const closeCart = useCallback(() => setCartOpen(false), []);
   // Visit counter — bumped once per app mount. Used to gate "returning visitor"
   // UX like the exit-intent popup so first-time browsers don't get hit on entry.
   const [visitCount] = useState(() => {
@@ -201,7 +252,8 @@ export function AppProvider({ children }) {
     visitCount,
     themePref, setThemePref, effectiveTheme,
     analyticsConsent, setAnalyticsConsent,
-  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme, analyticsConsent, setAnalyticsConsent]);
+    cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart,
+  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme, analyticsConsent, setAnalyticsConsent, cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

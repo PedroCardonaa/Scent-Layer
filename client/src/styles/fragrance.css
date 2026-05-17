@@ -115,12 +115,55 @@
   line-height: 1.4;
 }
 
+.fragrance-size-row { margin-bottom: 18px; }
+.fragrance-size-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+.fragrance-size-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.fragrance-size-pill {
+  padding: 9px 18px;
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+  color: var(--fg-soft);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  cursor: none;
+  transition: all 0.2s;
+}
+.fragrance-size-pill:hover:not(.active) { border-color: var(--gold); color: var(--fg); }
+.fragrance-size-pill.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--deep2);
+  font-weight: 500;
+}
+
 .fragrance-cta-row {
   display: flex;
   gap: 12px;
   align-items: center;
   flex-wrap: wrap;
 }
+
+.fragrance-quick-link {
+  display: inline-block;
+  margin-top: 14px;
+  background: none;
+  border: none;
+  color: var(--fg-dim);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  cursor: none;
+  padding: 0;
+  transition: color 0.25s;
+}
+.fragrance-quick-link:hover { color: var(--gold); }
 .fragrance-cta-secondary {
   background: none;
   color: var(--fg) !important;

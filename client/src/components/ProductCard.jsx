@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
+import { ShoppingBag } from 'lucide-react';
 import { useApp } from '../context/AppContext.jsx';
 import { ProductBottle } from './BottleSvg.jsx';
 import { MagicCard } from './ui/MagicCard.jsx';
 
 export function ProductCard({ fragrance: p }) {
-  const { wishlistIds, toggleWishlist, openSampleModal, openSourceModal } = useApp();
+  const { wishlistIds, toggleWishlist, openSampleModal, openSourceModal, addToCart, openCart, showToast } = useApp();
   const saved = wishlistIds.includes(p.id);
   const label = `${p.name} — ${p.brand}`;
   const detailHref = `/fragrance/${p.id}`;
@@ -17,6 +18,12 @@ export function ProductCard({ fragrance: p }) {
     e.stopPropagation();
     fn();
   };
+
+  function quickAddToCart() {
+    addToCart({ fragranceId: p.id, name: p.name, brand: p.brand, size: '5ml', qty: 1 });
+    showToast(`<span>Added</span> 5ml of ${p.name} to cart`);
+    openCart();
+  }
 
   return (
     <MagicCard className="product-card" spotlightColor="rgba(201,169,110,0.22)" spotlightSize={240}>
@@ -36,10 +43,12 @@ export function ProductCard({ fragrance: p }) {
             <button
               type="button"
               className="product-action-btn"
-              onClick={stop(() => openSampleModal(label))}
-              title="Order a sample"
-              aria-label="Order a sample"
-            >↗</button>
+              onClick={stop(quickAddToCart)}
+              title="Quick add 5ml to cart"
+              aria-label="Quick add 5ml to cart"
+            >
+              <ShoppingBag size={14} strokeWidth={1.5} />
+            </button>
           </div>
         </div>
         <div className="product-info">
