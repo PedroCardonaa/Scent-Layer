@@ -1,13 +1,15 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Lenis from '@studio-freight/lenis';
 
 /**
  * Layered parallax hero. Originally a 21st.dev / Osmo template — adapted
- * for the Scent Layer editorial palette. Mounts Lenis smooth-scroll
- * locally (cleaned up on unmount) and drives four parallax layers via
- * GSAP ScrollTrigger.
+ * for the Scent Layer editorial palette. Drives four parallax layers via
+ * GSAP ScrollTrigger on native browser scroll.
+ *
+ * (Earlier versions of this component initialized Lenis for smooth-scroll
+ * but it intercepted the wheel and made the page feel locked. Dropped —
+ * native scroll works correctly with ScrollTrigger and feels less stuck.)
  *
  * Honors `prefers-reduced-motion: reduce` by skipping the animation entirely.
  *
@@ -55,17 +57,9 @@ export function ParallaxScrolling({
       );
     });
 
-    const lenis = new Lenis();
-    lenis.on('scroll', ScrollTrigger.update);
-    const tick = (time) => { lenis.raf(time * 1000); };
-    gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
-
     return () => {
       ScrollTrigger.getAll().forEach(st => st.kill());
       gsap.killTweensOf(triggerElement);
-      gsap.ticker.remove(tick);
-      lenis.destroy();
     };
   }, []);
 

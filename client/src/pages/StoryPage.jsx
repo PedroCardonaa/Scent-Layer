@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Nav } from '../components/Nav.jsx';
+import { Footer } from '../components/Footer.jsx';
 import { useDocumentMeta } from '../lib/seo.js';
 
 /**
@@ -97,7 +99,9 @@ export function StoryPage() {
   }, []);
 
   return (
-    <div className="story-page">
+    <>
+      <Nav />
+      <div className="story-page">
       {/* Decorative SVG grid + detail dots */}
       <svg className="story-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -118,9 +122,6 @@ export function StoryPage() {
         <circle cx="80%" cy="80%" r="2" className="story-dot" style={{ animationDelay: '3.6s' }} />
         <circle cx="50%" cy="50%" r="1.5" className="story-dot" style={{ animationDelay: '4s' }} />
       </svg>
-
-      {/* Tiny logo top-left so users don't feel trapped */}
-      <Link to="/" className="story-logo" aria-label="Scent Layer — home">Scent Layer</Link>
 
       {/* Corner accents */}
       <div className="story-corner story-corner--tl" style={{ animationDelay: '4s' }}><span /></div>
@@ -196,6 +197,8 @@ export function StoryPage() {
       {ripples.map((r) => (
         <div key={r.id} className="story-ripple" style={{ left: `${r.x}px`, top: `${r.y}px` }} />
       ))}
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 }

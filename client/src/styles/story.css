@@ -1,14 +1,21 @@
 /* ===== STORY PAGE (brand manifesto) =====
-   Adapted from 21st.dev's Digital Serenity. Hardcoded dark — this is an
-   intentional brand-mood moment that doesn't follow the theme toggle. */
+   Theme-adaptive: dark gradient on body.dark, light gradient otherwise.
+   Gold accents stay consistent (the gold reads as the brand voice on
+   both backgrounds). */
 
 .story-page {
   position: relative;
+  /* Below the Nav (Nav is position:fixed) so content doesn't underlap */
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a1210 0%, #000 50%, #2d2420 100%);
-  color: var(--cream);
+  /* Light-theme gradient default */
+  background: linear-gradient(135deg, var(--warm-white) 0%, var(--cream) 50%, #ece2d2 100%);
+  color: var(--fg);
   font-family: 'Inter', sans-serif;
   overflow: hidden;
+}
+body.dark .story-page {
+  background: linear-gradient(135deg, #1a1210 0%, #000 50%, #2d2420 100%);
+  color: var(--cream);
 }
 
 .story-svg {
@@ -32,43 +39,26 @@
   animation: story-pulse-glow 3s ease-in-out infinite;
 }
 
-/* Tiny logo top-left so users can navigate back home */
-.story-logo {
-  position: absolute;
-  top: 24px;
-  left: 32px;
-  z-index: 10;
-  font-family: 'Lora', serif;
-  font-size: 0.92rem;
-  font-weight: 500;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--cream);
-  text-decoration: none;
-  opacity: 0;
-  animation: story-word-appear 1.4s ease-out forwards 4.2s;
-  transition: color 0.3s;
-}
-.story-logo:hover { color: var(--gold); }
-
 /* Corner accents */
 .story-corner {
   position: absolute;
   width: 40px;
   height: 40px;
-  border: 1px solid rgba(201, 169, 110, 0.2);
+  border: 1px solid rgba(201, 169, 110, 0.3);
   opacity: 0;
   animation: story-word-appear 1s ease-out forwards;
+  z-index: 5;
 }
-.story-corner--tl { top: 16px; left: 16px; }
-.story-corner--tr { top: 16px; right: 16px; }
-.story-corner--bl { bottom: 16px; left: 16px; }
-.story-corner--br { bottom: 16px; right: 16px; }
+body.dark .story-corner { border-color: rgba(201, 169, 110, 0.2); }
+.story-corner--tl { top: 96px; left: 16px; }
+.story-corner--tr { top: 96px; right: 16px; }
+.story-corner--bl { bottom: 96px; left: 16px; }
+.story-corner--br { bottom: 96px; right: 16px; }
 .story-corner span {
   position: absolute;
   width: 8px; height: 8px;
   background: var(--gold);
-  opacity: 0.4;
+  opacity: 0.45;
   border-radius: 50%;
 }
 .story-corner--tl span { top: 0;     left: 0; }
@@ -76,16 +66,16 @@
 .story-corner--bl span { bottom: 0;  left: 0; }
 .story-corner--br span { bottom: 0;  right: 0; }
 @media (min-width: 640px) {
-  .story-corner--tl { top: 24px; left: 24px; }
-  .story-corner--tr { top: 24px; right: 24px; }
-  .story-corner--bl { bottom: 24px; left: 24px; }
-  .story-corner--br { bottom: 24px; right: 24px; }
+  .story-corner--tl { left: 24px; }
+  .story-corner--tr { right: 24px; }
+  .story-corner--bl { left: 24px; }
+  .story-corner--br { right: 24px; }
 }
 @media (min-width: 768px) {
-  .story-corner--tl { top: 32px; left: 32px; }
-  .story-corner--tr { top: 32px; right: 32px; }
-  .story-corner--bl { bottom: 32px; left: 32px; }
-  .story-corner--br { bottom: 32px; right: 32px; }
+  .story-corner--tl { left: 32px; }
+  .story-corner--tr { right: 32px; }
+  .story-corner--bl { left: 32px; }
+  .story-corner--br { right: 32px; }
 }
 
 /* Floating particles */
@@ -98,9 +88,10 @@
   opacity: 0;
   animation: story-float 4s ease-in-out infinite;
   animation-play-state: paused;
+  z-index: 5;
 }
 
-/* Layout */
+/* Layout — adds top padding to clear the fixed Nav */
 .story-content {
   position: relative;
   z-index: 10;
@@ -109,10 +100,10 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 80px 24px 60px;
+  padding: 120px 24px 80px;
 }
-@media (min-width: 640px) { .story-content { padding: 96px 32px 80px; } }
-@media (min-width: 768px) { .story-content { padding: 128px 64px 96px; } }
+@media (min-width: 640px) { .story-content { padding: 130px 32px 96px; } }
+@media (min-width: 768px) { .story-content { padding: 150px 64px 120px; } }
 
 .story-top, .story-bottom { text-align: center; }
 
@@ -122,7 +113,7 @@
   letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--gold);
-  opacity: 0.85;
+  opacity: 0.95;
 }
 @media (max-width: 640px) { .story-eyebrow { font-size: 0.66rem; } }
 
@@ -131,7 +122,7 @@
   width: 56px;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  opacity: 0.35;
+  opacity: 0.4;
 }
 .story-bottom .story-divider { margin: 0 auto 16px; }
 
@@ -149,7 +140,7 @@
   font-weight: 400;
   font-style: italic;
   line-height: 1.05;
-  color: var(--cream);
+  color: var(--fg);
   letter-spacing: -0.01em;
   position: relative;
 }
@@ -163,7 +154,7 @@
   font-weight: 300;
   line-height: 1.6;
   letter-spacing: 0.02em;
-  color: rgba(245, 240, 232, 0.65);
+  color: var(--fg-soft);
   max-width: 720px;
   margin: 0 auto;
 }
@@ -192,7 +183,7 @@
   will-change: opacity, transform, filter;
 }
 .story-word:hover {
-  color: var(--gold-light);
+  color: var(--gold);
   transform: translateY(-2px);
 }
 
@@ -208,17 +199,17 @@
   height: 4px;
   border-radius: 50%;
   background: var(--gold);
-  opacity: 0.5;
+  opacity: 0.55;
 }
-.story-dots span:nth-child(2) { opacity: 0.8; }
+.story-dots span:nth-child(2) { opacity: 0.85; }
 
 .story-cta {
   display: inline-block;
   margin-top: 28px;
   padding: 12px 28px;
-  border: 1px solid rgba(201, 169, 110, 0.4);
+  border: 1px solid rgba(201, 169, 110, 0.5);
   background: rgba(201, 169, 110, 0.06);
-  color: var(--cream);
+  color: var(--fg);
   font-family: 'Inter', sans-serif;
   font-size: 0.7rem;
   font-weight: 500;
@@ -241,7 +232,7 @@
   border-radius: 9999px;
   width: 240px; height: 240px;
   filter: blur(40px);
-  background-image: radial-gradient(circle, rgba(201, 169, 110, 0.18), rgba(201, 169, 110, 0.08), transparent 70%);
+  background-image: radial-gradient(circle, rgba(201, 169, 110, 0.22), rgba(201, 169, 110, 0.08), transparent 70%);
   transform: translate(-50%, -50%);
   will-change: left, top, opacity;
   transition: left 70ms linear, top 70ms linear, opacity 300ms ease-out;
@@ -254,7 +245,7 @@
 .story-ripple {
   position: fixed;
   width: 4px; height: 4px;
-  background: rgba(232, 213, 168, 0.6);
+  background: rgba(201, 169, 110, 0.7);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
@@ -271,14 +262,14 @@
 @keyframes story-grid-draw {
   0%   { stroke-dashoffset: 1000; opacity: 0; }
   50%  { opacity: 0.3; }
-  100% { stroke-dashoffset: 0; opacity: 0.15; }
+  100% { stroke-dashoffset: 0; opacity: 0.2; }
 }
 @keyframes story-pulse-glow {
-  0%, 100% { opacity: 0.1; transform: scale(1); }
-  50%      { opacity: 0.4; transform: scale(1.15); }
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(1.15); }
 }
 @keyframes story-float {
-  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.2; }
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.25; }
   25%      { transform: translateY(-10px) translateX(5px); opacity: 0.7; }
   50%      { transform: translateY(-5px)  translateX(-3px); opacity: 0.5; }
   75%      { transform: translateY(-15px) translateX(7px); opacity: 0.9; }
@@ -287,8 +278,8 @@
 /* Respect reduced motion — show everything in its final state with no animation. */
 @media (prefers-reduced-motion: reduce) {
   .story-word { opacity: 1 !important; transform: none !important; filter: none !important; animation: none !important; }
-  .story-line { opacity: 0.15 !important; stroke-dashoffset: 0 !important; animation: none !important; }
-  .story-dot, .story-float, .story-corner, .story-logo, .story-cta, .story-dots, .story-line-left, .story-line-right { opacity: 1 !important; animation: none !important; }
+  .story-line { opacity: 0.2 !important; stroke-dashoffset: 0 !important; animation: none !important; }
+  .story-dot, .story-float, .story-corner, .story-cta, .story-dots, .story-line-left, .story-line-right { opacity: 1 !important; animation: none !important; }
   .story-glow { display: none; }
   .story-ripple { display: none; }
 }
