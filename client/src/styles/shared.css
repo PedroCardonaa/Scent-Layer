@@ -257,6 +257,119 @@ footer { background: var(--deep2); padding: 80px 60px 40px; }
 .demo-banner { background: var(--gold); color: var(--deep2); text-align: center; padding: 10px 24px; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; position: relative; z-index: 200; }
 .demo-banner span { opacity: 0.7; margin: 0 12px; }
 
+/* ── 404 / NOT FOUND PAGE ── */
+.notfound-page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 140px 24px 100px;
+  text-align: center;
+  color: var(--fg);
+}
+.notfound-eyebrow {
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 22px;
+}
+.notfound-title {
+  font-family: 'Lora', serif;
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--fg);
+  margin-bottom: 24px;
+}
+.notfound-title em { font-style: italic; }
+.notfound-body {
+  font-size: 0.92rem;
+  line-height: 1.85;
+  color: var(--fg-soft);
+  max-width: 520px;
+  margin: 0 auto 36px;
+}
+.notfound-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+.notfound-ghost { color: var(--fg) !important; border-color: var(--hairline) !important; }
+.notfound-ghost:hover { border-color: var(--gold) !important; color: var(--gold) !important; }
+.notfound-home {
+  display: inline-block;
+  font-size: 0.78rem;
+  color: var(--fg-soft);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+}
+.notfound-home:hover { color: var(--gold); }
+
+/* ── MOBILE BOTTOM NAV ── */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 450;
+  background: var(--warm-white);
+  border-top: 1px solid var(--hairline);
+  padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+  justify-content: space-around;
+  align-items: stretch;
+  backdrop-filter: blur(12px);
+}
+body.dark .mobile-bottom-nav {
+  background: rgba(26, 18, 16, 0.96);
+  border-top-color: rgba(201, 169, 110, 0.18);
+}
+@media (max-width: 900px) {
+  .mobile-bottom-nav { display: flex; }
+  /* Push page content above the bottom nav */
+  footer { padding-bottom: calc(40px + env(safe-area-inset-bottom) + 60px); }
+  /* Sample modal and cart drawer aren't pushed (they're full-screen / drawer) */
+}
+.mbn-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  background: none;
+  border: none;
+  color: var(--fg-soft);
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: none;
+  transition: color 0.2s;
+  position: relative;
+}
+.mbn-item.active, .mbn-item:hover { color: var(--gold); }
+.mbn-item span:last-child { line-height: 1; }
+.mbn-cart-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+.mbn-cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--deep2);
+  font-size: 0.5rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* ── COOKIE CONSENT BANNER ──
    Bottom-left editorial card. Doesn't dominate. Both buttons end the banner. */
 .cookie-consent {
@@ -292,7 +405,9 @@ footer { background: var(--deep2); padding: 80px 60px 40px; }
 .cookie-consent-decline:hover { color: var(--cream); border-color: var(--cream); }
 
 @media (max-width: 600px) {
-  .cookie-consent { left: 16px; right: 16px; bottom: 16px; max-width: none; padding: 18px 20px; }
+  /* Lift the cookie banner above the mobile bottom-nav so it doesn't get
+     hidden behind it. The bottom-nav is ~58px tall plus safe-area inset. */
+  .cookie-consent { left: 16px; right: 16px; bottom: calc(72px + env(safe-area-inset-bottom)); max-width: none; padding: 18px 20px; }
 }
 
 /* ANIMATIONS */

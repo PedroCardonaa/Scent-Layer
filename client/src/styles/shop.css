@@ -72,7 +72,42 @@
 .shop-product-grid .product-name { color:var(--fg); }
 .shop-product-grid .product-family { color:var(--fg-dim); }
 .shop-product-grid .source-btn { color:var(--fg); }
-.no-results { grid-column:span 4; text-align:center; padding:80px; font-family:'Lora',serif; font-size:1.8rem; font-style:italic; color:var(--fg-faint); }
+.no-results { grid-column:span 4; text-align:center; padding:80px 24px; }
+.no-results-eyebrow {
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+.no-results-title {
+  font-family: 'Lora', serif;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--fg);
+  margin-bottom: 18px;
+}
+.no-results-title em { font-style: italic; }
+.no-results-body {
+  font-size: 0.92rem;
+  line-height: 1.85;
+  color: var(--fg-soft);
+  max-width: 460px;
+  margin: 0 auto;
+}
+.no-results-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.4);
+  font-family: inherit;
+  font-size: inherit;
+  cursor: none;
+}
+.no-results-link:hover { border-bottom-color: var(--gold); }
 
 @media(max-width:900px) {
   .shop-hero { padding:120px 24px 48px; }

@@ -195,7 +195,18 @@ export function ShopPage() {
       <div className="shop-grid-section">
         <div className="shop-product-grid">
           {filteredFragrances.length === 0
-            ? <div className="no-results">No fragrances match — try broadening your filters.</div>
+            ? (
+              <div className="no-results">
+                <p className="no-results-eyebrow">No matches</p>
+                <p className="no-results-title">Nothing in the catalog fits<br/><em className="gradient-em">that combination yet.</em></p>
+                <p className="no-results-body">
+                  Try removing a filter or two, or
+                  {' '}<button type="button" className="no-results-link" onClick={clearAll}>clear everything</button>{' '}
+                  and start over. If we don't carry it,
+                  {' '}<button type="button" className="no-results-link" onClick={() => openSourceModal('')}>we can probably source it</button>.
+                </p>
+              </div>
+            )
             : filteredFragrances.map(p => <ProductCard key={p.id} fragrance={p} />)}
         </div>
       </div>
