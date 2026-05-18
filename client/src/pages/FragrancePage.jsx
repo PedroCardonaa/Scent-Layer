@@ -284,12 +284,15 @@ function NoteAct({ num, label, sub, notes }) {
   );
 }
 
-// Build a brief editorial description from the notes pyramid when the
-// catalog doesn't supply one. Keeps the page from feeling sparse.
+// Fallback description used only when the catalog doesn't supply one.
+// Deliberately avoids reviewer clichés ("opens with", "settles into",
+// "lingers on") so it doesn't read as auto-generated.
 function buildSynthDescription(f) {
-  const family = f.family.toLowerCase();
-  const opener = f.top.split(',').slice(0, 2).join(' and ').trim();
-  const heart = f.heart.split(',').slice(0, 2).join(' and ').trim();
-  const base = f.base.split(',').slice(0, 2).join(' and ').trim();
-  return `A ${family} composition. Opens with ${opener}, settles into a heart of ${heart}, and lingers on a base of ${base}. Suited for ${f.season.join(', ').toLowerCase()} wear, ${f.time.join(', ').toLowerCase()}.`;
+  const topNotes  = f.top.split(',').slice(0, 2).map(s => s.trim()).join(' and ');
+  const heartLead = (f.heart.split(',')[0] || '').trim();
+  const baseLead  = (f.base.split(',')[0] || '').trim();
+  const wearText  = f.season.length === 4
+    ? 'Wears year-round.'
+    : `Built for ${f.season.join(' and ').toLowerCase()}.`;
+  return `${topNotes} on top. A heart of ${heartLead}, with ${baseLead} underneath. ${wearText}`;
 }
