@@ -27,13 +27,18 @@ export function ToolsPage() {
 
   return (
     <>
-      <Nav>
-        <div className="tools-nav">
-          <button type="button" className={`tool-tab ${tab === 'builder' ? 'active' : ''}`} onClick={() => setTab('builder')}>Layer Builder</button>
-          <button type="button" className={`tool-tab ${tab === 'compare' ? 'active' : ''}`} onClick={() => setTab('compare')}>Compare</button>
-          <button type="button" className={`tool-tab ${tab === 'similar' ? 'active' : ''}`} onClick={() => setTab('similar')}>Similar Scents</button>
+      <Nav />
+
+      <div className="tools-subnav">
+        <div className="tools-subnav-inner">
+          <p className="tools-subnav-label">AI Tools</p>
+          <div className="tools-nav">
+            <button type="button" className={`tool-tab ${tab === 'builder' ? 'active' : ''}`} onClick={() => setTab('builder')}>Layer Builder</button>
+            <button type="button" className={`tool-tab ${tab === 'compare' ? 'active' : ''}`} onClick={() => setTab('compare')}>Compare</button>
+            <button type="button" className={`tool-tab ${tab === 'similar' ? 'active' : ''}`} onClick={() => setTab('similar')}>Similar Scents</button>
+          </div>
         </div>
-      </Nav>
+      </div>
 
       {tab === 'builder' && <LayerBuilder fragrances={fragrances} />}
       {tab === 'compare' && <Compare    fragrances={fragrances} />}

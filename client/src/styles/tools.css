@@ -2,12 +2,37 @@
    Uses theme-adaptive tokens (--fg, --fg-soft, --fg-dim, --surface-soft,
    --hairline) defined in shared.css so the page reads correctly on both
    themes. The page itself has no own background — it inherits from body. */
+/* Tool tabs live in a sub-strip below the main Nav so the global
+   navigation (Shop, Tools, Explore, About, Profile) stays visible
+   when users are inside the AI tools. The 100px top padding clears
+   the fixed Nav. */
+.tools-subnav {
+  padding: 100px 60px 0;
+  background: transparent;
+}
+.tools-subnav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--hairline);
+  flex-wrap: wrap;
+}
+.tools-subnav-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
 .tools-nav { display: flex; gap: 4px; background: var(--surface-soft); border: 1px solid var(--hairline); border-radius: 3px; padding: 4px; }
 .tool-tab { padding: 9px 22px; font-family:'Inter',sans-serif; font-size:0.65rem; font-weight:400; letter-spacing:0.16em; text-transform:uppercase; border:none; background:transparent; color:var(--fg-dim); cursor:none; border-radius:2px; transition:all 0.25s; }
 .tool-tab.active { background:var(--gold); color:var(--deep2); font-weight:500; }
 .tool-tab:hover:not(.active) { color:var(--fg); }
 
-.tool-hero { padding: 130px 60px 50px; border-bottom: 1px solid var(--hairline); }
+/* Tool hero no longer needs to clear the global nav — the subnav
+   above already provides that space. */
+.tool-hero { padding: 30px 60px 50px; border-bottom: 1px solid var(--hairline); }
 .tool-hero-label { font-size:0.62rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; }
 .tool-hero-title { font-family:'Lora',serif; font-size:clamp(2.5rem,4.5vw,4.5rem); font-weight:300; line-height:1.05; margin-bottom:14px; color: var(--fg); }
 .tool-hero-title em { font-style:italic; color:var(--gold); }
@@ -139,4 +164,7 @@
   .compare-verdict{grid-column:span 1}
   .similar-cards{grid-template-columns:1fr}
   .tool-hero{padding-left:24px;padding-right:24px}
+  .tools-subnav{padding:90px 24px 0;}
+  .tools-subnav-inner{flex-direction:column;align-items:flex-start;gap:10px;}
+  .tools-nav{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
 }

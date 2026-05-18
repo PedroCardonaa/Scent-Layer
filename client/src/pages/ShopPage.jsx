@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
+import { BackToTop } from '../components/BackToTop.jsx';
 import { ProductCard } from '../components/ProductCard.jsx';
 import { NumberTicker } from '../components/ui/NumberTicker.jsx';
 import { useApp } from '../context/AppContext.jsx';
@@ -222,6 +223,7 @@ export function ShopPage() {
       </section>
 
       <Footer />
+      <BackToTop />
     </>
   );
 }

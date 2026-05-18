@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
+import { BackToTop } from '../components/BackToTop.jsx';
 import { ProductCard } from '../components/ProductCard.jsx';
 import { HeroBottle, SotwBottle } from '../components/BottleSvg.jsx';
 import { NewsletterStrip } from '../components/NewsletterStrip.jsx';
@@ -242,6 +243,7 @@ export function HomePage() {
 
       <Footer />
 
+      <BackToTop />
       <ExitIntentModal />
     </>
   );

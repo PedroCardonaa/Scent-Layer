@@ -329,6 +329,48 @@ footer { background: var(--deep2); padding: 80px 60px 40px; }
 }
 .notfound-home:hover { color: var(--fg); }
 
+/* ── BACK TO TOP ──
+   Fixed-position arrow that fades in once the user scrolls past the
+   threshold (handled in JS). Theme-adaptive via tokens. Touch devices
+   hide it to avoid colliding with the mobile bottom nav. */
+.back-to-top {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  z-index: 400;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px 11px 14px;
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+  color: var(--fg);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  cursor: none;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s ease, border-color 0.25s ease, color 0.25s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.back-to-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.back-to-top:hover { border-color: var(--gold); color: var(--gold); }
+.back-to-top svg { display: block; }
+.back-to-top-label { line-height: 1; }
+body.dark .back-to-top { background: rgba(26,18,16,0.78); }
+@media (hover: none), (max-width: 900px) {
+  /* Lift above the mobile bottom nav so it never overlaps */
+  .back-to-top { bottom: calc(76px + env(safe-area-inset-bottom)); right: 18px; padding: 10px 14px; }
+}
+
 /* ── MOBILE BOTTOM NAV ── */
 .mobile-bottom-nav {
   display: none;
