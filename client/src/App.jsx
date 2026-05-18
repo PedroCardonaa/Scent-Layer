@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AppProvider } from './context/AppContext.jsx';
 import { Cursor } from './components/Cursor.jsx';
@@ -27,6 +27,12 @@ import { SignupPage } from './pages/SignupPage.jsx';
 // About page pulls in GSAP for the parallax hero — lazy-load so it
 // doesn't ship with the initial bundle.
 const AboutPage = lazy(() => import('./pages/AboutPage.jsx').then(m => ({ default: m.AboutPage })));
+
+// Intro spray pulls in three.js + R3F + drei — lazy-load so those
+// ~150KB only download for the user's first visit of the session.
+const IntroSpray = lazy(() => import('./components/IntroSpray.jsx').then(m => ({ default: m.IntroSpray })));
+
+const INTRO_KEY = 'sl-intro-played-v1';
 
 function ScrollToHash() {
   const { hash, pathname } = useLocation();
@@ -92,6 +98,19 @@ function AnimatedRoutes() {
 }
 
 export default function App() {
+  // Show the intro spray once per session. sessionStorage clears when
+  // the user closes the tab/browser, so they see the animation again
+  // on their next visit but not on every refresh of an active session.
+  const [showIntro, setShowIntro] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    try { return !sessionStorage.getItem(INTRO_KEY); } catch { return false; }
+  });
+
+  function finishIntro() {
+    try { sessionStorage.setItem(INTRO_KEY, '1'); } catch { /* private mode */ }
+    setShowIntro(false);
+  }
+
   return (
     <AppProvider>
       <Cursor />
@@ -107,6 +126,11 @@ export default function App() {
       <Toaster />
       <CookieConsent />
       <SprayCanvas />
+      {showIntro && (
+        <Suspense fallback={null}>
+          <IntroSpray onFinish={finishIntro} />
+        </Suspense>
+      )}
     </AppProvider>
   );
 }

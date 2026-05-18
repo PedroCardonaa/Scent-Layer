@@ -29,7 +29,7 @@ import './styles/fragrance.css';
 import './styles/legal.css';
 import './styles/cart.css';
 import './styles/story.css';
-import './styles/bottle3d.css';
+import './styles/intro-spray.css';
 import './styles/tailwind.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(

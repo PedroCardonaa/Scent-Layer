@@ -4,8 +4,7 @@ import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
 import { BackToTop } from '../components/BackToTop.jsx';
 import { ProductCard } from '../components/ProductCard.jsx';
-import { SotwBottle } from '../components/BottleSvg.jsx';
-import { Bottle3D } from '../components/Bottle3D.jsx';
+import { HeroBottle, SotwBottle } from '../components/BottleSvg.jsx';
 import { NewsletterStrip } from '../components/NewsletterStrip.jsx';
 import { ExitIntentModal } from '../components/ExitIntentModal.jsx';
 import { Marquee } from '../components/ui/Marquee.jsx';
@@ -73,9 +72,15 @@ export function HomePage() {
           </div>
         </div>
         <div className="hero-right">
+          <img
+            className="hero-lifestyle"
+            src="https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=1200&h=1600&fit=crop&q=80"
+            alt="A person applying fragrance to the inside of the wrist"
+            loading="eager"
+          />
+          <div className="hero-tint" aria-hidden="true" />
           <div className="hero-orb orb-1" />
           <div className="hero-orb orb-2" />
-          <Bottle3D />
         </div>
       </section>
 

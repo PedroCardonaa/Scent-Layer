@@ -1,0 +1,79 @@
+/* ===== INTRO SPRAY OVERLAY =====
+   Full-screen take-over for the first visit of each session. The R3F
+   canvas paints a realistic glass bottle that auto-sprays the viewer,
+   then the overlay fades out and unmounts. */
+
+.intro-spray {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;             /* above everything, including nav (z-100) */
+  background:
+    radial-gradient(ellipse at center, #1a0e08 0%, #050302 70%, #000 100%);
+  display: block;
+  opacity: 1;
+  transition: opacity 0.6s ease;
+  cursor: none;
+  /* Prevent the scrollbar from flashing while the intro is on screen */
+  overflow: hidden;
+}
+
+.intro-spray.fading {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.intro-spray > canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent;
+}
+
+/* Soft vignette painted on top of the canvas to keep the eye on the
+   bottle and to mask the canvas edges if devicePixelRatio rounding
+   leaves a hairline. */
+.intro-spray-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center,
+      transparent 35%,
+      rgba(0,0,0,0.35) 80%,
+      rgba(0,0,0,0.7) 100%);
+}
+
+/* Skip button — discreet, top-right. The user can dismiss the intro
+   immediately if they've seen it. */
+.intro-spray-skip {
+  position: absolute;
+  top: 28px;
+  right: 32px;
+  z-index: 2;
+  background: none;
+  border: 1px solid rgba(232, 205, 150, 0.4);
+  color: rgba(245, 235, 210, 0.85);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  padding: 9px 18px;
+  cursor: none;
+  transition: all 0.25s ease;
+  opacity: 0;
+  animation: introSkipIn 0.5s ease 0.6s forwards;
+}
+.intro-spray-skip:hover {
+  border-color: rgba(232, 205, 150, 0.9);
+  color: rgba(255, 250, 235, 1);
+}
+@keyframes introSkipIn {
+  to { opacity: 1; }
+}
+
+/* Reduced motion: shorten the experience but still play it so the
+   user understands what they're seeing. The spray itself respects
+   prefers-reduced-motion in SprayCanvas. */
+@media (prefers-reduced-motion: reduce) {
+  .intro-spray { transition: opacity 0.3s ease; }
+}

@@ -57,9 +57,11 @@ export function SprayCanvas() {
         const t = p.age / p.life;
         if (t >= 1) { parts.splice(i, 1); continue; }
 
-        // Position: velocity decays over life, slight upward buoyancy
+        // Position: velocity decays over life. Cone particles also get
+        // a slight upward buoyancy so they read as rising mist. Burst
+        // particles expand radially with no gravity.
         p.vx *= 0.985;
-        p.vy = p.vy * 0.985 - 0.012;
+        p.vy = p.buoyant === false ? p.vy * 0.985 : p.vy * 0.985 - 0.012;
         p.x += p.vx;
         p.y += p.vy;
 
@@ -88,7 +90,10 @@ export function SprayCanvas() {
 
     function spawn({ x, y, direction = 'up' }) {
       const reduced = reducedMotionRef.current;
-      const count = reduced ? 18 : 110;
+      const isBurst = direction === 'burst';
+      const count = reduced
+        ? (isBurst ? 80 : 18)
+        : (isBurst ? 420 : 110);
 
       // Direction → base angle (radians). 0 = right, -PI/2 = up.
       const baseAngle = (() => {
@@ -96,21 +101,31 @@ export function SprayCanvas() {
           case 'up-right': return -Math.PI / 2 + 0.35;
           case 'up-left':  return -Math.PI / 2 - 0.35;
           case 'right':    return 0;
+          case 'burst':    return 0; // unused — burst picks per-particle
           default:         return -Math.PI / 2;
         }
       })();
 
+      // Distance the spray needs to travel to fill the viewport — used
+      // to set particle speed on 'burst' mode so the mist actually
+      // reaches the edges.
+      const reach = Math.hypot(w, h) / 2;
+
       for (let i = 0; i < count; i++) {
         // Cone spread — narrow at first, wider further out
-        const spread = (Math.random() - 0.5) * 0.9;
-        const angle = baseAngle + spread;
-        const speed = reduced
-          ? 1 + Math.random() * 1.2
-          : 2.5 + Math.random() * 5.5;
+        const angle = isBurst
+          ? Math.random() * Math.PI * 2
+          : baseAngle + (Math.random() - 0.5) * 0.9;
+
+        const speed = isBurst
+          // Speed scales with viewport so the spray fills the screen
+          // in ~1.4s regardless of size. Random factor adds depth.
+          ? (reach / 90) * (0.5 + Math.random() * 1.1)
+          : (reduced ? 1 + Math.random() * 1.2 : 2.5 + Math.random() * 5.5);
 
         // Slight initial offset so the burst doesn't look like a single point
-        const ox = (Math.random() - 0.5) * 6;
-        const oy = (Math.random() - 0.5) * 6;
+        const ox = (Math.random() - 0.5) * (isBurst ? 16 : 6);
+        const oy = (Math.random() - 0.5) * (isBurst ? 16 : 6);
 
         // Palette: warm amber/cream mist. Mostly the brand gold,
         // sprinkled with cream for the "light catching" highlights.
@@ -126,11 +141,18 @@ export function SprayCanvas() {
           y: y + oy,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
-          r: 8 + Math.random() * 16,
+          // Burst particles are larger so the mist reads at viewport scale
+          r: isBurst ? (24 + Math.random() * 36) : (8 + Math.random() * 16),
           color,
-          maxAlpha: 0.18 + Math.random() * 0.22,
+          maxAlpha: isBurst
+            ? (0.22 + Math.random() * 0.28)
+            : (0.18 + Math.random() * 0.22),
           age: 0,
-          life: reduced ? 800 : (1600 + Math.random() * 800),
+          life: reduced
+            ? (isBurst ? 1400 : 800)
+            : (isBurst ? (2400 + Math.random() * 1200) : (1600 + Math.random() * 800)),
+          // Burst particles have no buoyancy — they expand radially
+          buoyant: !isBurst,
         });
       }
     }
