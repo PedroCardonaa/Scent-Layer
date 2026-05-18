@@ -1,0 +1,351 @@
+/* ===== 3D PERFUME BOTTLE + SPRAY CANVAS =====
+   The bottle is built from CSS-only layered divs with perspective +
+   preserve-3d. The spray canvas paints amber mist over the page when
+   the bottle is tapped (or anything else calls triggerSpray()). */
+
+/* ── Stage ─────────────────────────────────────────────────────── */
+.bottle3d-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  perspective: 1400px;
+  perspective-origin: 50% 35%;
+  pointer-events: none;
+}
+
+.bottle3d {
+  position: relative;
+  width: 180px;
+  height: 320px;
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease-out;
+  cursor: none;
+  pointer-events: auto;
+  animation: bottle3dFloat 6s ease-in-out infinite;
+  opacity: 0;
+  animation: fadeUp 1.2s ease 0.6s forwards, bottle3dFloat 6s ease-in-out 1.8s infinite;
+}
+
+@keyframes bottle3dFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+/* ── Body (rectangular flacon) ─────────────────────────────────── */
+.bottle3d-body {
+  position: absolute;
+  top: 70px;
+  left: 30px;
+  width: 120px;
+  height: 220px;
+  transform-style: preserve-3d;
+}
+.bottle3d-body-face {
+  position: absolute;
+  border-radius: 14px;
+}
+.bottle3d-body-front,
+.bottle3d-body-back {
+  width: 120px;
+  height: 220px;
+  background:
+    linear-gradient(135deg,
+      rgba(255,240,210,0.55) 0%,
+      rgba(232,205,160,0.45) 35%,
+      rgba(200,160,110,0.45) 75%,
+      rgba(170,130,90,0.55) 100%);
+  box-shadow:
+    inset 0 0 30px rgba(255,240,210,0.35),
+    inset 0 -40px 60px rgba(120,80,40,0.35);
+  border: 1px solid rgba(255,235,200,0.35);
+}
+.bottle3d-body-front { transform: translateZ(28px); }
+.bottle3d-body-back  { transform: translateZ(-28px) rotateY(180deg); }
+
+.bottle3d-body-left,
+.bottle3d-body-right {
+  width: 56px;
+  height: 220px;
+  top: 0;
+  background:
+    linear-gradient(180deg,
+      rgba(150,110,70,0.6) 0%,
+      rgba(180,140,90,0.55) 50%,
+      rgba(140,100,60,0.65) 100%);
+  box-shadow: inset 0 0 20px rgba(80,50,20,0.4);
+}
+.bottle3d-body-left  { left: -28px; transform: rotateY(-90deg); border-radius: 14px 0 0 14px; }
+.bottle3d-body-right { right: -28px; transform: rotateY( 90deg); border-radius: 0 14px 14px 0; }
+
+.bottle3d-body-top,
+.bottle3d-body-bottom {
+  width: 120px;
+  height: 56px;
+  left: 0;
+  background:
+    linear-gradient(180deg,
+      rgba(180,140,90,0.7),
+      rgba(140,100,60,0.7));
+}
+.bottle3d-body-top    { top: -28px; transform: rotateX( 90deg); border-radius: 14px 14px 0 0; }
+.bottle3d-body-bottom { bottom: -28px; transform: rotateX(-90deg); border-radius: 0 0 14px 14px; }
+
+/* Liquid level inside the front face — fills the bottle ~75% */
+.bottle3d-liquid {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  height: 70%;
+  border-radius: 0 0 10px 10px;
+  background: linear-gradient(180deg,
+    rgba(232,200,140,0.55) 0%,
+    rgba(200,160,110,0.7) 50%,
+    rgba(150,110,70,0.85) 100%);
+  box-shadow:
+    inset 0 6px 14px rgba(255,235,200,0.25),
+    inset 0 -10px 20px rgba(80,50,20,0.4);
+  pointer-events: none;
+}
+
+/* Etched / printed label on the front face */
+.bottle3d-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  pointer-events: none;
+}
+.bottle3d-label-brand {
+  font-family: 'Lora', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(40,28,18,0.78);
+  text-shadow: 0 1px 0 rgba(255,235,200,0.5);
+}
+.bottle3d-label-rule {
+  display: block;
+  width: 36px;
+  height: 1px;
+  background: rgba(40,28,18,0.4);
+}
+.bottle3d-label-line {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 0.56rem;
+  letter-spacing: 0.18em;
+  color: rgba(40,28,18,0.55);
+}
+
+/* Specular highlight strip running diagonally across the front face */
+.bottle3d-shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  background: linear-gradient(115deg,
+    transparent 35%,
+    rgba(255,245,220,0.35) 48%,
+    rgba(255,250,235,0.18) 52%,
+    transparent 62%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* ── Atomizer collar ───────────────────────────────────────────── */
+.bottle3d-collar {
+  position: absolute;
+  top: 52px;
+  left: 70px;
+  width: 40px;
+  height: 22px;
+  background: linear-gradient(180deg, #d8c39a 0%, #a8895c 60%, #8a6a40 100%);
+  border-radius: 3px;
+  box-shadow:
+    inset 0 1px 2px rgba(255,245,220,0.6),
+    inset 0 -2px 4px rgba(60,40,20,0.5),
+    0 2px 4px rgba(0,0,0,0.25);
+  transform: translateZ(20px);
+}
+
+/* ── Nozzle (origin point for the spray) ───────────────────────── */
+.bottle3d-nozzle {
+  position: absolute;
+  top: 48px;
+  left: 86px;
+  width: 8px;
+  height: 6px;
+  background: #1a1612;
+  border-radius: 2px 2px 0 0;
+  transform: translateZ(22px);
+}
+
+/* ── Cap ───────────────────────────────────────────────────────── */
+.bottle3d-cap {
+  position: absolute;
+  top: 8px;
+  left: 65px;
+  width: 50px;
+  height: 50px;
+  transform-style: preserve-3d;
+  transition:
+    transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.4s ease;
+  will-change: transform;
+}
+.bottle3d-cap-face {
+  position: absolute;
+  background:
+    linear-gradient(135deg, #f5dca0 0%, #c9a96e 45%, #8a6a40 100%);
+  box-shadow:
+    inset 0 2px 4px rgba(255,245,220,0.7),
+    inset 0 -3px 6px rgba(60,40,20,0.55);
+  border-radius: 3px;
+}
+.bottle3d-cap-front,
+.bottle3d-cap-back  { width: 50px; height: 50px; }
+.bottle3d-cap-front { transform: translateZ(22px); }
+.bottle3d-cap-back  { transform: translateZ(-22px) rotateY(180deg); }
+.bottle3d-cap-left,
+.bottle3d-cap-right { width: 44px; height: 50px; top: 0; }
+.bottle3d-cap-left  { left: -22px; transform: rotateY(-90deg); }
+.bottle3d-cap-right { right: -22px; transform: rotateY( 90deg); }
+.bottle3d-cap-top   {
+  width: 50px; height: 44px; left: 0; top: -22px;
+  transform: rotateX(90deg);
+  background: linear-gradient(180deg, #f8e3ad 0%, #d2b170 100%);
+}
+
+/* Spraying state: cap lifts and tilts off, atomizer presses down */
+.bottle3d.spraying .bottle3d-cap {
+  transform: translate3d(6px, -56px, 30px) rotate(8deg);
+}
+.bottle3d.spraying .bottle3d-nozzle {
+  transform: translateZ(22px) translateY(2px);
+  transition: transform 0.18s ease;
+}
+
+/* Soft contact shadow under the bottle */
+.bottle3d-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -22px;
+  transform: translateX(-50%) rotateX(75deg);
+  width: 150px;
+  height: 22px;
+  background: radial-gradient(ellipse at center,
+    rgba(0,0,0,0.35) 0%,
+    rgba(0,0,0,0.18) 40%,
+    transparent 75%);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+/* ── "Tap to spray" hint ──────────────────────────────────────── */
+.bottle3d-hint {
+  font-size: 0.6rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  position: relative;
+  padding-left: 22px;
+  opacity: 0;
+  animation: bottle3dHintIn 0.8s ease 1.6s forwards, bottle3dHintPulse 2.8s ease-in-out 2.6s infinite;
+  transition: opacity 0.4s ease;
+}
+.bottle3d-hint::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 1px;
+  background: var(--gold);
+}
+.bottle3d-hint.used {
+  opacity: 0;
+  animation: none;
+}
+
+@keyframes bottle3dHintIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 0.7; transform: translateY(0); }
+}
+@keyframes bottle3dHintPulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 0.85; }
+}
+
+/* ── Spray canvas (full viewport, additive blend) ─────────────── */
+.spray-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 95;            /* above content, below the fixed nav (z-100) */
+  mix-blend-mode: screen;
+}
+body.dark .spray-canvas {
+  mix-blend-mode: screen; /* same on dark — particles are warm cream/gold */
+}
+
+/* ── Reduced motion: kill the float, keep clicks working ─────── */
+@media (prefers-reduced-motion: reduce) {
+  .bottle3d {
+    animation: none;
+    opacity: 1;
+  }
+  .bottle3d-hint {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+
+/* ── Mobile sizing — scale the bottle down so it fits ────────── */
+@media (max-width: 900px) {
+  .bottle3d {
+    width: 150px;
+    height: 270px;
+  }
+  .bottle3d-body {
+    top: 60px;
+    left: 25px;
+    width: 100px;
+    height: 180px;
+  }
+  .bottle3d-body-front, .bottle3d-body-back { width: 100px; height: 180px; }
+  .bottle3d-body-left, .bottle3d-body-right { height: 180px; width: 46px; }
+  .bottle3d-body-left  { left: -23px; }
+  .bottle3d-body-right { right: -23px; }
+  .bottle3d-body-front { transform: translateZ(23px); }
+  .bottle3d-body-back  { transform: translateZ(-23px) rotateY(180deg); }
+  .bottle3d-body-left  { transform: rotateY(-90deg); }
+  .bottle3d-body-right { transform: rotateY(90deg); }
+  .bottle3d-body-top, .bottle3d-body-bottom { width: 100px; height: 46px; }
+  .bottle3d-body-top    { top: -23px; transform: rotateX(90deg); }
+  .bottle3d-body-bottom { bottom: -23px; transform: rotateX(-90deg); }
+
+  .bottle3d-collar { top: 44px; left: 58px; width: 34px; height: 18px; }
+  .bottle3d-nozzle { top: 41px; left: 72px; }
+  .bottle3d-cap    { top: 6px; left: 54px; width: 42px; height: 42px; }
+  .bottle3d-cap-front, .bottle3d-cap-back  { width: 42px; height: 42px; }
+  .bottle3d-cap-front { transform: translateZ(18px); }
+  .bottle3d-cap-back  { transform: translateZ(-18px) rotateY(180deg); }
+  .bottle3d-cap-left, .bottle3d-cap-right  { width: 36px; height: 42px; }
+  .bottle3d-cap-left  { left: -18px; }
+  .bottle3d-cap-right { right: -18px; }
+  .bottle3d-cap-top   { width: 42px; height: 36px; top: -18px; }
+}

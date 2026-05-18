@@ -9,6 +9,7 @@ import { SampleModal } from './components/SampleModal.jsx';
 import { CartDrawer } from './components/CartDrawer.jsx';
 import { CookieConsent } from './components/CookieConsent.jsx';
 import { MobileBottomNav } from './components/MobileBottomNav.jsx';
+import { SprayCanvas } from './components/SprayCanvas.jsx';
 import { trackPageView } from './lib/analytics.js';
 
 import { HomePage } from './pages/HomePage.jsx';
@@ -105,6 +106,7 @@ export default function App() {
       <MobileBottomNav />
       <Toaster />
       <CookieConsent />
+      <SprayCanvas />
     </AppProvider>
   );
 }
