@@ -192,18 +192,6 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="notes-section">
-        <div className="section-header" style={{ marginBottom: 0 }}>
-          <div><p className="section-label" style={{ color: 'var(--gold)' }}>The Architecture</p><h2 className="section-title" style={{ color: 'var(--cream)' }}>Every scent is<br/><em className="gradient-em">built in layers.</em></h2></div>
-        </div>
-        <div className="notes-grid">
-          <div className="note-card"><span className="note-num">01</span><h3 className="note-name">Top Notes</h3><p className="note-desc">The opening act — bright, citrus, light florals. What you smell in the first 15 minutes.</p></div>
-          <div className="note-card"><span className="note-num">02</span><h3 className="note-name">Heart Notes</h3><p className="note-desc">The soul of the fragrance. Florals, spices, green accords that emerge as the top fades.</p></div>
-          <div className="note-card"><span className="note-num">03</span><h3 className="note-name">Base Notes</h3><p className="note-desc">What lingers for hours — woods, resins, musks that define your signature trail.</p></div>
-          <div className="note-card"><span className="note-num">04</span><h3 className="note-name">Your Skin</h3><p className="note-desc">Every fragrance transforms uniquely on your chemistry. That's the final layer.</p></div>
-        </div>
-      </section>
-
       <section className="fotm">
         <div className="fotm-inner">
           <div className="fotm-left">
