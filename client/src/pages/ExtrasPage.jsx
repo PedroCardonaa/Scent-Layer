@@ -97,13 +97,30 @@ const LIST_TABS = [
   { key: 'niche',       label: 'Best Niche' },
 ];
 
+// Occasion pairings span the obvious moments (first date, interview) AND
+// the ones people don't realize they're under-dressed for. The goal of
+// the unconventional entries — Sunday at home, long flights, meeting
+// their parents, driving alone — is to expand the user's sense of when
+// fragrance actually matters, so a 30ml decant earns its place in more
+// of their week than they were expecting.
 const OCCASIONS = [
-  { name: 'First Date',     bg: 'linear-gradient(160deg,#2a1a20,#4a2838)', vibe: 'Warm and close to skin. You want to be noticed when they lean in, not from across the room.',     picks: [{ id: 2, note: 'The ultimate' },   { id: 4, note: 'Understated' },     { id: 5, note: 'Cinematic' }] },
-  { name: 'Job Interview',  bg: 'linear-gradient(160deg,#1a2030,#2a3848)', vibe: 'Confident but invisible. Be remembered for your answers, not your scent. One spray, pulse points only.', picks: [{ id: 14, note: 'Safest pick' },   { id: 9, note: 'Clean & sharp' },   { id: 3, note: 'Quietly elegant' }] },
-  { name: 'Night Out',      bg: 'linear-gradient(160deg,#1a1228,#302040)', vibe: 'Project. This is the time to go bold — the room is loud, the lighting is low, and you want your trail to linger.', picks: [{ id: 1, note: 'Commands the room' },{ id: 8, note: 'Rich & warm' }, { id: 7, note: 'Bold & sensual' }] },
-  { name: 'Summer Wedding', bg: 'linear-gradient(160deg,#1a2820,#304838)', vibe: 'Elegant and occasion-appropriate. Complement the event, don\'t compete with it.',                                  picks: [{ id: 12, note: 'Perfect for it' },  { id: 3, note: 'Clean elegance' }, { id: 13, note: 'Sophisticated' }] },
-  { name: 'Travel',         bg: 'linear-gradient(160deg,#202818,#384030)', vibe: 'Light and adaptable. 5ml or 10ml decants are your best friend — check the spray calculator.',                     picks: [{ id: 15, note: 'Versatile everywhere' },{ id: 9, note: 'Fresh & easy' },   { id: 14, note: 'Ultra-portable' }] },
-  { name: 'Casual Weekend', bg: 'linear-gradient(160deg,#282018,#403828)', vibe: 'No rules. This is the moment for something you genuinely love wearing.',                                          picks: [{ id: 4, note: 'Weekend classic' },{ id: 6, note: 'Easy all-day' }, { id: 11, note: 'Effortless' }] },
+  // ── The classics ────────────────────────────────────────────────
+  { name: 'First Date',         bg: 'linear-gradient(160deg,#2a1a20,#4a2838)', vibe: 'Warm and close to skin. You want to be noticed when they lean in, not from across the room.',     picks: [{ id: 2, note: 'The ultimate' },   { id: 4, note: 'Understated' },     { id: 5, note: 'Cinematic' }] },
+  { name: 'Job Interview',      bg: 'linear-gradient(160deg,#1a2030,#2a3848)', vibe: 'Confident but invisible. Be remembered for your answers, not your scent. One spray, pulse points only.', picks: [{ id: 14, note: 'Safest pick' },   { id: 9, note: 'Clean & sharp' },   { id: 3, note: 'Quietly elegant' }] },
+  { name: 'Night Out',          bg: 'linear-gradient(160deg,#1a1228,#302040)', vibe: 'Project. The room is loud, the lighting is low, and you want your trail to linger after you\'ve walked past.', picks: [{ id: 1, note: 'Commands the room' },{ id: 8, note: 'Rich & warm' }, { id: 7, note: 'Bold & sensual' }] },
+  { name: 'Summer Wedding',     bg: 'linear-gradient(160deg,#1a2820,#304838)', vibe: 'Elegant and occasion-appropriate. Complement the event, don\'t compete with it.',                                  picks: [{ id: 12, note: 'Perfect for it' },  { id: 3, note: 'Clean elegance' }, { id: 13, note: 'Sophisticated' }] },
+  { name: 'Travel',             bg: 'linear-gradient(160deg,#202818,#384030)', vibe: 'Light and adaptable. 5ml or 10ml decants are your best friend — check the spray calculator.',                     picks: [{ id: 15, note: 'Versatile everywhere' },{ id: 9, note: 'Fresh & easy' },   { id: 14, note: 'Ultra-portable' }] },
+  { name: 'Casual Weekend',     bg: 'linear-gradient(160deg,#282018,#403828)', vibe: 'No rules. This is the moment for something you genuinely love wearing.',                                          picks: [{ id: 4, note: 'Weekend classic' },{ id: 6, note: 'Easy all-day' }, { id: 11, note: 'Effortless' }] },
+
+  // ── The ones you didn't know you needed ────────────────────────
+  { name: 'Sunday Morning Alone',  bg: 'linear-gradient(160deg,#2a2418,#4a3a22)', vibe: 'Wear it for nobody but yourself. No one else will smell it. That\'s the point — fragrance as a private signal you\'ve chosen to take the day seriously.',                                                  picks: [{ id: 4, note: 'Skin-close ritual' },     { id: 12, note: 'Morning light' },       { id: 3, note: 'Clean and considered' }] },
+  { name: 'Long-Haul Flight',      bg: 'linear-gradient(160deg,#0e1828,#1c2c48)', vibe: 'Cabin air strips everything. Bring something grounding — not projection — and reapply at landing for the version of you who arrives.',                                                                          picks: [{ id: 4, note: 'Stays close to skin' },   { id: 9, note: 'Clean and quiet' },      { id: 14, note: 'Won\'t bother seatmates' }] },
+  { name: 'Meeting Their Parents', bg: 'linear-gradient(160deg,#1f1a26,#382838)', vibe: 'Anything too sweet reads young. Anything too smoky reads trying. Quietly respectable — they should compliment your manners, not your perfume.',                                                                  picks: [{ id: 3, note: 'Has their life together' },{ id: 12, note: 'Mediterranean restraint' }, { id: 9, note: 'Polite and clear' }] },
+  { name: 'Driving Alone at Night',bg: 'linear-gradient(160deg,#0e1020,#1c2438)', vibe: 'No one will know. That\'s the appeal. A scent worn purely because you wanted to — often the most honest version of your fragrance taste.',                                                                       picks: [{ id: 8, note: 'Pure indulgence' },       { id: 5, note: 'Cinematic' },             { id: 2, note: 'Glows in the dark' }] },
+  { name: 'Hosting at Home',       bg: 'linear-gradient(160deg,#2a1f18,#4a3a28)', vibe: 'Light and atmospheric. People should remember the evening, not your sillage. One spray, inside the wrist, before they ring the bell.',                                                                            picks: [{ id: 3, note: 'Present, not loud' },     { id: 11, note: 'Floral ambiance' },     { id: 13, note: 'Sophisticated host' }] },
+  { name: 'First Day, New Job',    bg: 'linear-gradient(160deg,#1a2228,#283038)', vibe: 'Pick what you\'ll wear daily, not your best bottle. Consistency builds the association — they\'ll think \'that\'s their scent\' inside a week.',                                                                   picks: [{ id: 9, note: 'Clean and reliable' },    { id: 4, note: 'Becomes recognizable' }, { id: 14, note: 'Quietly distinctive' }] },
+  { name: 'Reunion',               bg: 'linear-gradient(160deg,#1f1a20,#3a2838)', vibe: 'Wear something new. Scent triggers memory faster than anything else. Better they smell who you are now than who you were.',                                                                                       picks: [{ id: 1, note: 'Updated thesis' },        { id: 10, note: 'Different chapter' },    { id: 16, note: 'Confident now' }] },
+  { name: 'The Important Call',    bg: 'linear-gradient(160deg,#1c1a18,#322a22)', vibe: 'They can\'t see you. They can\'t smell you. But you can. The same trick athletes use with pre-game rituals — the body remembers.',                                                                                picks: [{ id: 1, note: 'Pre-game armor' },        { id: 8, note: 'Grounding anchor' },     { id: 14, note: 'Personal frequency' }] },
 ];
 
 const GLOSSARY = [
@@ -231,7 +248,7 @@ export function ExtrasPage() {
           <div className="ext-intro">
             <p className="ext-label">Wear it Right</p>
             <h2 className="ext-title">The right scent for <em>every moment.</em></h2>
-            <p className="ext-sub">Context is everything in fragrance. Here's exactly what to reach for — and why — for every situation.</p>
+            <p className="ext-sub">First dates and job interviews are the easy ones. The list below also covers the moments most people overlook — Sunday mornings alone, long flights, meeting their parents, important phone calls — where the right fragrance does more work than you'd expect.</p>
           </div>
           <div className="occasions-grid">
             {OCCASIONS.map(o => (
