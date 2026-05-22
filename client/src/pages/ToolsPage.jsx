@@ -49,12 +49,16 @@ export function ToolsPage() {
 
 // ─── LAYER BUILDER ─────────────────────────────────────────────────────
 function LayerBuilder({ fragrances }) {
-  const { openSampleModal } = useApp();
+  const { openSampleModal, user, saveBlend } = useApp();
   const [slots, setSlots] = useState([{ id: 1, scent: null, query: '' }, { id: 2, scent: null, query: '' }]);
   const [nextId, setNextId] = useState(3);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  // Save-blend state — name input + "already saved" flag so the
+  // button can switch into a success state after the user saves.
+  const [blendName, setBlendName] = useState('');
+  const [savedBlendId, setSavedBlendId] = useState(null);
 
   const filledCount = slots.filter(s => s.scent).length;
   const canAdd = slots.length < 4;
@@ -87,6 +91,8 @@ function LayerBuilder({ fragrances }) {
       const r = await api('/api/ai/layer', { method: 'POST', body: { fragrances: payload } });
       trackEvent('layer_analyze', { count: payload.length });
       setResult(r);
+      setBlendName(r?.blendName ?? '');
+      setSavedBlendId(null);
     } catch (e) {
       setError(e.message || 'Analysis failed');
     } finally {
@@ -140,6 +146,46 @@ function LayerBuilder({ fragrances }) {
             <div className="result-content">
               <div className="result-blend-name"><em>{result.blendName}</em></div>
               <div className="result-tags">{result.tags.map(t => <span key={t} className="result-tag">{t}</span>)}</div>
+
+              {/* Save this blend → My Blends */}
+              <div className="save-blend-row">
+                <p className="save-blend-row-label">Save This Blend</p>
+                {!user ? (
+                  <p style={{ fontSize: '0.78rem', color: 'var(--fg-soft)' }}>
+                    <a href="/login" style={{ color: 'var(--gold)' }}>Sign in</a> to save blends to your profile under "My Blends".
+                  </p>
+                ) : savedBlendId ? (
+                  <p style={{ fontSize: '0.78rem', color: 'var(--gold)' }}>
+                    ✓ Saved. Open <a href="/profile#blends" style={{ color: 'var(--gold)', textDecoration: 'underline' }}>My Blends</a> any time.
+                  </p>
+                ) : (
+                  <div className="save-blend-form">
+                    <input
+                      type="text"
+                      className="save-blend-input"
+                      value={blendName}
+                      onChange={(e) => setBlendName(e.target.value)}
+                      maxLength={80}
+                      placeholder="Name this blend"
+                    />
+                    <button
+                      type="button"
+                      className="save-blend-btn"
+                      disabled={!blendName.trim()}
+                      onClick={async () => {
+                        const payload = slots.filter(s => s.scent).map(s => ({
+                          id: s.scent.id,
+                          name: s.scent.name, brand: s.scent.brand, family: s.scent.family,
+                          top: s.scent.top, heart: s.scent.heart, base: s.scent.base,
+                        }));
+                        const saved = await saveBlend({ name: blendName.trim(), fragrances: payload, result });
+                        if (saved) setSavedBlendId(saved.id);
+                      }}
+                    >Save Blend</button>
+                  </div>
+                )}
+              </div>
+
               <div className="result-section"><p className="result-section-title">The Character</p><p className="result-text">{result.character}</p></div>
               <div className="result-section">
                 <p className="result-section-title">How It Layers</p>

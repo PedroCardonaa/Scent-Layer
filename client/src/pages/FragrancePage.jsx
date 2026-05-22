@@ -4,6 +4,8 @@ import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
 import { ProductCard } from '../components/ProductCard.jsx';
 import { RecentlyViewedRow } from '../components/RecentlyViewedRow.jsx';
+import { ReviewStrip } from '../components/ReviewStrip.jsx';
+import { WardrobePills } from '../components/WardrobePills.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useDocumentMeta } from '../lib/seo.js';
 
@@ -193,10 +195,18 @@ export function FragrancePage() {
           >
             or quick-request without the cart →
           </button>
+
+          {/* Personal status — own / sampled / backup. Signed-in only;
+              prompts to sign in for guests. */}
+          <WardrobePills fragranceId={fragrance.id} />
+
           {/* Sentinel — when this scrolls out of view, the sticky CTA appears. */}
           <div id="fragrance-cta-sentinel" aria-hidden="true" />
         </div>
       </section>
+
+      {/* Verified-wearer reviews summary */}
+      <ReviewStrip fragranceId={fragrance.id} />
 
       {/* Notes pyramid */}
       <section className="fragrance-pyramid">

@@ -4,6 +4,7 @@ import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
 import { BackToTop } from '../components/BackToTop.jsx';
 import { ProductCard } from '../components/ProductCard.jsx';
+import { DiscoverySets } from '../components/DiscoverySets.jsx';
 import { NumberTicker } from '../components/ui/NumberTicker.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useScrollReveal } from '../hooks/useScrollReveal.js';
@@ -123,6 +124,8 @@ export function ShopPage() {
         <h1 className="shop-hero-title">Niche &amp; designer<br/><em>fragrances. Sampled.</em></h1>
         <p className="shop-hero-sub">Order any fragrance as a 2ml, 5ml, 10ml, or 30ml sample. Authentic decants. Sourcing the full bottle is optional — sampling first is encouraged.</p>
       </div>
+
+      <DiscoverySets />
 
       <section className="calc-section" id="calc">
         <div className="calc-header">

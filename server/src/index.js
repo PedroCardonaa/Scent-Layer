@@ -20,6 +20,10 @@ import wishlistRoutes from './routes/wishlist.js';
 import waitlistRoutes from './routes/waitlist.js';
 import sourceRoutes from './routes/source.js';
 import aiRoutes from './routes/ai.js';
+import wardrobeRoutes from './routes/wardrobe.js';
+import reviewRoutes from './routes/reviews.js';
+import blendRoutes from './routes/blends.js';
+import setRoutes from './routes/sets.js';
 import { submitLimiter } from './middleware/rate-limit.js';
 
 const app = express();
@@ -39,6 +43,10 @@ app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/waitlist', submitLimiter, waitlistRoutes);
 app.use('/api/source', sourceRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/wardrobe', wardrobeRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/blends', blendRoutes);
+app.use('/api/sets', setRoutes);
 
 // Sentry's express error handler must come BEFORE our own handler so it
 // captures errors before we mask them as 500s.

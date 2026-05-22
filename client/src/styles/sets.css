@@ -1,0 +1,554 @@
+/* ===== DISCOVERY SETS, WARDROBE, MY BLENDS, REVIEWS =====
+   Shared editorial styling for the four new feature surfaces. All
+   theme-adaptive via the existing tokens. */
+
+/* ── Discovery Sets — /shop ──────────────────────────────────── */
+.sets-section {
+  padding: 70px 60px 50px;
+  border-bottom: 1px solid var(--hairline);
+}
+.sets-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+.sets-eyebrow {
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.sets-title {
+  font-family: 'Lora', serif;
+  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--fg);
+}
+.sets-title em { font-style: italic; color: var(--fg-soft); }
+.sets-sub {
+  font-size: 0.78rem;
+  line-height: 1.85;
+  color: var(--fg-soft);
+  max-width: 460px;
+  margin-top: 14px;
+}
+.sets-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+.set-card {
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+.set-card:hover { border-color: rgba(201,169,110,0.4); transform: translateY(-2px); }
+.set-card-visual {
+  padding: 36px 28px 32px;
+  color: var(--cream);
+  position: relative;
+}
+.set-card-eyebrow {
+  font-size: 0.58rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(232,213,196,0.7);
+  margin-bottom: 12px;
+}
+.set-card-name {
+  font-family: 'Lora', serif;
+  font-size: 1.55rem;
+  font-weight: 300;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+.set-card-audience {
+  font-size: 0.7rem;
+  font-style: italic;
+  color: rgba(232,213,196,0.65);
+}
+.set-card-body {
+  padding: 26px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.set-card-hook {
+  font-size: 0.82rem;
+  line-height: 1.8;
+  color: var(--fg-soft);
+  margin-bottom: 22px;
+}
+.set-card-items {
+  list-style: none;
+  margin: 0 0 22px;
+  padding: 0;
+  border-top: 1px solid var(--hairline);
+}
+.set-card-item {
+  display: flex;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--hairline);
+  align-items: baseline;
+}
+.set-card-item-num {
+  font-size: 0.55rem;
+  letter-spacing: 0.22em;
+  color: var(--gold);
+  min-width: 22px;
+}
+.set-card-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.set-card-item-name {
+  font-family: 'Lora', serif;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--fg);
+}
+.set-card-item-brand {
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.set-card-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.set-card-size { color: var(--fg-dim); }
+.set-card-discount { color: var(--gold); }
+.set-card-btn {
+  margin-top: auto;
+  padding: 14px;
+  background: var(--ink);
+  color: var(--cream);
+  border: 1px solid var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  cursor: none;
+  transition: all 0.25s ease;
+}
+.set-card-btn:hover { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+body.dark .set-card-btn { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+body.dark .set-card-btn:hover { background: transparent; color: var(--gold); border-color: var(--gold); }
+
+@media (max-width: 1100px) {
+  .sets-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+  .sets-section { padding: 50px 24px 40px; }
+  .sets-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Wardrobe — profile + fragrance page ─────────────────────── */
+.wardrobe-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+}
+.wardrobe-row-label {
+  font-size: 0.55rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.wardrobe-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.wardrobe-pill {
+  padding: 8px 14px;
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+  cursor: none;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.wardrobe-pill:hover { border-color: var(--gold); color: var(--fg); }
+.wardrobe-pill.active {
+  background: rgba(201,169,110,0.15);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.wardrobe-pill-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: currentColor;
+  opacity: 0.8;
+}
+
+.wardrobe-empty {
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--fg-dim);
+}
+.wardrobe-empty-icon {
+  font-size: 1.8rem;
+  color: var(--gold);
+  margin-bottom: 14px;
+  opacity: 0.7;
+}
+.wardrobe-empty-text {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  color: var(--fg-soft);
+  margin-bottom: 8px;
+}
+.wardrobe-empty-sub {
+  font-size: 0.75rem;
+  color: var(--fg-dim);
+}
+
+.wardrobe-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px;
+  margin-top: 20px;
+}
+.wardrobe-column {
+  background: var(--surface-soft);
+  padding: 24px;
+  border: 1px solid var(--hairline);
+  min-height: 220px;
+}
+.wardrobe-col-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.wardrobe-col-count {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  color: var(--fg-soft);
+  font-size: 0.78rem;
+}
+.wardrobe-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--hairline);
+  gap: 10px;
+}
+.wardrobe-item:last-child { border-bottom: none; }
+.wardrobe-item-name {
+  font-family: 'Lora', serif;
+  font-size: 0.92rem;
+  color: var(--fg);
+  margin-bottom: 2px;
+}
+.wardrobe-item-brand {
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.wardrobe-item-remove {
+  background: none; border: none; color: var(--fg-dim);
+  cursor: none; font-size: 1rem; padding: 4px 8px;
+}
+.wardrobe-item-remove:hover { color: #e07070; }
+
+@media (max-width: 900px) {
+  .wardrobe-grid { grid-template-columns: 1fr; }
+}
+
+/* ── My Blends — profile ─────────────────────────────────────── */
+.blends-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  margin-top: 18px;
+}
+.blend-card {
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.blend-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.blend-card-name {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 1.3rem;
+  color: var(--fg);
+}
+.blend-card-date {
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  white-space: nowrap;
+}
+.blend-card-tags {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.blend-card-tag {
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid rgba(201,169,110,0.3);
+  padding: 4px 10px;
+}
+.blend-card-character {
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--fg-soft);
+}
+.blend-card-recipe {
+  font-size: 0.7rem;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--hairline);
+  padding-top: 12px;
+  line-height: 1.6;
+}
+.blend-card-recipe strong { color: var(--fg); font-weight: 500; }
+.blend-card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+.blend-card-btn {
+  padding: 8px 14px;
+  background: none;
+  border: 1px solid var(--hairline);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+  cursor: none;
+  transition: all 0.25s ease;
+}
+.blend-card-btn:hover { border-color: var(--gold); color: var(--gold); }
+.blend-card-btn.danger:hover { border-color: #e07070; color: #e07070; }
+
+@media (max-width: 900px) {
+  .blends-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Save blend modal — Layer Builder ────────────────────────── */
+.save-blend-row {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px dashed rgba(201,169,110,0.3);
+  background: rgba(201,169,110,0.05);
+}
+.save-blend-row-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+.save-blend-form {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+.save-blend-input {
+  flex: 1;
+  padding: 10px 14px;
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+  color: var(--fg);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+.save-blend-input:focus { border-color: var(--gold); }
+.save-blend-btn {
+  padding: 10px 18px;
+  background: var(--gold);
+  color: var(--ink);
+  border: 1px solid var(--gold);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: none;
+  transition: all 0.25s ease;
+}
+.save-blend-btn:hover { background: transparent; color: var(--gold); }
+.save-blend-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Review strip — fragrance page ───────────────────────────── */
+.review-strip {
+  margin: 32px 0;
+  padding: 22px 24px;
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.review-strip-stat {
+  display: flex; align-items: baseline; gap: 8px;
+}
+.review-strip-pct {
+  font-family: 'Lora', serif;
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--gold);
+  line-height: 1;
+}
+.review-strip-label {
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.review-strip-counts {
+  display: flex; gap: 18px;
+}
+.review-strip-bucket {
+  font-size: 0.7rem;
+  color: var(--fg-soft);
+  display: flex; flex-direction: column; gap: 2px; align-items: flex-start;
+}
+.review-strip-bucket-n {
+  font-family: 'Lora', serif;
+  font-size: 1.05rem;
+  color: var(--fg);
+}
+.review-strip-bucket-l {
+  font-size: 0.56rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.review-strip-empty {
+  font-style: italic;
+  color: var(--fg-dim);
+  font-size: 0.82rem;
+}
+.review-snippet {
+  margin-top: 14px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 14px;
+  font-size: 0.82rem;
+  line-height: 1.75;
+  color: var(--fg-soft);
+  font-style: italic;
+}
+.review-snippet::before {
+  content: '"';
+  font-family: 'Lora', serif;
+  font-size: 1.4rem;
+  color: var(--gold);
+  margin-right: 6px;
+}
+
+/* ── My Reviews / Review form ────────────────────────────────── */
+.review-form {
+  margin-top: 20px;
+}
+.review-rating-row {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.review-rating-btn {
+  padding: 8px 14px;
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+  cursor: none;
+  transition: all 0.25s ease;
+}
+.review-rating-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(201,169,110,0.1); }
+.review-rating-btn:hover:not(.active) { border-color: var(--gold); color: var(--fg); }
+.review-text {
+  width: 100%;
+  min-height: 80px;
+  padding: 12px;
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+  color: var(--fg);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.3s ease;
+}
+.review-text:focus { border-color: var(--gold); }
+
+/* ── Profile tabs row ────────────────────────────────────────── */
+.profile-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 0 60px;
+  border-bottom: 1px solid var(--hairline);
+  background: var(--surface-soft);
+  overflow-x: auto;
+}
+.profile-tab {
+  padding: 14px 22px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  cursor: none;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+.profile-tab.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+.profile-tab:hover:not(.active) { color: var(--fg); }
+
+@media (max-width: 900px) {
+  .profile-tabs { padding: 0 24px; }
+}

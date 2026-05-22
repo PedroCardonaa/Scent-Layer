@@ -1,0 +1,8 @@
+{
+  "name": "scent-layer",
+  "version": "1.0.0",
+  "description": "Scent Layer — full-stack fragrance sampling and concierge sourcing platform (React + Vite client, Express + Prisma + Postgres server, Anthropic AI tools).",
+  "author": {
+    "name": "PedroCardonaa"
+  }
+}

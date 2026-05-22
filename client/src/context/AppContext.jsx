@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { toast } from 'sonner';
 import { api, getToken, setToken } from '../lib/api.js';
 import { FALLBACK_CATALOG } from '../lib/fallback-catalog.js';
+import { FALLBACK_SETS } from '../lib/discovery-sets.js';
 import { initGA, trackEvent } from '../lib/analytics.js';
 
 const AppContext = createContext(null);
@@ -10,7 +11,14 @@ export function AppProvider({ children }) {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [fragrances, setFragrances] = useState([]);
+  const [sets, setSets] = useState(FALLBACK_SETS);
   const [wishlistIds, setWishlistIds] = useState([]);
+  // Wardrobe: array of { id, fragranceId, status, sizeMl, notes, fragrance }
+  const [wardrobeItems, setWardrobeItems] = useState([]);
+  // Saved blends: array of { id, name, fragrances, result, createdAt }
+  const [savedBlends, setSavedBlends] = useState([]);
+  // User's own reviews
+  const [myReviews, setMyReviews] = useState([]);
   const [sourceModal, setSourceModal] = useState({ open: false, prefill: '' });
   const [sampleModal, setSampleModal] = useState({ open: false, prefill: '' });
 
@@ -152,6 +160,49 @@ export function AppProvider({ children }) {
     if (analyticsConsent === 'granted') initGA();
   }, [analyticsConsent]);
 
+  // ── Discovery Sets — prefer API, fall back to static ──────────────
+  useEffect(() => {
+    api('/api/sets')
+      .then(d => { if (Array.isArray(d.sets) && d.sets.length > 0) setSets(d.sets); })
+      .catch(() => { /* fallback already in state */ });
+  }, []);
+
+  // ── Add a Discovery Set to the cart ───────────────────────────────
+  // Expands the set into N individual line items at the set's size.
+  // The discount is applied at the line-item level so checkout payload
+  // shape stays unchanged. We pass `setSlug` through on each item so
+  // the cart drawer can group them visually.
+  const addSetToCart = useCallback((set, catalog) => {
+    if (!set || !Array.isArray(set.fragranceIds)) return;
+    set.fragranceIds.forEach(id => {
+      const f = catalog.find(c => c.id === id);
+      if (!f) return;
+      // Defer to the regular addToCart so merging logic + analytics fire.
+      // We can't call addToCart directly (it's defined below) — instead we
+      // dispatch by reading setCartItems straight here.
+      setCartItems(prev => {
+        const existingIdx = prev.findIndex(it => it.fragranceId === id && it.size === set.size);
+        if (existingIdx !== -1) {
+          const next = [...prev];
+          next[existingIdx] = { ...next[existingIdx], qty: Math.min(20, next[existingIdx].qty + 1) };
+          return next;
+        }
+        return [...prev, {
+          id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
+          fragranceId: id,
+          name: f.name,
+          brand: f.brand,
+          size: set.size,
+          qty: 1,
+          setSlug: set.slug,
+          setName: set.name,
+          discountPct: set.discountPct,
+        }];
+      });
+    });
+    trackEvent('add_set_to_cart', { set: set.slug, count: set.fragranceIds.length });
+  }, []);
+
   // ── Catalog: prefer the API, fall back to the static catalog ──────
   // The fallback keeps the UI populated when the backend isn't reachable
   // (local dev without the server running, DB unseeded, frontend-only
@@ -264,6 +315,117 @@ export function AppProvider({ children }) {
     }
   }, [user, wishlistIds, showToast]);
 
+  // ── Wardrobe (owned / sampled / backup) ───────────────────────────
+  const refreshWardrobe = useCallback(async () => {
+    if (!getToken()) { setWardrobeItems([]); return; }
+    try {
+      const d = await api('/api/wardrobe', { auth: true });
+      setWardrobeItems(d.items || []);
+    } catch (e) { console.error('[wardrobe]', e); }
+  }, []);
+
+  const setWardrobeStatus = useCallback(async (fragranceId, status, opts = {}) => {
+    if (!user) { showToast('Sign in to track your wardrobe'); return; }
+    try {
+      const d = await api('/api/wardrobe', {
+        method: 'POST', auth: true,
+        body: { fragranceId, status, sizeMl: opts.sizeMl, notes: opts.notes },
+      });
+      setWardrobeItems(prev => {
+        // Replace existing (fragranceId, status) or append
+        const idx = prev.findIndex(i => i.fragranceId === fragranceId && i.status === status);
+        if (idx !== -1) { const next = [...prev]; next[idx] = d.item; return next; }
+        return [d.item, ...prev];
+      });
+      trackEvent('wardrobe_add', { fragrance_id: fragranceId, status });
+      showToast(`<span>Added</span> to your ${status.toLowerCase()} list`);
+    } catch (e) { showToast(e.message); }
+  }, [user, showToast]);
+
+  const removeWardrobeStatus = useCallback(async (fragranceId, status) => {
+    if (!user) return;
+    try {
+      await api(`/api/wardrobe/${fragranceId}/${status}`, { method: 'DELETE', auth: true });
+      setWardrobeItems(prev => prev.filter(i => !(i.fragranceId === fragranceId && i.status === status)));
+    } catch (e) { showToast(e.message); }
+  }, [user, showToast]);
+
+  // ── Saved Blends ──────────────────────────────────────────────────
+  const refreshBlends = useCallback(async () => {
+    if (!getToken()) { setSavedBlends([]); return; }
+    try {
+      const d = await api('/api/blends', { auth: true });
+      setSavedBlends(d.blends || []);
+    } catch (e) { console.error('[blends]', e); }
+  }, []);
+
+  const saveBlend = useCallback(async ({ name, fragrances, result }) => {
+    if (!user) { showToast('Sign in to save your blends'); return null; }
+    try {
+      const d = await api('/api/blends', {
+        method: 'POST', auth: true,
+        body: { name, fragrances, result },
+      });
+      setSavedBlends(prev => [d.blend, ...prev]);
+      trackEvent('blend_save', { count: fragrances.length });
+      showToast(`<span>Saved</span> "${name}" to My Blends`);
+      return d.blend;
+    } catch (e) { showToast(e.message); return null; }
+  }, [user, showToast]);
+
+  const deleteBlend = useCallback(async (id) => {
+    try {
+      await api(`/api/blends/${id}`, { method: 'DELETE', auth: true });
+      setSavedBlends(prev => prev.filter(b => b.id !== id));
+    } catch (e) { showToast(e.message); }
+  }, [showToast]);
+
+  const renameBlend = useCallback(async (id, name) => {
+    try {
+      const d = await api(`/api/blends/${id}`, { method: 'PATCH', auth: true, body: { name } });
+      setSavedBlends(prev => prev.map(b => b.id === id ? d.blend : b));
+    } catch (e) { showToast(e.message); }
+  }, [showToast]);
+
+  // ── Reviews (the user's own) ──────────────────────────────────────
+  const refreshMyReviews = useCallback(async () => {
+    if (!getToken()) { setMyReviews([]); return; }
+    try {
+      const d = await api('/api/reviews/mine', { auth: true });
+      setMyReviews(d.items || []);
+    } catch (e) { console.error('[reviews]', e); }
+  }, []);
+
+  const submitReview = useCallback(async ({ fragranceId, rating, text, sizeMl }) => {
+    if (!user) { showToast('Sign in to leave a review'); return; }
+    try {
+      const d = await api('/api/reviews', {
+        method: 'POST', auth: true,
+        body: { fragranceId, rating, text, sizeMl },
+      });
+      setMyReviews(prev => {
+        const idx = prev.findIndex(r => r.fragranceId === fragranceId);
+        if (idx !== -1) { const next = [...prev]; next[idx] = d.review; return next; }
+        return [d.review, ...prev];
+      });
+      trackEvent('review_submit', { fragrance_id: fragranceId, rating });
+      showToast('<span>Review saved.</span> Thanks for the read.');
+    } catch (e) { showToast(e.message); }
+  }, [user, showToast]);
+
+  // Load all per-user data once the user is known.
+  useEffect(() => {
+    if (user) {
+      refreshWardrobe();
+      refreshBlends();
+      refreshMyReviews();
+    } else {
+      setWardrobeItems([]);
+      setSavedBlends([]);
+      setMyReviews([]);
+    }
+  }, [user, refreshWardrobe, refreshBlends, refreshMyReviews]);
+
   const value = useMemo(() => ({
     user, authLoading, login, signup, logout, saveQuizResult,
     fragrances,
@@ -276,7 +438,11 @@ export function AppProvider({ children }) {
     analyticsConsent, setAnalyticsConsent,
     cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart,
     recentlyViewed, markViewed,
-  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme, analyticsConsent, setAnalyticsConsent, cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart, recentlyViewed, markViewed]);
+    sets, addSetToCart,
+    wardrobeItems, setWardrobeStatus, removeWardrobeStatus, refreshWardrobe,
+    savedBlends, saveBlend, deleteBlend, renameBlend, refreshBlends,
+    myReviews, submitReview, refreshMyReviews,
+  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme, analyticsConsent, setAnalyticsConsent, cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart, recentlyViewed, markViewed, sets, addSetToCart, wardrobeItems, setWardrobeStatus, removeWardrobeStatus, refreshWardrobe, savedBlends, saveBlend, deleteBlend, renameBlend, refreshBlends, myReviews, submitReview, refreshMyReviews]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

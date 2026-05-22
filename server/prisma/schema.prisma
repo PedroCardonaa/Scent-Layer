@@ -14,6 +14,9 @@ model User {
   createdAt    DateTime        @default(now())
   quizResult   Json?
   wishlist     WishlistItem[]
+  wardrobe     WardrobeItem[]
+  reviews      Review[]
+  blends       SavedBlend[]
 }
 
 model Fragrance {
@@ -34,6 +37,8 @@ model Fragrance {
   badge       String?
   createdAt   DateTime        @default(now())
   wishlist    WishlistItem[]
+  wardrobe    WardrobeItem[]
+  reviews     Review[]
 }
 
 model WishlistItem {
@@ -54,6 +59,66 @@ model WaitlistSignup {
   createdAt DateTime @default(now())
 
   @@index([email, type])
+}
+
+// A user's Wardrobe captures their actual relationship to a fragrance:
+// what they own (full bottle), what they have a sample of, and what
+// they want a backup of. Reads as a per-user inventory rather than a
+// passive saved list.
+//   - OWNED   : they have a full bottle
+//   - SAMPLED : they have a sample/decant
+//   - BACKUP  : they own one but want a second bottle on standby
+// (Wishlist remains the "considering" tier and lives in WishlistItem.)
+model WardrobeItem {
+  id          String     @id @default(cuid())
+  userId      String
+  fragranceId Int
+  status      String     // "OWNED" | "SAMPLED" | "BACKUP"
+  sizeMl      Int?       // For SAMPLED: which size they ordered
+  notes       String?    // Free-text: how it wears on them
+  createdAt   DateTime   @default(now())
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fragrance   Fragrance  @relation(fields: [fragranceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, fragranceId, status])
+  @@index([userId, status])
+}
+
+// Customer reviews of fragrances they've sampled.
+//   - LOVED    : would buy a full bottle
+//   - LIKED    : nice but not a signature
+//   - CONFLICT : the juice is fine but doesn't sit right on their skin
+//   - HATED    : not for them
+model Review {
+  id          String     @id @default(cuid())
+  userId      String
+  fragranceId Int
+  rating      String     // "LOVED" | "LIKED" | "CONFLICT" | "HATED"
+  text        String?
+  sizeMl      Int?       // Size they sampled
+  createdAt   DateTime   @default(now())
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fragrance   Fragrance  @relation(fields: [fragranceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, fragranceId])
+  @@index([fragranceId, createdAt])
+}
+
+// A blend the user composed in the Layer Builder and chose to save.
+// `fragrances` is the input recipe (the scents the user combined).
+// `result` is the full Anthropic layer_analysis response (blendName,
+// tags, character, notes, occasions, tip). Stored verbatim so the
+// "My Blends" tab can re-render the same card without another AI call.
+model SavedBlend {
+  id          String     @id @default(cuid())
+  userId      String
+  name        String     // user-editable; defaults to result.blendName
+  fragrances  Json       // [{ id?, name, brand, family, top, heart, base }, ...]
+  result      Json       // full layer_analysis tool response
+  createdAt   DateTime   @default(now())
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
 }
 
 model SourceRequest {
