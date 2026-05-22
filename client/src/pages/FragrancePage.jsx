@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
@@ -8,6 +8,8 @@ import { ReviewStrip } from '../components/ReviewStrip.jsx';
 import { WardrobePills } from '../components/WardrobePills.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useDocumentMeta } from '../lib/seo.js';
+import { slugify, parseNotes } from '../lib/slug.js';
+import { shareOrCopy } from '../lib/share.js';
 
 const SAMPLE_SIZES = ['2ml', '5ml', '10ml', '30ml'];
 
@@ -31,6 +33,22 @@ export function FragrancePage() {
   const fragrance = fragrances.find(f => f.id === numericId);
   const [size, setSize] = useState('5ml');
   const [stickyVisible, setStickyVisible] = useState(false);
+  const heroImgRef = useRef(null);
+
+  // Subtle parallax on the hero image: ~18% of scroll speed, capped so
+  // the image never drifts past its container. Reduces to no-op on
+  // prefers-reduced-motion via CSS (.parallax-hero-img). Cheap — single
+  // passive scroll listener writing a CSS var.
+  useEffect(() => {
+    const el = heroImgRef.current;
+    if (!el) return;
+    function onScroll() {
+      const y = Math.min(80, window.scrollY * 0.18);
+      el.style.setProperty('--parallax-y', `${y}px`);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   // Record this fragrance into Recently Viewed every time the page mounts
   // for a valid fragrance id. Cap is handled inside markViewed.
@@ -121,12 +139,18 @@ export function FragrancePage() {
 
       {/* Hero */}
       <section className="fragrance-hero">
-        <div className="fragrance-hero-image">
-          <img src={heroImage} alt={`${fragrance.name} fragrance bottle`} loading="eager" />
+        <div className="fragrance-hero-image parallax-hero">
+          <img
+            ref={heroImgRef}
+            className="parallax-hero-img"
+            src={heroImage}
+            alt={`${fragrance.name} fragrance bottle`}
+            loading="eager"
+          />
           {fragrance.badge && <div className="fragrance-badge">{fragrance.badge}</div>}
         </div>
         <div className="fragrance-hero-body">
-          <p className="fragrance-brand">{fragrance.brand}</p>
+          <Link to={`/brand/${slugify(fragrance.brand)}`} className="fragrance-brand fragrance-brand-link">{fragrance.brand}</Link>
           <h1 className="fragrance-name">{fragrance.name}</h1>
           <p className="fragrance-meta">
             <span className="fragrance-family">{fragrance.family}</span>
@@ -186,6 +210,24 @@ export function FragrancePage() {
               title={saved ? 'Remove from wishlist' : 'Save to wishlist'}
             >
               {saved ? '♥' : '♡'}
+            </button>
+            <button
+              type="button"
+              className="fragrance-wishlist-btn"
+              onClick={async () => {
+                const r = await shareOrCopy({
+                  title: label,
+                  text: `${fragrance.name} by ${fragrance.brand}`,
+                  url: typeof window !== 'undefined' ? window.location.href : '',
+                });
+                if (r === 'copied')  showToast('<span>Link copied</span> to clipboard');
+                if (r === 'shared')  showToast('<span>Shared.</span>');
+                if (r === 'error')   showToast('Could not share');
+              }}
+              aria-label="Share this fragrance"
+              title="Share"
+            >
+              ↗
             </button>
           </div>
           <button
@@ -284,12 +326,23 @@ function Attribute({ label, values = [] }) {
 }
 
 function NoteAct({ num, label, sub, notes }) {
+  // Render each note in the comma-separated string as a link to its
+  // /notes/:slug page so users can drill into "saffron" or "iris" by
+  // tapping the word — no extra UI, no new tabs.
+  const parts = parseNotes(notes);
   return (
     <div className="note-act">
       <span className="note-act-num">{num}</span>
       <p className="note-act-label">{label}</p>
       <p className="note-act-sub">{sub}</p>
-      <p className="note-act-notes">{notes}</p>
+      <p className="note-act-notes">
+        {parts.map((n, i) => (
+          <span key={n + i}>
+            <Link to={`/notes/${slugify(n)}`} className="note-act-link">{n}</Link>
+            {i < parts.length - 1 ? ', ' : ''}
+          </span>
+        ))}
+      </p>
     </div>
   );
 }

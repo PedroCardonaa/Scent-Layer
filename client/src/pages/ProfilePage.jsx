@@ -441,6 +441,7 @@ function ReviewSummaryRow({ review, onSubmit, openSampleModal }) {
 
 // ─── QUIZ PANEL ─────────────────────────────────────────────────────
 function QuizPanel({ savedResult, onSave, openSampleModal, openSourceModal }) {
+  const { buildUserContext } = useApp();
   const [phase, setPhase] = useState(savedResult ? 'result' : 'start');
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState([]);
@@ -461,7 +462,10 @@ function QuizPanel({ savedResult, onSave, openSampleModal, openSourceModal }) {
     }
     setPhase('thinking');
     try {
-      const r = await api('/api/ai/quiz', { method: 'POST', body: { questions: QUESTIONS.map(q => q.q), answers: next } });
+      const r = await api('/api/ai/quiz', {
+        method: 'POST',
+        body: { questions: QUESTIONS.map(q => q.q), answers: next, userContext: buildUserContext() },
+      });
       trackEvent('quiz_complete', { result: r.name });
       setResult(r);
       setPhase('result');

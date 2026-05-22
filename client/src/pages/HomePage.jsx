@@ -12,6 +12,7 @@ import { BorderBeam } from '../components/ui/BorderBeam.jsx';
 import { ProductRevealCard } from '../components/ui/ProductRevealCard.jsx';
 import { GlowCard } from '../components/ui/GlowCard.jsx';
 import { QuizMatchCard } from '../components/QuizMatchCard.jsx';
+import { BasedOnSampledRow } from '../components/BasedOnSampledRow.jsx';
 import { WishlistRecsRow } from '../components/WishlistRecsRow.jsx';
 import { RecentlyViewedRow } from '../components/RecentlyViewedRow.jsx';
 import { useApp } from '../context/AppContext.jsx';
@@ -91,6 +92,7 @@ export function HomePage() {
           up with three empty section headers on the homepage for new
           guests. */}
       <QuizMatchCard />
+      <BasedOnSampledRow />
       <RecentlyViewedRow />
       <WishlistRecsRow />
 

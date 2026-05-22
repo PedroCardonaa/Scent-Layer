@@ -244,6 +244,46 @@ nav.dark  .nav-hamburger span { background: var(--cream); }
 .modal-overlay.open { opacity: 1; pointer-events: all; }
 .modal { background: var(--warm-white); padding: 48px; max-width: 520px; width: 100%; position: relative; animation: fadeUp 0.3s ease; max-height: 90vh; overflow-y: auto; }
 .modal-close { position: absolute; top: 18px; right: 20px; background: none; border: none; font-size: 1.1rem; color: var(--taupe); cursor: pointer; }
+
+/* ── Bottom-sheet treatment on mobile ──
+   On small screens, the centered modal becomes a sheet that slides up
+   from the bottom — matches native iOS / Android patterns, gives the
+   thumb a comfortable target zone, and leaves the page underneath
+   visible at the top. */
+@media (max-width: 640px) {
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .modal {
+    width: 100%;
+    max-width: 100%;
+    max-height: 92vh;
+    padding: 32px 24px calc(28px + env(safe-area-inset-bottom));
+    border-radius: 16px 16px 0 0;
+    animation: sheetUp 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  /* Drag-handle affordance at the top of every sheet */
+  .modal::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(139, 125, 107, 0.3);
+  }
+  .modal-close { top: 14px; right: 18px; }
+}
+@keyframes sheetUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+@media (max-width: 640px) and (prefers-reduced-motion: reduce) {
+  .modal { animation: none; }
+}
 .modal-label { font-size: 0.6rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
 .modal-title { font-family: 'Lora', serif; font-size: 1.8rem; font-weight: 300; margin-bottom: 10px; }
 .modal-sub { font-size: 0.78rem; color: var(--taupe); line-height: 1.8; margin-bottom: 28px; }
@@ -473,6 +513,112 @@ body.dark .mobile-bottom-nav {
   /* Lift the cookie banner above the mobile bottom-nav so it doesn't get
      hidden behind it. The bottom-nav is ~58px tall plus safe-area inset. */
   .cookie-consent { left: 16px; right: 16px; bottom: calc(72px + env(safe-area-inset-bottom)); max-width: none; padding: 18px 20px; }
+}
+
+/* ── READING PROGRESS ──
+   Hairline bar across the top of the viewport, fills as the user
+   scrolls. Lives above the fixed Nav (z-index higher than 100). */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: transparent;
+  z-index: 200;
+  pointer-events: none;
+}
+.reading-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold) 0%, rgba(232, 213, 168, 0.9) 100%);
+  transition: width 0.08s ease-out;
+  box-shadow: 0 0 6px rgba(201, 169, 110, 0.5);
+}
+
+/* ── SKELETONS ──
+   Shimmer placeholders rendered while a fetch is in flight. The base
+   .skeleton class is the inline span; variants compose it. */
+.skeleton {
+  display: inline-block;
+  background: linear-gradient(
+    90deg,
+    var(--surface-soft) 0%,
+    rgba(201, 169, 110, 0.08) 50%,
+    var(--surface-soft) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+body.dark .skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(201, 169, 110, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  background-size: 200% 100%;
+}
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skeleton-card {
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+  padding: 0;
+}
+.skeleton-card-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: block;
+  border-radius: 0 !important;
+}
+.skeleton-card-body {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.skeleton-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton, body.dark .skeleton { animation: none; }
+}
+
+/* ── DROP CAPS ──
+   Decorative oversized first letter on the first paragraph of any
+   element with .drop-cap. Used on long-form blurbs (note pages,
+   fragrance pages, story). */
+.drop-cap::first-letter {
+  font-family: 'Lora', serif;
+  font-size: 3.4em;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 0.9;
+  float: left;
+  margin: 0.05em 0.12em 0 0;
+  color: var(--gold);
+  padding-top: 0.04em;
+}
+
+/* ── PARALLAX HERO ──
+   Lightweight transform-on-scroll for fragrance hero images. The
+   image element gets the .parallax-hero-img class; an attached scroll
+   listener updates --parallax-y in the page component. */
+.parallax-hero {
+  overflow: hidden;
+  position: relative;
+}
+.parallax-hero-img {
+  transform: translateY(var(--parallax-y, 0));
+  transition: transform 0.05s linear;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .parallax-hero-img { transform: none !important; }
 }
 
 /* ANIMATIONS */

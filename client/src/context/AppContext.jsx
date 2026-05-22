@@ -387,6 +387,27 @@ export function AppProvider({ children }) {
     } catch (e) { showToast(e.message); }
   }, [showToast]);
 
+  // ── AI user context — sent to every AI endpoint ───────────────────
+  // Summarizes the user's wardrobe + recent reviews so the model can
+  // exclude things they already own and lean into what they loved.
+  // Trimmed aggressively so prompts stay small.
+  const buildUserContext = useCallback(() => {
+    if (!user) return undefined;
+    const wardrobe = wardrobeItems.slice(0, 30).map(i => ({
+      name:   i.fragrance?.name ?? '',
+      brand:  i.fragrance?.brand ?? '',
+      status: i.status,
+    })).filter(w => w.name && w.brand);
+    const reviews = myReviews.slice(0, 20).map(r => ({
+      name:   r.fragrance?.name ?? '',
+      brand:  r.fragrance?.brand ?? '',
+      rating: r.rating,
+      text:   r.text ? r.text.slice(0, 200) : undefined,
+    })).filter(r => r.name && r.brand);
+    if (wardrobe.length === 0 && reviews.length === 0) return undefined;
+    return { wardrobe, reviews };
+  }, [user, wardrobeItems, myReviews]);
+
   // ── Reviews (the user's own) ──────────────────────────────────────
   const refreshMyReviews = useCallback(async () => {
     if (!getToken()) { setMyReviews([]); return; }
@@ -442,7 +463,8 @@ export function AppProvider({ children }) {
     wardrobeItems, setWardrobeStatus, removeWardrobeStatus, refreshWardrobe,
     savedBlends, saveBlend, deleteBlend, renameBlend, refreshBlends,
     myReviews, submitReview, refreshMyReviews,
-  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme, analyticsConsent, setAnalyticsConsent, cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart, recentlyViewed, markViewed, sets, addSetToCart, wardrobeItems, setWardrobeStatus, removeWardrobeStatus, refreshWardrobe, savedBlends, saveBlend, deleteBlend, renameBlend, refreshBlends, myReviews, submitReview, refreshMyReviews]);
+    buildUserContext,
+  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme, analyticsConsent, setAnalyticsConsent, cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart, recentlyViewed, markViewed, sets, addSetToCart, wardrobeItems, setWardrobeStatus, removeWardrobeStatus, refreshWardrobe, savedBlends, saveBlend, deleteBlend, renameBlend, refreshBlends, myReviews, submitReview, refreshMyReviews, buildUserContext]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

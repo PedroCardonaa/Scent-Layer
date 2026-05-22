@@ -28,6 +28,58 @@ When you describe how a fragrance develops, describe what literally happens in l
 
 When relevant, gently nudge toward sampling first (especially for polarizing or expensive scents) rather than committing to full bottles blind. Never push purchase — sourcing happens on request.`;
 
+// ─── User context — wardrobe + reviews — fed to every endpoint ────────
+// Optional. When provided, the AI gets a short summary of what the user
+// owns, has sampled, and how they rated past samples. Lets the model
+// avoid recommending things they already own and lean into the notes
+// they've already endorsed.
+const wardrobeShape = z.object({
+  name: z.string(),
+  brand: z.string(),
+  status: z.enum(['OWNED', 'SAMPLED', 'BACKUP']),
+});
+const reviewShape = z.object({
+  name: z.string(),
+  brand: z.string(),
+  rating: z.enum(['LOVED', 'LIKED', 'CONFLICT', 'HATED']),
+  text: z.string().max(400).optional(),
+});
+const userContextShape = z.object({
+  wardrobe: z.array(wardrobeShape).max(60).optional(),
+  reviews:  z.array(reviewShape).max(40).optional(),
+}).optional();
+
+function formatUserContext(ctx) {
+  if (!ctx) return '';
+  const parts = [];
+  if (ctx.wardrobe?.length) {
+    const owned   = ctx.wardrobe.filter(w => w.status === 'OWNED');
+    const sampled = ctx.wardrobe.filter(w => w.status === 'SAMPLED');
+    if (owned.length) {
+      parts.push(`This person already owns: ${owned.map(w => `${w.name} (${w.brand})`).join(', ')}. Do NOT recommend any of these.`);
+    }
+    if (sampled.length) {
+      parts.push(`They have sampled: ${sampled.map(w => `${w.name} (${w.brand})`).join(', ')}.`);
+    }
+  }
+  if (ctx.reviews?.length) {
+    const loved    = ctx.reviews.filter(r => r.rating === 'LOVED');
+    const liked    = ctx.reviews.filter(r => r.rating === 'LIKED');
+    const conflict = ctx.reviews.filter(r => r.rating === 'CONFLICT' || r.rating === 'HATED');
+    if (loved.length) {
+      parts.push(`They LOVED: ${loved.map(r => `${r.name} (${r.brand})${r.text ? ` — "${r.text.slice(0, 120)}"` : ''}`).join('; ')}. Lean into the qualities of these.`);
+    }
+    if (liked.length) {
+      parts.push(`They liked: ${liked.map(r => `${r.name} (${r.brand})`).join(', ')}.`);
+    }
+    if (conflict.length) {
+      parts.push(`These did NOT work on their skin: ${conflict.map(r => `${r.name} (${r.brand})`).join(', ')}. Avoid recommending fragrances with very similar profiles.`);
+    }
+  }
+  if (parts.length === 0) return '';
+  return `\n\nPERSONAL CONTEXT (use this to personalize the recommendation):\n${parts.join('\n')}\n`;
+}
+
 // ─── LAYER BUILDER ─────────────────────────────────────────────────────
 const fragranceShape = z.object({
   name: z.string(),
@@ -40,14 +92,17 @@ const fragranceShape = z.object({
 
 router.post('/layer', async (req, res, next) => {
   try {
-    const { fragrances } = z.object({ fragrances: z.array(fragranceShape).min(2).max(4) }).parse(req.body);
+    const { fragrances, userContext } = z.object({
+      fragrances: z.array(fragranceShape).min(2).max(4),
+      userContext: userContextShape,
+    }).parse(req.body);
     const list = fragrances.map((f, i) =>
       `${i + 1}. ${f.name} — ${f.brand} (${f.family})\n   Top: ${f.top}\n   Heart: ${f.heart}\n   Base: ${f.base}`
     ).join('\n\n');
 
     const result = await structuredCall({
       system: VOICE,
-      user: `Analyze how these ${fragrances.length} fragrances layer together when worn on the same skin:\n\n${list}\n\nReturn the analysis in the structured tool call.`,
+      user: `Analyze how these ${fragrances.length} fragrances layer together when worn on the same skin:\n\n${list}\n${formatUserContext(userContext)}\nReturn the analysis in the structured tool call.`,
       toolName: 'layer_analysis',
       maxTokens: 1024,
       schema: {
@@ -72,10 +127,14 @@ router.post('/layer', async (req, res, next) => {
 // ─── COMPARE ───────────────────────────────────────────────────────────
 router.post('/compare', async (req, res, next) => {
   try {
-    const { a, b } = z.object({ a: fragranceShape, b: fragranceShape }).parse(req.body);
+    const { a, b, userContext } = z.object({
+      a: fragranceShape,
+      b: fragranceShape,
+      userContext: userContextShape,
+    }).parse(req.body);
     const result = await structuredCall({
       system: VOICE,
-      user: `Compare these two fragrances for someone deciding between them:\n\nA) ${a.name} — ${a.brand} (${a.family})\n   Top: ${a.top}\n   Heart: ${a.heart}\n   Base: ${a.base}\n\nB) ${b.name} — ${b.brand} (${b.family})\n   Top: ${b.top}\n   Heart: ${b.heart}\n   Base: ${b.base}\n\nWrite a single-paragraph verdict (4-6 sentences) that names each by their full name, contrasts what they do best, and ends with concrete guidance on when to reach for each. If the choice is close or the fragrances are polarizing on skin, suggest sampling both before committing. No bullet points.`,
+      user: `Compare these two fragrances for someone deciding between them:\n\nA) ${a.name} — ${a.brand} (${a.family})\n   Top: ${a.top}\n   Heart: ${a.heart}\n   Base: ${a.base}\n\nB) ${b.name} — ${b.brand} (${b.family})\n   Top: ${b.top}\n   Heart: ${b.heart}\n   Base: ${b.base}\n${formatUserContext(userContext)}\nWrite a single-paragraph verdict (4-6 sentences) that names each by their full name, contrasts what they do best, and ends with concrete guidance on when to reach for each. If the choice is close or the fragrances are polarizing on skin, suggest sampling both before committing. No bullet points.`,
       toolName: 'compare_verdict',
       maxTokens: 700,
       schema: {
@@ -91,10 +150,13 @@ router.post('/compare', async (req, res, next) => {
 // ─── SIMILAR ───────────────────────────────────────────────────────────
 router.post('/similar', async (req, res, next) => {
   try {
-    const { fragrance } = z.object({ fragrance: z.string().min(2).max(120) }).parse(req.body);
+    const { fragrance, userContext } = z.object({
+      fragrance: z.string().min(2).max(120),
+      userContext: userContextShape,
+    }).parse(req.body);
     const result = await structuredCall({
       system: VOICE,
-      user: `Someone loves the fragrance "${fragrance}". Recommend exactly 3 alternative fragrances that share its DNA. Mix tiers: one obvious crowd-pleaser, one understated niche option, one ambitious next-level pick. For each, name the actual brand and fragrance, explain the connection in 2-3 sentences, and call out the specific shared notes or qualities.`,
+      user: `Someone loves the fragrance "${fragrance}". Recommend exactly 3 alternative fragrances that share its DNA. Mix tiers: one obvious crowd-pleaser, one understated niche option, one ambitious next-level pick. For each, name the actual brand and fragrance, explain the connection in 2-3 sentences, and call out the specific shared notes or qualities.${formatUserContext(userContext)}`,
       toolName: 'similar_recommendations',
       maxTokens: 900,
       schema: {
@@ -127,14 +189,15 @@ router.post('/similar', async (req, res, next) => {
 // ─── QUIZ ──────────────────────────────────────────────────────────────
 router.post('/quiz', async (req, res, next) => {
   try {
-    const { questions, answers } = z.object({
+    const { questions, answers, userContext } = z.object({
       questions: z.array(z.string()).min(3).max(8),
       answers: z.array(z.string()).min(3).max(8),
+      userContext: userContextShape,
     }).parse(req.body);
     const pairs = questions.map((q, i) => `Q${i + 1}: ${q}\n→ ${answers[i] ?? '(skipped)'}`).join('\n\n');
     const result = await structuredCall({
       system: VOICE,
-      user: `Based on these quiz answers, recommend ONE primary signature fragrance for this person PLUS three alternates they should also try as samples to compare. Pick real, well-known fragrances (designer or niche — anything from Creed, Le Labo, Byredo, MFK, Dior, YSL, Tom Ford, Maison Margiela, Armani, Carolina Herrera, Viktor & Rolf, Escentric Molecules, Frederic Malle, Diptyque, Chanel, Guerlain, etc.). Write the primary description so it directly references their answers — make it feel personalized, not generic. The three alternates should be meaningfully different from each other so they get a range to sample, but all genuinely matching the answers. Do not repeat the primary in the alternates.\n\n${pairs}`,
+      user: `Based on these quiz answers, recommend ONE primary signature fragrance for this person PLUS three alternates they should also try as samples to compare. Pick real, well-known fragrances (designer or niche — anything from Creed, Le Labo, Byredo, MFK, Dior, YSL, Tom Ford, Maison Margiela, Armani, Carolina Herrera, Viktor & Rolf, Escentric Molecules, Frederic Malle, Diptyque, Chanel, Guerlain, etc.). Write the primary description so it directly references their answers — make it feel personalized, not generic. The three alternates should be meaningfully different from each other so they get a range to sample, but all genuinely matching the answers. Do not repeat the primary in the alternates.\n\n${pairs}${formatUserContext(userContext)}`,
       toolName: 'quiz_recommendation',
       maxTokens: 1200,
       schema: {

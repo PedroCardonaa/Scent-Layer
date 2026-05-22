@@ -10,6 +10,7 @@ import { CartDrawer } from './components/CartDrawer.jsx';
 import { CookieConsent } from './components/CookieConsent.jsx';
 import { MobileBottomNav } from './components/MobileBottomNav.jsx';
 import { SprayCanvas } from './components/SprayCanvas.jsx';
+import { ReadingProgress } from './components/ReadingProgress.jsx';
 import { trackPageView } from './lib/analytics.js';
 
 import { HomePage } from './pages/HomePage.jsx';
@@ -18,6 +19,8 @@ import { ToolsPage } from './pages/ToolsPage.jsx';
 import { ProfilePage } from './pages/ProfilePage.jsx';
 import { ExtrasPage } from './pages/ExtrasPage.jsx';
 import { FragrancePage } from './pages/FragrancePage.jsx';
+import { NotePage } from './pages/NotePage.jsx';
+import { BrandPage } from './pages/BrandPage.jsx';
 import { StoryPage } from './pages/StoryPage.jsx';
 import { NotFoundPage } from './pages/NotFoundPage.jsx';
 import { PrivacyPage, TermsPage } from './pages/LegalPage.jsx';
@@ -84,6 +87,8 @@ function AnimatedRoutes() {
           <Route path="/explore" element={<ExtrasPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/fragrance/:id" element={<FragrancePage />} />
+          <Route path="/notes/:slug" element={<NotePage />} />
+          <Route path="/brand/:slug" element={<BrandPage />} />
           <Route path="/story" element={<StoryPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
@@ -114,6 +119,7 @@ export default function App() {
   return (
     <AppProvider>
       <Cursor />
+      <ReadingProgress />
       <ScrollToHash />
       <PageviewTracker />
       <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>

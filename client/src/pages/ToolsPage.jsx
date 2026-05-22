@@ -49,9 +49,19 @@ export function ToolsPage() {
 
 // ─── LAYER BUILDER ─────────────────────────────────────────────────────
 function LayerBuilder({ fragrances }) {
-  const { openSampleModal, user, saveBlend } = useApp();
-  const [slots, setSlots] = useState([{ id: 1, scent: null, query: '' }, { id: 2, scent: null, query: '' }]);
-  const [nextId, setNextId] = useState(3);
+  const { openSampleModal, user, saveBlend, buildUserContext, wardrobeItems } = useApp();
+  // Pre-fill slots with the user's two most-recently SAMPLED fragrances
+  // so signed-in users with a wardrobe land on a useful starting point
+  // instead of two empty slots. Falls back to empty slots for guests.
+  const sampledSeed = (() => {
+    const sampled = wardrobeItems.filter(w => w.status === 'SAMPLED').slice(0, 2);
+    if (sampled.length >= 2) {
+      return sampled.map((w, i) => ({ id: i + 1, scent: w.fragrance, query: '' }));
+    }
+    return [{ id: 1, scent: null, query: '' }, { id: 2, scent: null, query: '' }];
+  })();
+  const [slots, setSlots] = useState(sampledSeed);
+  const [nextId, setNextId] = useState(sampledSeed.length + 1);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -88,7 +98,10 @@ function LayerBuilder({ fragrances }) {
         name: s.scent.name, brand: s.scent.brand, family: s.scent.family,
         top: s.scent.top, heart: s.scent.heart, base: s.scent.base,
       }));
-      const r = await api('/api/ai/layer', { method: 'POST', body: { fragrances: payload } });
+      const r = await api('/api/ai/layer', {
+        method: 'POST',
+        body: { fragrances: payload, userContext: buildUserContext() },
+      });
       trackEvent('layer_analyze', { count: payload.length });
       setResult(r);
       setBlendName(r?.blendName ?? '');
@@ -307,6 +320,7 @@ function SlotInput({ slot, index, fragrances, onSelect, onRemove, onQuery }) {
 
 // ─── COMPARE ───────────────────────────────────────────────────────────
 function Compare({ fragrances }) {
+  const { showToast, openSampleModal, openSourceModal, buildUserContext, wardrobeItems, myReviews } = useApp();
   const [aId, setAId] = useState(null);
   const [bId, setBId] = useState(null);
   const [verdict, setVerdict] = useState(null);
@@ -314,19 +328,34 @@ function Compare({ fragrances }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (fragrances.length >= 2 && aId == null) { setAId(fragrances[0].id); setBId(fragrances[1].id); }
-  }, [fragrances, aId]);
+    if (fragrances.length < 2 || aId != null) return;
+    // Pre-fill with the user's last sampled + their most-recent LOVED
+    // review (or another sampled if no loved yet). Cleaner starting point
+    // than the first two alphabetical entries in the catalog.
+    const sampled = wardrobeItems.filter(w => w.status === 'SAMPLED');
+    const loved   = myReviews.filter(r => r.rating === 'LOVED');
+    const lastSampledId = sampled[0]?.fragranceId;
+    const lastLovedId   = loved.find(r => r.fragranceId !== lastSampledId)?.fragranceId;
+    const otherSampledId = sampled.find(w => w.fragranceId !== lastSampledId)?.fragranceId;
+
+    const pickA = lastSampledId ?? fragrances[0].id;
+    const pickB = lastLovedId ?? otherSampledId ?? fragrances.find(f => f.id !== pickA)?.id;
+    setAId(pickA);
+    setBId(pickB);
+  }, [fragrances, aId, wardrobeItems, myReviews]);
 
   const a = fragrances.find(f => f.id === aId);
   const b = fragrances.find(f => f.id === bId);
-  const { showToast, openSampleModal, openSourceModal } = useApp();
 
   async function run() {
     if (aId === bId) { showToast('Pick two different fragrances'); return; }
     setLoading(true); setVerdict(null); setError(null);
     try {
       const shape = (f) => ({ name: f.name, brand: f.brand, family: f.family, top: f.top, heart: f.heart, base: f.base });
-      const r = await api('/api/ai/compare', { method: 'POST', body: { a: shape(a), b: shape(b) } });
+      const r = await api('/api/ai/compare', {
+        method: 'POST',
+        body: { a: shape(a), b: shape(b), userContext: buildUserContext() },
+      });
       trackEvent('compare_run', { a: a.name, b: b.name });
       setVerdict(r.verdict);
     } catch (e) {
@@ -414,7 +443,7 @@ function CompareRows({ fragrance: p }) {
 
 // ─── SIMILAR ───────────────────────────────────────────────────────────
 function Similar() {
-  const { openSampleModal, openSourceModal } = useApp();
+  const { openSampleModal, openSourceModal, buildUserContext } = useApp();
   const [input, setInput] = useState('');
   const [echo, setEcho] = useState('');
   const [recs, setRecs] = useState(null);
@@ -426,7 +455,10 @@ function Similar() {
     if (!val) return;
     setLoading(true); setRecs(null); setError(null); setEcho(val);
     try {
-      const r = await api('/api/ai/similar', { method: 'POST', body: { fragrance: val } });
+      const r = await api('/api/ai/similar', {
+        method: 'POST',
+        body: { fragrance: val, userContext: buildUserContext() },
+      });
       trackEvent('similar_search', { query: val });
       setRecs(r.recommendations);
     } catch (e) {

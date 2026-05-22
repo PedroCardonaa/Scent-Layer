@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#1a1612"/>
+  <circle cx="256" cy="256" r="192" fill="none" stroke="#c9a96e" stroke-width="3"/>
+  <text x="256" y="262" text-anchor="middle" dominant-baseline="middle"
+        font-family="Lora, Georgia, serif" font-style="italic" font-weight="300"
+        font-size="160" fill="#c9a96e">SL</text>
+</svg>
