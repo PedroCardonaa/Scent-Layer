@@ -36,6 +36,17 @@ export function Nav({ theme: themeOverride, children }) {
           </ul>
         )}
         <div className="nav-right">
+          <button
+            type="button"
+            className="nav-search"
+            onClick={() => window.dispatchEvent(new Event('sl-open-search'))}
+            aria-label="Open search"
+            title="Search (Cmd/Ctrl+K)"
+          >
+            <span aria-hidden="true">⌕</span>
+            <span className="nav-search-label">Search</span>
+            <span className="nav-search-kbd">⌘K</span>
+          </button>
           <ToggleTheme />
           <button type="button" className="nav-cart" onClick={openCart} aria-label={`Cart (${cartCount} items)`}>
             <ShoppingBag size={16} strokeWidth={1.5} />

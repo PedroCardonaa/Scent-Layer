@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
+import { StreamText } from '../components/StreamText.jsx';
+import { WhyThisRec } from '../components/WhyThisRec.jsx';
+import { useThinkingStages } from '../hooks/useThinkingStages.js';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
 import { trackEvent } from '../lib/analytics.js';
@@ -511,12 +514,7 @@ function QuizPanel({ savedResult, onSave, openSampleModal, openSourceModal }) {
         </>
       )}
 
-      {phase === 'thinking' && (
-        <div className="quiz-thinking">
-          <div className="quiz-thinking-icon">◈</div>
-          <p className="quiz-thinking-text">Crafting your recommendation…</p>
-        </div>
-      )}
+      {phase === 'thinking' && <QuizThinking />}
 
       {phase === 'result' && result && (
         <div className="quiz-result">
@@ -527,7 +525,8 @@ function QuizPanel({ savedResult, onSave, openSampleModal, openSourceModal }) {
           <p className="quiz-result-intro">Your signature scent is:</p>
           <h3 className="quiz-result-title"><em>{result.name}</em></h3>
           <p className="quiz-result-brand">{result.brand}</p>
-          <p className="quiz-result-desc">{result.description}</p>
+          <StreamText as="p" className="quiz-result-desc" text={result.description} />
+          <WhyThisRec reasoning={result.reasoning} />
           <div className="quiz-result-tags">
             {(result.tags ?? []).map(t => <span key={t} className="quiz-result-tag">{t}</span>)}
           </div>
@@ -564,6 +563,35 @@ function QuizPanel({ savedResult, onSave, openSampleModal, openSourceModal }) {
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+/**
+ * Rotates four "thinking" stages while the quiz API call is in flight.
+ * Makes the wait feel deliberate — the model is actually reading the
+ * answers, cross-referencing the wardrobe, weighing options — rather
+ * than canned. ~3.6 seconds full rotation; loops if the call takes
+ * longer.
+ */
+function QuizThinking() {
+  const { user } = useApp();
+  const stages = user ? [
+    'Reading your answers',
+    'Cross-referencing your wardrobe',
+    'Weighing the options',
+    'Drafting your match',
+  ] : [
+    'Reading your answers',
+    'Mapping your preferences',
+    'Weighing the catalog',
+    'Drafting your match',
+  ];
+  const label = useThinkingStages(true, stages);
+  return (
+    <div className="quiz-thinking">
+      <div className="quiz-thinking-icon">◈</div>
+      <p className="quiz-thinking-text">{label || 'Crafting your recommendation'}…</p>
     </div>
   );
 }

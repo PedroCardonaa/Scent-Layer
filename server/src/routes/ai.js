@@ -116,8 +116,9 @@ router.post('/layer', async (req, res, next) => {
           baseNotes: { type: 'string', description: 'Comma-separated dominant base notes that linger.' },
           occasions: { type: 'array', items: { type: 'string' }, minItems: 3, maxItems: 6, description: 'Short occasion phrases (e.g. "Date Night", "Winter Evenings").' },
           tip: { type: 'string', description: 'One concrete application tip — which one to spray first, where, and why.' },
+          reasoning: { type: 'string', description: 'One sentence explaining WHY this analysis came out the way it did. If user context was provided, reference it ("Because you sampled Santal 33 and rated it LOVED, I leaned into the woody-iris register"). If not, name the strongest note interaction driving the result.' },
         },
-        required: ['blendName', 'tags', 'character', 'topNotes', 'heartNotes', 'baseNotes', 'occasions', 'tip'],
+        required: ['blendName', 'tags', 'character', 'topNotes', 'heartNotes', 'baseNotes', 'occasions', 'tip', 'reasoning'],
       },
     });
     res.json(result);
@@ -139,8 +140,11 @@ router.post('/compare', async (req, res, next) => {
       maxTokens: 700,
       schema: {
         type: 'object',
-        properties: { verdict: { type: 'string', description: 'The full comparison paragraph.' } },
-        required: ['verdict'],
+        properties: {
+          verdict: { type: 'string', description: 'The full comparison paragraph.' },
+          reasoning: { type: 'string', description: 'One sentence explaining how you weighed the two. If user context was provided, reference it ("Because you LOVED Santal 33, I tilted toward the woodier of the two"). If not, name the deciding axis.' },
+        },
+        required: ['verdict', 'reasoning'],
       },
     });
     res.json(result);
@@ -178,8 +182,9 @@ router.post('/similar', async (req, res, next) => {
               required: ['name', 'brand', 'rank', 'why', 'match'],
             },
           },
+          reasoning: { type: 'string', description: 'One sentence explaining what about the source fragrance drove the three picks (which notes / structure / vibe you triangulated on). If user context was provided, reference it.' },
         },
-        required: ['recommendations'],
+        required: ['recommendations', 'reasoning'],
       },
     });
     res.json(result);
@@ -224,8 +229,9 @@ router.post('/quiz', async (req, res, next) => {
               required: ['name', 'brand', 'why', 'match'],
             },
           },
+          reasoning: { type: 'string', description: 'One sentence saying WHICH of their answers most drove the primary pick. If user context was provided, reference it too ("Plus you sampled Santal 33 and rated it LOVED, which reinforced the woody direction").' },
         },
-        required: ['name', 'brand', 'description', 'tags', 'why', 'alternates'],
+        required: ['name', 'brand', 'description', 'tags', 'why', 'alternates', 'reasoning'],
       },
     });
     res.json(result);

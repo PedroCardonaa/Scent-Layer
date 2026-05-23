@@ -2,6 +2,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '../components/ui/Command.jsx';
+import { StreamText } from '../components/StreamText.jsx';
+import { WhyThisRec } from '../components/WhyThisRec.jsx';
+import { useThinkingStages } from '../hooks/useThinkingStages.js';
 import { useApp } from '../context/AppContext.jsx';
 import { useDocumentMeta } from '../lib/seo.js';
 import { api } from '../lib/api.js';
@@ -148,17 +151,13 @@ function LayerBuilder({ fragrances }) {
               <p style={{ fontSize: '0.7rem', color: 'var(--fg-faint)' }}>Add at least two fragrances to begin</p>
             </div>
           )}
-          {loading && (
-            <div className="thinking">
-              <p className="thinking-label">Analyzing your blend</p>
-              <div className="dots"><div className="dot"/><div className="dot"/><div className="dot"/></div>
-            </div>
-          )}
+          {loading && <LayerThinking active={loading} user={user} />}
           {error && <p className="error-text">{error}</p>}
           {result && (
             <div className="result-content">
               <div className="result-blend-name"><em>{result.blendName}</em></div>
               <div className="result-tags">{result.tags.map(t => <span key={t} className="result-tag">{t}</span>)}</div>
+              <WhyThisRec reasoning={result.reasoning} />
 
               {/* Save this blend → My Blends */}
               <div className="save-blend-row">
@@ -199,7 +198,7 @@ function LayerBuilder({ fragrances }) {
                 )}
               </div>
 
-              <div className="result-section"><p className="result-section-title">The Character</p><p className="result-text">{result.character}</p></div>
+              <div className="result-section"><p className="result-section-title">The Character</p><StreamText as="p" className="result-text" text={result.character} /></div>
               <div className="result-section">
                 <p className="result-section-title">How It Layers</p>
                 <div className="note-layers">
@@ -234,6 +233,70 @@ function LayerBuilder({ fragrances }) {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+/**
+ * Thinking presentations — one per AI tool. Each rotates a tool-specific
+ * sequence of status messages while the request is in flight, so the
+ * wait reads as deliberate reasoning instead of a frozen UI. The
+ * messages reference user context if the caller is signed in.
+ */
+function LayerThinking({ active, user }) {
+  const stages = user ? [
+    'Reading the recipe',
+    'Pulling notes',
+    'Cross-referencing your wardrobe',
+    'Drafting the analysis',
+  ] : [
+    'Reading the recipe',
+    'Pulling notes',
+    'Mapping how they layer',
+    'Drafting the analysis',
+  ];
+  const label = useThinkingStages(active, stages);
+  return (
+    <div className="thinking">
+      <p className="thinking-label">{label || 'Analyzing your blend'}</p>
+      <div className="dots"><div className="dot"/><div className="dot"/><div className="dot"/></div>
+    </div>
+  );
+}
+
+function CompareThinking({ active, user }) {
+  const stages = user ? [
+    'Reading both fragrances',
+    'Weighing what each does best',
+    'Considering your wardrobe',
+    'Drafting the verdict',
+  ] : [
+    'Reading both fragrances',
+    'Comparing top to base',
+    'Weighing what each does best',
+    'Drafting the verdict',
+  ];
+  const label = useThinkingStages(active, stages);
+  return (
+    <div className="thinking" style={{ marginTop: 24 }}>
+      <p className="thinking-label">{label || 'Comparing'}</p>
+      <div className="dots"><div className="dot"/><div className="dot"/><div className="dot"/></div>
+    </div>
+  );
+}
+
+function SimilarThinking({ active }) {
+  const stages = [
+    'Triangulating the DNA',
+    'Scanning the catalog',
+    'Shortlisting alternatives',
+    'Writing the picks',
+  ];
+  const label = useThinkingStages(active, stages);
+  return (
+    <div className="thinking">
+      <p className="thinking-label">{label || 'Finding alternatives'}</p>
+      <div className="dots"><div className="dot"/><div className="dot"/><div className="dot"/></div>
     </div>
   );
 }
@@ -320,10 +383,12 @@ function SlotInput({ slot, index, fragrances, onSelect, onRemove, onQuery }) {
 
 // ─── COMPARE ───────────────────────────────────────────────────────────
 function Compare({ fragrances }) {
-  const { showToast, openSampleModal, openSourceModal, buildUserContext, wardrobeItems, myReviews } = useApp();
+  const { user, showToast, openSampleModal, openSourceModal, buildUserContext, wardrobeItems, myReviews } = useApp();
   const [aId, setAId] = useState(null);
   const [bId, setBId] = useState(null);
-  const [verdict, setVerdict] = useState(null);
+  // Stores the full result object (verdict + reasoning) rather than
+  // just the verdict string so we can render WhyThisRec.
+  const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -349,7 +414,7 @@ function Compare({ fragrances }) {
 
   async function run() {
     if (aId === bId) { showToast('Pick two different fragrances'); return; }
-    setLoading(true); setVerdict(null); setError(null);
+    setLoading(true); setResult(null); setError(null);
     try {
       const shape = (f) => ({ name: f.name, brand: f.brand, family: f.family, top: f.top, heart: f.heart, base: f.base });
       const r = await api('/api/ai/compare', {
@@ -357,7 +422,7 @@ function Compare({ fragrances }) {
         body: { a: shape(a), b: shape(b), userContext: buildUserContext() },
       });
       trackEvent('compare_run', { a: a.name, b: b.name });
-      setVerdict(r.verdict);
+      setResult(r);
     } catch (e) {
       setError(e.message || 'Comparison failed');
     } finally {
@@ -391,7 +456,7 @@ function Compare({ fragrances }) {
             {loading ? 'Analyzing…' : 'Compare These Fragrances'}
           </button>
         </div>
-        {a && b && (verdict || loading || error) && (
+        {a && b && (result || loading || error) && (
           <div className="compare-result">
             <div className="compare-card">
               <div className="compare-card-brand">{a.brand}</div>
@@ -413,11 +478,14 @@ function Compare({ fragrances }) {
             </div>
             <div className="compare-verdict">
               <p className="compare-verdict-label">AI Verdict</p>
-              <p className="compare-verdict-text">
-                {loading ? 'Analyzing…' : error ? <span className="error-text">{error}</span> : verdict}
-              </p>
-              {verdict && !loading && (
-                <p className="compare-verdict-hint">Still on the fence? Sample both in 5ml decants before deciding — that's what they're for.</p>
+              {loading && <CompareThinking active={loading} user={user} />}
+              {error && <p className="error-text">{error}</p>}
+              {result && !loading && (
+                <>
+                  <StreamText as="p" className="compare-verdict-text" text={result.verdict} />
+                  <WhyThisRec reasoning={result.reasoning} />
+                  <p className="compare-verdict-hint">Still on the fence? Sample both in 5ml decants before deciding — that's what they're for.</p>
+                </>
               )}
             </div>
           </div>
@@ -446,21 +514,23 @@ function Similar() {
   const { openSampleModal, openSourceModal, buildUserContext } = useApp();
   const [input, setInput] = useState('');
   const [echo, setEcho] = useState('');
-  const [recs, setRecs] = useState(null);
+  // Store the full result (recommendations + reasoning) so we can render
+  // the "Why these picks?" expandable.
+  const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   async function find() {
     const val = input.trim();
     if (!val) return;
-    setLoading(true); setRecs(null); setError(null); setEcho(val);
+    setLoading(true); setResult(null); setError(null); setEcho(val);
     try {
       const r = await api('/api/ai/similar', {
         method: 'POST',
         body: { fragrance: val, userContext: buildUserContext() },
       });
       trackEvent('similar_search', { query: val });
-      setRecs(r.recommendations);
+      setResult(r);
     } catch (e) {
       setError(e.message || 'Could not find alternatives');
     } finally {
@@ -490,25 +560,21 @@ function Similar() {
           </button>
         </div>
 
-        {loading && (
-          <div className="thinking">
-            <p className="thinking-label">Finding your alternatives</p>
-            <div className="dots"><div className="dot"/><div className="dot"/><div className="dot"/></div>
-          </div>
-        )}
+        {loading && <SimilarThinking active={loading} />}
         {error && <p className="error-text">{error}</p>}
-        {recs && (
+        {result && (
           <div className="similar-result">
             <h3 className="similar-result-title">If you love <em>{echo}</em>, try these:</h3>
+            <WhyThisRec reasoning={result.reasoning} label="Why these picks?" />
             <div className="similar-cards">
-              {recs.map((r, i) => {
+              {result.recommendations.map((r, i) => {
                 const label = `${r.name} — ${r.brand}`;
                 return (
                   <div key={i} className="similar-card">
                     <p className="similar-card-rank">{r.rank}</p>
                     <h3 className="similar-card-name">{r.name}</h3>
                     <p className="similar-card-brand">{r.brand}</p>
-                    <p className="similar-card-why">{r.why}</p>
+                    <StreamText as="p" className="similar-card-why" text={r.why} />
                     <p className="similar-card-match">✦ {r.match}</p>
                     <div className="similar-card-actions">
                       <button type="button" className="sample-btn" onClick={() => openSampleModal(label)}>Order Sample</button>

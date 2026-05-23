@@ -11,6 +11,7 @@ import { CookieConsent } from './components/CookieConsent.jsx';
 import { MobileBottomNav } from './components/MobileBottomNav.jsx';
 import { SprayCanvas } from './components/SprayCanvas.jsx';
 import { ReadingProgress } from './components/ReadingProgress.jsx';
+import { SearchPalette } from './components/SearchPalette.jsx';
 import { trackPageView } from './lib/analytics.js';
 
 import { HomePage } from './pages/HomePage.jsx';
@@ -132,6 +133,7 @@ export default function App() {
       <Toaster />
       <CookieConsent />
       <SprayCanvas />
+      <SearchPalette />
       {showIntro && (
         <Suspense fallback={null}>
           <IntroSpray onFinish={finishIntro} />

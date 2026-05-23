@@ -31,6 +31,7 @@ import './styles/cart.css';
 import './styles/story.css';
 import './styles/sets.css';
 import './styles/note-brand.css';
+import './styles/search-palette.css';
 import './styles/intro-spray.css';
 import './styles/tailwind.css';
 
