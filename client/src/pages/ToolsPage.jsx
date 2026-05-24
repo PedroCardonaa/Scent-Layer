@@ -22,10 +22,10 @@ export function ToolsPage() {
     return 'builder';
   });
 
-  // Theme is now centralized in AppContext — page no longer touches body.dark.
+  // Theme is now centralized in AppContext, page no longer touches body.dark.
 
   useDocumentMeta({
-    title: 'AI Fragrance Tools — Layer Builder, Compare, Similar Scents',
+    title: 'AI Fragrance Tools, Layer Builder, Compare, Similar Scents',
     description: 'AI-powered tools to find your signature scent. Layer fragrances, compare options side-by-side, or discover alternatives to something you already love.',
   });
 
@@ -71,7 +71,7 @@ function LayerBuilder({ fragrances }) {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  // Save-blend state — name input + "already saved" flag so the
+  // Save-blend state, name input + "already saved" flag so the
   // button can switch into a success state after the user saves.
   const [blendName, setBlendName] = useState('');
   const [savedBlendId, setSavedBlendId] = useState(null);
@@ -124,7 +124,7 @@ function LayerBuilder({ fragrances }) {
       <div className="tool-hero">
         <p className="tool-hero-label">Layer Builder</p>
         <h1 className="tool-hero-title">Compose your<br/><em>signature blend.</em></h1>
-        <p className="tool-hero-sub">Add 2–4 fragrances to see how their notes interact. Get an AI-powered analysis of the harmony, character, and perfect occasions for your combination.</p>
+        <p className="tool-hero-sub">Add 2 to 4 fragrances to see how their notes interact. Get an AI-powered analysis of the harmony, character, and perfect occasions for your combination.</p>
       </div>
       <div className="builder-layout">
         <div className="builder-panel">
@@ -224,7 +224,7 @@ function LayerBuilder({ fragrances }) {
                       key={s.id}
                       type="button"
                       className="blend-sample-btn"
-                      onClick={() => openSampleModal(`${s.scent.name} — ${s.scent.brand}`)}
+                      onClick={() => openSampleModal(`${s.scent.name}, ${s.scent.brand}`)}
                     >
                       <span className="blend-sample-name">{s.scent.name}</span>
                       <span className="blend-sample-cta">Sample →</span>
@@ -241,7 +241,7 @@ function LayerBuilder({ fragrances }) {
 }
 
 /**
- * Thinking presentations — one per AI tool. Each rotates a tool-specific
+ * Thinking presentations, one per AI tool. Each rotates a tool-specific
  * sequence of status messages while the request is in flight, so the
  * wait reads as deliberate reasoning instead of a frozen UI. The
  * messages reference user context if the caller is signed in.
@@ -306,7 +306,7 @@ function SimilarThinking({ active }) {
 
 function SlotInput({ slot, index, fragrances, onSelect, onRemove, onQuery }) {
   // Open when the input is focused; close on click outside or on selection.
-  // The dropdown shows every catalog item that matches the (substring) query —
+  // The dropdown shows every catalog item that matches the (substring) query ,
   // when the query is empty we show the full catalog so the user can browse
   // by scrolling. cmdk still owns keyboard nav + ARIA semantics.
   const [open, setOpen] = useState(false);
@@ -355,7 +355,7 @@ function SlotInput({ slot, index, fragrances, onSelect, onRemove, onQuery }) {
               value={slot.query}
               onValueChange={onQuery}
               onFocus={() => setOpen(true)}
-              placeholder="Click to browse — or type a fragrance, brand, or note"
+              placeholder="Click to browse, or type a fragrance, brand, or note"
             />
             {open && (
               <CommandList className="absolute left-0 right-0 top-full z-30 mt-1 max-h-[320px] overflow-y-auto bg-deep border border-gold/30 shadow-[0_10px_40px_rgba(0,0,0,0.45)]">
@@ -370,7 +370,7 @@ function SlotInput({ slot, index, fragrances, onSelect, onRemove, onQuery }) {
                       value={String(c.id)}
                       onSelect={() => handleSelect(c)}
                     >
-                      <span className="text-cream">{c.name} — {c.brand}</span>
+                      <span className="text-cream">{c.name}, {c.brand}</span>
                       <span className="text-[0.65rem] text-cream/50">{c.top}</span>
                     </CommandItem>
                   ))
@@ -438,21 +438,21 @@ function Compare({ fragrances }) {
       <div className="tool-hero" id="compare">
         <p className="tool-hero-label">Compare</p>
         <h1 className="tool-hero-title">Side by side,<br/><em>note by note.</em></h1>
-        <p className="tool-hero-sub">Pick two fragrances and see exactly how they stack up — notes, seasons, occasions, and which one wins for each situation.</p>
+        <p className="tool-hero-sub">Pick two fragrances and see exactly how they stack up, notes, seasons, occasions, and which one wins for each situation.</p>
       </div>
       <div className="compare-layout">
         <div className="compare-selectors">
           <div>
             <p style={{ fontSize: '0.6rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 10 }}>First Fragrance</p>
             <select className="compare-select" value={aId ?? ''} onChange={(e) => setAId(Number(e.target.value))}>
-              {fragrances.map(f => <option key={f.id} value={f.id}>{f.name} — {f.brand}</option>)}
+              {fragrances.map(f => <option key={f.id} value={f.id}>{f.name}, {f.brand}</option>)}
             </select>
           </div>
           <div className="compare-vs">vs</div>
           <div>
             <p style={{ fontSize: '0.6rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 10 }}>Second Fragrance</p>
             <select className="compare-select" value={bId ?? ''} onChange={(e) => setBId(Number(e.target.value))}>
-              {fragrances.map(f => <option key={f.id} value={f.id}>{f.name} — {f.brand}</option>)}
+              {fragrances.map(f => <option key={f.id} value={f.id}>{f.name}, {f.brand}</option>)}
             </select>
           </div>
           <button type="button" className="compare-btn" onClick={run} disabled={loading || !a || !b}>
@@ -466,8 +466,8 @@ function Compare({ fragrances }) {
               <div className="compare-card-name">{a.name}</div>
               <CompareRows fragrance={a} />
               <div className="compare-card-actions">
-                <button type="button" className="sample-btn" onClick={() => openSampleModal(`${a.name} — ${a.brand}`)}>Order Sample</button>
-                <button type="button" className="source-link" style={{ marginTop: 10 }} onClick={() => openSourceModal(`${a.name} — ${a.brand}`)}>or full bottle →</button>
+                <button type="button" className="sample-btn" onClick={() => openSampleModal(`${a.name}, ${a.brand}`)}>Order Sample</button>
+                <button type="button" className="source-link" style={{ marginTop: 10 }} onClick={() => openSourceModal(`${a.name}, ${a.brand}`)}>or full bottle →</button>
               </div>
             </div>
             <div className="compare-card">
@@ -475,8 +475,8 @@ function Compare({ fragrances }) {
               <div className="compare-card-name">{b.name}</div>
               <CompareRows fragrance={b} />
               <div className="compare-card-actions">
-                <button type="button" className="sample-btn" onClick={() => openSampleModal(`${b.name} — ${b.brand}`)}>Order Sample</button>
-                <button type="button" className="source-link" style={{ marginTop: 10 }} onClick={() => openSourceModal(`${b.name} — ${b.brand}`)}>or full bottle →</button>
+                <button type="button" className="sample-btn" onClick={() => openSampleModal(`${b.name}, ${b.brand}`)}>Order Sample</button>
+                <button type="button" className="source-link" style={{ marginTop: 10 }} onClick={() => openSourceModal(`${b.name}, ${b.brand}`)}>or full bottle →</button>
               </div>
             </div>
             <div className="compare-verdict">
@@ -487,7 +487,7 @@ function Compare({ fragrances }) {
                 <>
                   <StreamText as="p" className="compare-verdict-text" text={result.verdict} />
                   <WhyThisRec reasoning={result.reasoning} />
-                  <p className="compare-verdict-hint">Still on the fence? Sample both in 5ml decants before deciding — that's what they're for.</p>
+                  <p className="compare-verdict-hint">Still on the fence? Sample both in 5ml decants before deciding, that's what they're for.</p>
                 </>
               )}
             </div>
@@ -546,10 +546,10 @@ function Similar() {
       <div className="tool-hero" id="similar">
         <p className="tool-hero-label">Similar Scents</p>
         <h1 className="tool-hero-title">Love one?<br/><em>Discover more.</em></h1>
-        <p className="tool-hero-sub">Type any fragrance you already love — mainstream or niche — and get curated alternatives that share its DNA.</p>
+        <p className="tool-hero-sub">Type any fragrance you already love, mainstream or niche, and get curated alternatives that share its DNA.</p>
       </div>
       <div className="similar-layout">
-        <p className="similar-hint">Works with any fragrance — try "Bleu de Chanel", "Dior Sauvage", "YSL Black Opium", or any scent you already wear.</p>
+        <p className="similar-hint">Works with any fragrance, try "Bleu de Chanel", "Dior Sauvage", "YSL Black Opium", or any scent you already wear.</p>
         <div className="similar-search-row">
           <input
             className="similar-input"
@@ -571,7 +571,7 @@ function Similar() {
             <WhyThisRec reasoning={result.reasoning} label="Why these picks?" />
             <div className="similar-cards">
               {result.recommendations.map((r, i) => {
-                const label = `${r.name} — ${r.brand}`;
+                const label = `${r.name}, ${r.brand}`;
                 return (
                   <div key={i} className="similar-card">
                     <p className="similar-card-rank">{r.rank}</p>
@@ -636,7 +636,7 @@ function Describe({ fragrances }) {
       <div className="tool-hero" id="describe">
         <p className="tool-hero-label">Describe a Scent</p>
         <h1 className="tool-hero-title">Smelled it once,<br/><em>never knew what it was.</em></h1>
-        <p className="tool-hero-sub">Describe a fragrance in your own words — a note, a place, a memory, a vibe — and we'll triangulate the three closest matches from the catalog.</p>
+        <p className="tool-hero-sub">Describe a fragrance in your own words, a note, a place, a memory, a vibe, and we'll triangulate the three closest matches from the catalog.</p>
       </div>
       <div className="similar-layout">
         <p className="similar-hint">Examples: "smoky, like a campfire but with vanilla underneath" · "I smelled this at a hotel bar in November, leather and rum" · "clean, like ironed linen and morning sun".</p>
@@ -670,7 +670,7 @@ function Describe({ fragrances }) {
             <div className="similar-cards">
               {result.matches.map((m) => {
                 const f = fragrances.find(x => x.id === m.id);
-                const label = `${m.name} — ${m.brand}`;
+                const label = `${m.name}, ${m.brand}`;
                 return (
                   <div key={m.id} className="similar-card">
                     <p className="similar-card-rank">{m.rank}</p>

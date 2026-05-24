@@ -6,13 +6,13 @@ import { useEffect, useRef, useState } from 'react';
  * When the user pulls down past `threshold` pixels and releases, it
  * calls `onRefresh` and shows a brief refreshing indicator.
  *
- * Touch-only — desktop users have plenty of other ways to reload.
+ * Touch-only, desktop users have plenty of other ways to reload.
  * Respects prefers-reduced-motion by skipping the visual pull effect
  * but keeping the gesture functional.
  *
  * Returns:
- *   pullDistance — current px the user has pulled (0 if not pulling)
- *   refreshing   — true between the release and onRefresh resolving
+ *   pullDistance, current px the user has pulled (0 if not pulling)
+ *   refreshing  , true between the release and onRefresh resolving
  */
 export function usePullToRefresh({ onRefresh, threshold = 70, disabled = false }) {
   const [pullDistance, setPullDistance] = useState(0);
@@ -35,7 +35,7 @@ export function usePullToRefresh({ onRefresh, threshold = 70, disabled = false }
     function onTouchMove(e) {
       if (!tracking.current || startY.current == null) return;
       if (window.scrollY > 0) {
-        // User scrolled the page itself — cancel the pull.
+        // User scrolled the page itself, cancel the pull.
         tracking.current = false;
         setPullDistance(0);
         return;
@@ -67,7 +67,7 @@ export function usePullToRefresh({ onRefresh, threshold = 70, disabled = false }
       window.removeEventListener('touchend',   onTouchEnd);
     };
   // We want the latest pullDistance + onRefresh on every cycle but
-  // not to re-attach listeners constantly — capturing onRefresh via
+  // not to re-attach listeners constantly, capturing onRefresh via
   // ref-style closure is fine for this small surface.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [disabled, threshold, onRefresh, pullDistance]);

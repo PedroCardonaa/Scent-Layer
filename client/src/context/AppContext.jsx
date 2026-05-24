@@ -94,7 +94,7 @@ export function AppProvider({ children }) {
       return next;
     });
   }, []);
-  // Visit counter — bumped once per app mount. Used to gate "returning visitor"
+  // Visit counter, bumped once per app mount. Used to gate "returning visitor"
   // UX like the exit-intent popup so first-time browsers don't get hit on entry.
   const [visitCount] = useState(() => {
     if (typeof window === 'undefined') return 0;
@@ -106,7 +106,7 @@ export function AppProvider({ children }) {
 
   // ── Theme ─────────────────────────────────────────────────────────
   // User preference is one of 'system' | 'light' | 'dark'. The "effective"
-  // theme — what's actually applied to body.dark — collapses 'system' down
+  // theme, what's actually applied to body.dark, collapses 'system' down
   // to whatever the OS reports via prefers-color-scheme.
   const [themePref, setThemePrefState] = useState(() => {
     if (typeof window === 'undefined') return 'system';
@@ -160,7 +160,7 @@ export function AppProvider({ children }) {
     if (analyticsConsent === 'granted') initGA();
   }, [analyticsConsent]);
 
-  // ── Discovery Sets — prefer API, fall back to static ──────────────
+  // ── Discovery Sets, prefer API, fall back to static ──────────────
   useEffect(() => {
     api('/api/sets')
       .then(d => { if (Array.isArray(d.sets) && d.sets.length > 0) setSets(d.sets); })
@@ -178,7 +178,7 @@ export function AppProvider({ children }) {
       const f = catalog.find(c => c.id === id);
       if (!f) return;
       // Defer to the regular addToCart so merging logic + analytics fire.
-      // We can't call addToCart directly (it's defined below) — instead we
+      // We can't call addToCart directly (it's defined below), instead we
       // dispatch by reading setCartItems straight here.
       setCartItems(prev => {
         const existingIdx = prev.findIndex(it => it.fragranceId === id && it.size === set.size);
@@ -214,7 +214,7 @@ export function AppProvider({ children }) {
         setFragrances(d.fragrances);
       }
     } catch (e) {
-      console.warn('[catalog] refresh failed —', e.message);
+      console.warn('[catalog] refresh failed ,', e.message);
     }
   }, []);
 
@@ -229,7 +229,7 @@ export function AppProvider({ children }) {
         }
       })
       .catch(e => {
-        console.warn('[catalog] using fallback catalog —', e.message);
+        console.warn('[catalog] using fallback catalog ,', e.message);
       });
     return () => { cancelled = true; };
   }, []);
@@ -268,7 +268,7 @@ export function AppProvider({ children }) {
   const openSourceModal = useCallback((prefill = '') => setSourceModal({ open: true, prefill }), []);
   const closeSourceModal = useCallback(() => setSourceModal({ open: false, prefill: '' }), []);
 
-  // ── Sample modal (primary — samples-first messaging) ──────────────
+  // ── Sample modal (primary, samples-first messaging) ──────────────
   const openSampleModal = useCallback((prefill = '') => setSampleModal({ open: true, prefill }), []);
   const closeSampleModal = useCallback(() => setSampleModal({ open: false, prefill: '' }), []);
 
@@ -398,7 +398,7 @@ export function AppProvider({ children }) {
     } catch (e) { showToast(e.message); }
   }, [showToast]);
 
-  // ── AI user context — sent to every AI endpoint ───────────────────
+  // ── AI user context, sent to every AI endpoint ───────────────────
   // Summarizes the user's wardrobe + recent reviews so the model can
   // exclude things they already own and lean into what they loved.
   // Trimmed aggressively so prompts stay small.

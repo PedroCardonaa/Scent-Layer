@@ -8,7 +8,7 @@ import { getFragranceImage } from '../lib/fragrance-images.js';
 export function ProductCard({ fragrance: p }) {
   const { wishlistIds, toggleWishlist, openSampleModal, openSourceModal, addToCart, openCart, showToast } = useApp();
   const saved = wishlistIds.includes(p.id);
-  const label = `${p.name} — ${p.brand}`;
+  const label = `${p.name}, ${p.brand}`;
   const detailHref = `/fragrance/${p.id}`;
 
   // Helper: when an inline action button is clicked, prevent the wrapping

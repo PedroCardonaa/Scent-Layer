@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 const SECRET = process.env.JWT_SECRET;
-if (!SECRET) console.warn('[auth] JWT_SECRET not set — tokens will be unsignable');
+if (!SECRET) console.warn('[auth] JWT_SECRET not set, tokens will be unsignable');
 
 export function signToken(userId) {
   return jwt.sign({ sub: userId }, SECRET, { expiresIn: '30d' });

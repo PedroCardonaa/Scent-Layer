@@ -9,13 +9,13 @@ const BRAND_NAME = 'Scent Layer';
 const BRAND_DOMAIN = 'scentlayer.com';
 
 /**
- * Founder notification — fires on every sample order, sourcing request, or
+ * Founder notification, fires on every sample order, sourcing request, or
  * multi-item cart order. Goes to SOURCE_NOTIFY_EMAIL (scentlayer@gmail.com).
  */
 export async function sendSourceNotification(req) {
   const { name, email, fragrance, message, kind, size, items, address } = req;
   if (!resend || !NOTIFY_TO || !FROM) {
-    console.warn('[email] Resend not configured — logging request instead:', req);
+    console.warn('[email] Resend not configured, logging request instead:', req);
     return { skipped: true };
   }
 
@@ -51,7 +51,7 @@ export async function sendSourceNotification(req) {
     ${address ? `<p><strong>Shipping address:</strong><br/>${escapeHtml(address).replace(/\n/g,'<br/>')}</p>` : ''}
     ${!isCart && fragrance ? `<p><strong>Fragrance:</strong> ${escapeHtml(fragrance)}</p>` : ''}
     ${isSample
-      ? `<p><strong>Sample size:</strong> ${escapeHtml(size ?? '—')}</p>`
+      ? `<p><strong>Sample size:</strong> ${escapeHtml(size ?? ',')}</p>`
       : (isBottle && size ? `<p><strong>Bottle size:</strong> ${escapeHtml(size)}</p>` : '')}
     ${itemsTable}
     ${message ? `<p><strong>Message:</strong><br/>${escapeHtml(message).replace(/\n/g, '<br/>')}</p>` : ''}
@@ -60,14 +60,14 @@ export async function sendSourceNotification(req) {
 }
 
 /**
- * Customer confirmation — branded HTML email back to the customer after
+ * Customer confirmation, branded HTML email back to the customer after
  * placing any kind of order. Sample / bottle / cart all render here with
  * appropriately differentiated copy.
  */
 export async function sendCustomerConfirmation(req) {
   const { name, email, fragrance, kind, size, items } = req;
   if (!resend || !FROM) {
-    console.warn('[email] Resend not configured — skipping customer confirmation');
+    console.warn('[email] Resend not configured, skipping customer confirmation');
     return { skipped: true };
   }
   if (!email) return { skipped: true };
@@ -95,7 +95,7 @@ export async function sendCustomerConfirmation(req) {
       ? `Thank you, ${escapeHtml(firstName(name))}. We've logged your order for ${escapeHtml(fragrance ?? 'your selected fragrance')} and we'll authenticate, decant, and ship it within the week. You'll get tracking once it leaves the studio.`
       : `Thank you, ${escapeHtml(firstName(name))}. We're looking for ${escapeHtml(fragrance ?? 'the fragrance you requested')} through our supplier network now. We'll come back within 24 hours with availability and a confirmed price before any bottle changes hands.`;
 
-  // Order summary block — single item card for sample/bottle, line-item table
+  // Order summary block, single item card for sample/bottle, line-item table
   // for cart orders.
   const orderBlock = isCart && Array.isArray(items) && items.length ? `
     <table cellpadding="0" cellspacing="0" style="background:rgba(255,255,255,0.04);border:1px solid rgba(201,169,110,0.22);margin:8px 0 22px;width:100%;">

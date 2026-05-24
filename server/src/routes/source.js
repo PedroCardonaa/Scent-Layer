@@ -48,7 +48,7 @@ router.post('/', submitLimiter, async (req, res, next) => {
       const firstName = data.items[0]?.name ?? 'cart';
       fragranceSummary = data.items.length === 1
         ? `${data.items[0].name} (${data.items[0].size} × ${data.items[0].qty})`
-        : `${totalQty} items — ${firstName} +${data.items.length - 1} more`;
+        : `${totalQty} items, ${firstName} +${data.items.length - 1} more`;
     }
 
     const request = await prisma.sourceRequest.create({

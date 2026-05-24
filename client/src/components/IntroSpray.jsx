@@ -110,7 +110,7 @@ function BottleRig({ onSpray }) {
     const button = buttonRef.current;
     if (!group || !cap || !button) return;
 
-    // Entry: 0–700ms — bottle fades / scales in
+    // Entry: 0,700ms, bottle fades / scales in
     const entryT = clamp(elapsed / 700, 0, 1);
     const eased = easeOutCubic(entryT);
     group.scale.setScalar(0.85 + eased * 0.15);
@@ -159,7 +159,7 @@ function BottleRig({ onSpray }) {
 }
 
 /**
- * Bottle body — clear glass with subtle amber-tinted liquid inside.
+ * Bottle body, clear glass with subtle amber-tinted liquid inside.
  * Built with LatheGeometry for the curved shoulder profile.
  */
 function BottleBody() {
@@ -201,7 +201,7 @@ function BottleBody() {
         />
       </mesh>
 
-      {/* Amber liquid — slightly inset, fills ~75% */}
+      {/* Amber liquid, slightly inset, fills ~75% */}
       <mesh position={[0, -0.18, 0]}>
         <cylinderGeometry args={[0.49, 0.49, 0.85, 64]} />
         <meshPhysicalMaterial
@@ -217,7 +217,7 @@ function BottleBody() {
         />
       </mesh>
 
-      {/* Liquid surface — slightly brighter so the meniscus reads */}
+      {/* Liquid surface, slightly brighter so the meniscus reads */}
       <mesh position={[0, 0.245, 0]}>
         <cylinderGeometry args={[0.49, 0.49, 0.005, 64]} />
         <meshPhysicalMaterial
@@ -247,7 +247,7 @@ function BottleCollar() {
   );
 }
 
-/** Cap — slightly conical, polished gold. */
+/** Cap, slightly conical, polished gold. */
 function BottleCap() {
   return (
     <mesh position={[0, 0.88, 0]} castShadow>
@@ -277,7 +277,7 @@ function PumpButton() {
   );
 }
 
-/** Tiny nozzle on the button — the visual origin of the spray. */
+/** Tiny nozzle on the button, the visual origin of the spray. */
 function PumpNozzle() {
   return (
     <mesh position={[0, 0.045, 0]}>

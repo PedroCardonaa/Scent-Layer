@@ -80,8 +80,17 @@ body.dark {
   --elev-2: 0 2px 4px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.22);
   --elev-3: 0 4px 12px rgba(0,0,0,0.40), 0 18px 48px rgba(0,0,0,0.28);
 }
-html { scroll-behavior: smooth; }
-body { background: var(--warm-white); color: var(--ink); font-family: 'Inter', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+html {
+  scroll-behavior: smooth;
+  /* The footer is dark (--deep2). Set html bg to match so iOS overscroll
+     bounce — and any space below the footer on very tall viewports —
+     shows the same color as the footer instead of flashing the body's
+     warm-white. overscroll-behavior also stops the bounce from chaining
+     to the browser chrome on Chrome/Android. */
+  background: var(--deep2);
+  overscroll-behavior-y: none;
+}
+body { background: var(--warm-white); color: var(--ink); font-family: 'Inter', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; min-height: 100vh; }
 body.dark { background: var(--deep2); color: var(--cream); }
 
 /* CURSOR — hidden on touch devices */

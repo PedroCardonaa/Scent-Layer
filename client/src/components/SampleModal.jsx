@@ -54,7 +54,7 @@ export function SampleModal() {
       });
       trackEvent('sample_order', { size, fragrance: form.perfume });
       closeSampleModal();
-      showToast(`<span>Sample ordered!</span> ${size} of ${form.perfume} — we'll confirm by email.`);
+      showToast(`<span>Sample ordered!</span> ${size} of ${form.perfume}, we'll confirm by email.`);
       setForm({ name: '', email: '', perfume: '', message: '' });
     } catch (e) {
       showToast(e.message || 'Failed to send');
@@ -74,7 +74,7 @@ export function SampleModal() {
         <button className="modal-close" onClick={closeSampleModal} type="button" aria-label="Close">✕</button>
         <p className="modal-label">Order a Sample</p>
         <h3 className="modal-title">{prefill ? `Sample: ${prefill}` : 'Order a Fragrance Sample'}</h3>
-        <p className="modal-sub">Try before you commit. Authentic samples decanted from full bottles — same juice, smaller pour.</p>
+        <p className="modal-sub">Try before you commit. Authentic samples decanted from full bottles, same juice, smaller pour.</p>
 
         <p className="sample-size-label">Pick a Size</p>
         <div className="sample-sizes">

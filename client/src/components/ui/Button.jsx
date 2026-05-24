@@ -5,7 +5,7 @@ import { cn } from '../../lib/cn.js';
 
 /**
  * shadcn-style Button, palette-mapped onto Scent Layer tokens directly.
- * (We don't carry the full shadcn CSS-variable theme — concrete classes are
+ * (We don't carry the full shadcn CSS-variable theme, concrete classes are
  * less abstract but simpler to read against our existing CSS.)
  */
 export const buttonVariants = cva(

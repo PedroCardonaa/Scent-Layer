@@ -27,7 +27,7 @@ export function SchemaJsonLd({ data, id = 'sl-jsonld' }) {
   return null;
 }
 
-// ── Helpers — return ready-to-render data objects ──────────────────
+// ── Helpers, return ready-to-render data objects ──────────────────
 
 const SITE_ORIGIN = typeof window !== 'undefined' && window.location?.origin
   ? window.location.origin
@@ -39,7 +39,7 @@ export function buildProductSchema({ fragrance, imageUrl }) {
   return {
     '@context': 'https://schema.org/',
     '@type': 'Product',
-    name: `${fragrance.name} — ${fragrance.brand}`,
+    name: `${fragrance.name}, ${fragrance.brand}`,
     image: imageUrl,
     description: fragrance.description ?? `${fragrance.name} by ${fragrance.brand}. ${fragrance.family} fragrance with ${fragrance.top}.`,
     brand: { '@type': 'Brand', name: fragrance.brand },
@@ -49,7 +49,7 @@ export function buildProductSchema({ fragrance, imageUrl }) {
       '@type': 'Offer',
       url: `${SITE_ORIGIN}/fragrance/${fragrance.id}`,
       priceCurrency: 'USD',
-      // Sample-from price — the lowest size in the cart.
+      // Sample-from price, the lowest size in the cart.
       price: '12.00',
       availability: 'https://schema.org/InStock',
     },
@@ -61,7 +61,7 @@ export function buildArticleSchema({ noteName, blurb, slug }) {
   return {
     '@context': 'https://schema.org/',
     '@type': 'Article',
-    headline: `${noteName} — fragrances featuring ${noteName.toLowerCase()}`,
+    headline: `${noteName}, fragrances featuring ${noteName.toLowerCase()}`,
     description: blurb ?? `Every fragrance in the Scent Layer catalog with ${noteName.toLowerCase()}.`,
     author: { '@type': 'Organization', name: 'Scent Layer Editorial' },
     publisher: { '@type': 'Organization', name: 'Scent Layer' },
@@ -74,7 +74,7 @@ export function buildCollectionSchema({ brand, count, slug }) {
   return {
     '@context': 'https://schema.org/',
     '@type': 'CollectionPage',
-    name: `${brand} — every fragrance in the catalog`,
+    name: `${brand}, every fragrance in the catalog`,
     description: `${count} ${brand} fragrances available for sampling on Scent Layer.`,
     url: `${SITE_ORIGIN}/brand/${slug}`,
   };
@@ -82,7 +82,7 @@ export function buildCollectionSchema({ brand, count, slug }) {
 
 /**
  * BreadcrumbList schema. Pass an array of {name, url} pairs in order.
- * Use SITE_ORIGIN-relative URLs are accepted — they'll get prefixed.
+ * Use SITE_ORIGIN-relative URLs are accepted, they'll get prefixed.
  */
 export function buildBreadcrumbSchema(items) {
   return {

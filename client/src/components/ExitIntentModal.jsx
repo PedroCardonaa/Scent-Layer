@@ -9,7 +9,7 @@ const SESSION_KEY = 'sl_exit_intent_shown';
  * Exit-intent capture for returning visitors.
  *
  * Fires once per session when:
- *   - visitCount >= 2  (returning visitors only — first-time browsers are spared)
+ *   - visitCount >= 2  (returning visitors only, first-time browsers are spared)
  *   - cursor crosses the top edge of the viewport with upward velocity
  *
  * Anyone who closes it, submits it, or has already seen it this session
@@ -95,7 +95,7 @@ export function ExitIntentModal() {
         </h2>
         <p className="exit-intent-body">
           We're launching soon with a curated first batch of niche and designer samples.
-          Members on the list get first access — and the inaugural 2ml sample on us.
+          Members on the list get first access, and the inaugural 2ml sample on us.
         </p>
         <form onSubmit={submit} className="exit-intent-form">
           <input

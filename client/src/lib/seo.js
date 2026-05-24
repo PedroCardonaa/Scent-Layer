@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
 
 /**
- * Tiny per-page meta-tag manager. We don't ship react-helmet — a 9-line
+ * Tiny per-page meta-tag manager. We don't ship react-helmet, a 9-line
  * effect handles the whole job for an SPA of this size.
  *
  * Updates on mount: document.title, meta[description], Open Graph and
  * Twitter Card tags. Restores the previous values on unmount so the
  * previous page's metadata doesn't bleed across after navigation.
  */
-const DEFAULT_TITLE = 'Scent Layer — Niche & Designer Fragrance Samples';
+const DEFAULT_TITLE = 'Scent Layer, Niche & Designer Fragrance Samples';
 const DEFAULT_DESC  = 'Sample niche and designer fragrances in 2ml, 5ml, 10ml, and 30ml. Authentic decants from real bottles. Source full bottles at a discount.';
-const DEFAULT_IMAGE = '/og.jpg'; // placeholder — replace with real OG asset
+const DEFAULT_IMAGE = '/og.jpg'; // placeholder, replace with real OG asset
 
 function setMeta(selector, attr, value) {
   let el = document.head.querySelector(selector);

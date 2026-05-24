@@ -1,7 +1,7 @@
 /**
  * Google Analytics 4 integration.
  *
- * Loads gtag.js lazily — only after the user has explicitly granted analytics
+ * Loads gtag.js lazily, only after the user has explicitly granted analytics
  * consent via the cookie banner. Without consent the GA script never loads
  * and no cookies are written, which keeps us GDPR / CCPA friendly by default.
  *
@@ -12,7 +12,7 @@
  *
  * Config:
  *   client/.env(.local): VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
- *   If absent, every function in this module is a no-op — useful for local dev.
+ *   If absent, every function in this module is a no-op, useful for local dev.
  */
 
 const MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
@@ -25,7 +25,7 @@ let loaded = false;
 export function initGA() {
   if (loaded) return;
   if (!MEASUREMENT_ID) {
-    if (import.meta.env.DEV) console.info('[analytics] VITE_GA_MEASUREMENT_ID not set — GA disabled');
+    if (import.meta.env.DEV) console.info('[analytics] VITE_GA_MEASUREMENT_ID not set, GA disabled');
     return;
   }
   loaded = true;
@@ -51,7 +51,7 @@ export function initGA() {
 }
 
 /**
- * Fire a page_view event. Safe to call even before initGA — it just no-ops
+ * Fire a page_view event. Safe to call even before initGA, it just no-ops
  * if gtag isn't loaded yet.
  */
 export function trackPageView(path, title) {
@@ -63,7 +63,7 @@ export function trackPageView(path, title) {
 }
 
 /**
- * Fire a custom event. Use sparingly — sample order submits, layer analysis
+ * Fire a custom event. Use sparingly, sample order submits, layer analysis
  * completions, that kind of thing.
  */
 export function trackEvent(name, params = {}) {

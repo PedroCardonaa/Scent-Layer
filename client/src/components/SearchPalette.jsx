@@ -6,7 +6,7 @@ import { slugify } from '../lib/slug.js';
 import { trackEvent } from '../lib/analytics.js';
 
 /**
- * Cmd/Ctrl+K search palette. The single fastest path into the catalog —
+ * Cmd/Ctrl+K search palette. The single fastest path into the catalog ,
  * type a fragrance, brand, family, or note and hit Enter. Also exposes
  * "Surprise me", which picks one fragrance using the user's taste
  * signals if available, random otherwise.
@@ -53,13 +53,13 @@ export function SearchPalette() {
   useEffect(() => { if (!open) setQuery(''); }, [open]);
 
   // ── Derived lists ────────────────────────────────────────────────
-  // Brands — distinct list from the catalog.
+  // Brands, distinct list from the catalog.
   const brands = useMemo(() => {
     const set = new Set(fragrances.map(f => f.brand));
     return Array.from(set).sort();
   }, [fragrances]);
 
-  // Top 20 most-used notes in the catalog — surface these as shortcuts
+  // Top 20 most-used notes in the catalog, surface these as shortcuts
   // since they're the most likely to have a useful /notes/:slug page.
   const topNotes = useMemo(() => {
     const counts = new Map();

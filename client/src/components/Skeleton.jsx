@@ -2,7 +2,7 @@
  * Generic shimmer-style placeholder. Used everywhere the page is waiting
  * on an async fetch so the layout doesn't flash empty before hydration.
  *
- * Pure CSS — animation runs off the .skeleton class. Width/height props
+ * Pure CSS, animation runs off the .skeleton class. Width/height props
  * let callers shape it without inline-style sprawl.
  */
 export function Skeleton({ width, height = 16, rounded = 4, className = '', style }) {

@@ -3,8 +3,8 @@
 // SprayCanvas will paint a particle burst at those screen coords.
 //
 // Direction is a hint for the emission cone:
-//   'up'        — straight up (default)
-//   'up-right'  — up and slightly right (matches the angled bottle nozzle)
+//   'up'       , straight up (default)
+//   'up-right' , up and slightly right (matches the angled bottle nozzle)
 //   'up-left'
 //   'right'
 

@@ -16,7 +16,7 @@ export const aiLimiter = rateLimit({
 
 /**
  * Email/persistence endpoints (sample orders, source requests, waitlist).
- * Cap at 10 per minute per IP — enough for a real user, throttles spam.
+ * Cap at 10 per minute per IP, enough for a real user, throttles spam.
  */
 export const submitLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -27,7 +27,7 @@ export const submitLimiter = rateLimit({
 });
 
 /**
- * Auth endpoints. Cap at 8 attempts per 15 min per IP — frustrates
+ * Auth endpoints. Cap at 8 attempts per 15 min per IP, frustrates
  * credential stuffing without hurting genuine retries.
  */
 export const authLimiter = rateLimit({

@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 
 /**
  * Rotates through a list of "thinking" status messages while an AI
- * call is in flight. The intent is to make the wait feel deliberate —
- * the model is reasoning, weighing your wardrobe, considering options —
+ * call is in flight. The intent is to make the wait feel deliberate ,
+ * the model is reasoning, weighing your wardrobe, considering options ,
  * rather than canned. Without this, even a real 6-second API call can
  * read as "instant and predetermined" because the UI is static during
  * it.

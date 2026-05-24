@@ -28,11 +28,11 @@ import { PrivacyPage, TermsPage } from './pages/LegalPage.jsx';
 import { LoginPage } from './pages/LoginPage.jsx';
 import { SignupPage } from './pages/SignupPage.jsx';
 
-// About page pulls in GSAP for the parallax hero — lazy-load so it
+// About page pulls in GSAP for the parallax hero, lazy-load so it
 // doesn't ship with the initial bundle.
 const AboutPage = lazy(() => import('./pages/AboutPage.jsx').then(m => ({ default: m.AboutPage })));
 
-// Intro spray pulls in three.js + R3F + drei — lazy-load so those
+// Intro spray pulls in three.js + R3F + drei, lazy-load so those
 // ~150KB only download for the user's first visit of the session.
 const IntroSpray = lazy(() => import('./components/IntroSpray.jsx').then(m => ({ default: m.IntroSpray })));
 
@@ -95,7 +95,7 @@ function AnimatedRoutes() {
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
-          {/* Catch-all 404 — must be last so explicit routes win */}
+          {/* Catch-all 404, must be last so explicit routes win */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </motion.div>

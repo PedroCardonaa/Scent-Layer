@@ -9,7 +9,7 @@ const LABELS = {
 };
 
 /**
- * Verified-wearer review summary for a single fragrance. Public — no
+ * Verified-wearer review summary for a single fragrance. Public, no
  * auth needed. Shows a rating breakdown + the most recent text snippet.
  * Hidden entirely when there are no reviews so a brand-new catalog
  * doesn't read as "0 people liked this" by default.
@@ -23,7 +23,7 @@ export function ReviewStrip({ fragranceId }) {
     setLoading(true);
     api(`/api/reviews/by-fragrance/${fragranceId}`)
       .then(d => { if (!cancelled) setData(d); })
-      .catch(() => { /* silent — show nothing if API down */ })
+      .catch(() => { /* silent, show nothing if API down */ })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [fragranceId]);

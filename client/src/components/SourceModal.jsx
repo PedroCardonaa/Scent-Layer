@@ -51,7 +51,7 @@ export function SourceModal() {
         <input className="modal-input" placeholder="Your name"  value={form.name}    onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))} />
         <input className="modal-input" placeholder="Your email" value={form.email}   onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))} type="email" />
         <input className="modal-input" placeholder="Fragrance name & brand" value={form.perfume} onChange={(e) => setForm(f => ({ ...f, perfume: e.target.value }))} />
-        <textarea className="modal-textarea" placeholder="Any details — size, concentration, budget…" value={form.message} onChange={(e) => setForm(f => ({ ...f, message: e.target.value }))} />
+        <textarea className="modal-textarea" placeholder="Any details, size, concentration, budget…" value={form.message} onChange={(e) => setForm(f => ({ ...f, message: e.target.value }))} />
         <button className="modal-submit" onClick={submit} disabled={submitting} type="button">
           {submitting ? 'Sending…' : 'Send Request'}
         </button>

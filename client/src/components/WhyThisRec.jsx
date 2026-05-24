@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 /**
- * Inline "Why this rec?" expandable. The link is small and quiet —
+ * Inline "Why this rec?" expandable. The link is small and quiet ,
  * users who don't care never see the reasoning, users who do can
  * see the one sentence the model wrote about what drove the result.
  *

@@ -11,7 +11,7 @@ import { useScrollReveal } from '../hooks/useScrollReveal.js';
 import { usePullToRefresh } from '../hooks/usePullToRefresh.js';
 import { useDocumentMeta } from '../lib/seo.js';
 
-// Sample sizes — match the four sizes users can actually order via the
+// Sample sizes, match the four sizes users can actually order via the
 // cart and SampleModal so the spray-calc preview matches reality.
 const SIZES = [
   { ml: 2,   sprays: 30   },
@@ -21,13 +21,13 @@ const SIZES = [
 ];
 
 const LIFESTYLE = [
-  { maxDays: 7,    duration: '1 week',   context: 'Your weekend getaway bottle.',       tip: 'Perfect for a short trip — toss it in your carry-on and travel light.' },
+  { maxDays: 7,    duration: '1 week',   context: 'Your weekend getaway bottle.',       tip: 'Perfect for a short trip, toss it in your carry-on and travel light.' },
   { maxDays: 14,   duration: '2 weeks',  context: 'Your vacation companion.',           tip: 'Great for a two-week holiday. Use it freely without worrying about running out.' },
   { maxDays: 30,   duration: '1 month',  context: 'Your monthly rotation pick.',        tip: 'Solid for a month of daily wear. Ideal if you rotate between a few bottles.' },
   { maxDays: 60,   duration: '2 months', context: 'Your seasonal signature.',           tip: 'Lasts a full season. A smart buy if this is your go-to scent for the next few months.' },
-  { maxDays: 90,   duration: '3 months', context: 'Your quarter-year daily driver.',    tip: 'Three months of wear — this is the sweet spot for a scent you love but don\'t overdo.' },
+  { maxDays: 90,   duration: '3 months', context: 'Your quarter-year daily driver.',    tip: 'Three months of wear, this is the sweet spot for a scent you love but don\'t overdo.' },
   { maxDays: 180,  duration: '6 months', context: 'Your long-haul signature scent.',    tip: 'Half a year of daily use. Best value when you\'ve found your true signature.' },
-  { maxDays: 365,  duration: '~1 year',  context: 'Your year-round staple.',            tip: 'A full year of wear. This is your forever bottle — the one you reach for every single day.' },
+  { maxDays: 365,  duration: '~1 year',  context: 'Your year-round staple.',            tip: 'A full year of wear. This is your forever bottle, the one you reach for every single day.' },
   { maxDays: 9999, duration: '1+ years', context: 'Your investment bottle.',            tip: 'At this rate it lasts over a year. Perfect if you prefer a light, subtle application.' },
 ];
 
@@ -54,7 +54,7 @@ export function ShopPage() {
   const [bottleSprays, setBottleSprays] = useState(510);
   const [perDay, setPerDay] = useState(4);
 
-  // Finder state — initialized from URL params so /shop?family=Oriental&season=Winter
+  // Finder state, initialized from URL params so /shop?family=Oriental&season=Winter
   // works as a shareable filtered link. Saves to URL on every change.
   const filters = {
     family: params.getAll('family').filter(v => FAMILY_OPTS.includes(v)),
@@ -64,7 +64,7 @@ export function ShopPage() {
   };
   const search = params.get('q') ?? '';
 
-  // Back-compat: the old links used `?filter=Family` — fold them into the new `family` param.
+  // Back-compat: the old links used `?filter=Family`, fold them into the new `family` param.
   useEffect(() => {
     const legacy = params.get('filter');
     if (legacy && FAMILY_OPTS.includes(legacy) && !params.getAll('family').includes(legacy)) {
@@ -85,11 +85,11 @@ export function ShopPage() {
     setParams(sp, { replace: true });
   }
 
-  // Theme is now centralized in AppContext — page no longer touches body.dark.
+  // Theme is now centralized in AppContext, page no longer touches body.dark.
 
   useDocumentMeta({
     title: 'Catalog · Niche & Designer Fragrances',
-    description: 'Browse the curated Scent Layer catalog. Filter by family, season, time of day, or mood. Sample in 2ml–30ml or source a full bottle.',
+    description: 'Browse the curated Scent Layer catalog. Filter by family, season, time of day, or mood. Sample in 2ml,30ml or source a full bottle.',
   });
 
   const days = Math.floor(bottleSprays / Math.max(1, perDay));
@@ -130,7 +130,7 @@ export function ShopPage() {
     <>
       <Nav />
 
-      {/* Pull-to-refresh indicator — only visible while the user is
+      {/* Pull-to-refresh indicator, only visible while the user is
           actively pulling or the refresh is in flight. Invisible on
           desktop. */}
       {(pullDistance > 0 || refreshing) && (
@@ -147,7 +147,7 @@ export function ShopPage() {
       <div className="shop-hero">
         <p className="shop-hero-label">The Collection</p>
         <h1 className="shop-hero-title">Niche &amp; designer<br/><em>fragrances. Sampled.</em></h1>
-        <p className="shop-hero-sub">Order any fragrance as a 2ml, 5ml, 10ml, or 30ml sample. Authentic decants. Sourcing the full bottle is optional — sampling first is encouraged.</p>
+        <p className="shop-hero-sub">Order any fragrance as a 2ml, 5ml, 10ml, or 30ml sample. Authentic decants. Sourcing the full bottle is optional, sampling first is encouraged.</p>
       </div>
 
       <DiscoverySets />
@@ -156,7 +156,7 @@ export function ShopPage() {
         <div className="calc-header">
           <div>
             <h2 className="calc-title">How long will<br/><em>this sample last?</em></h2>
-            <p className="calc-sub">Pick a sample size and your daily sprays — we'll tell you exactly how long a 2ml, 5ml, 10ml, or 30ml decant lasts in real life.</p>
+            <p className="calc-sub">Pick a sample size and your daily sprays, we'll tell you exactly how long a 2ml, 5ml, 10ml, or 30ml decant lasts in real life.</p>
           </div>
         </div>
         <div className="calc-body">
@@ -202,7 +202,7 @@ export function ShopPage() {
       </section>
 
       <div className="finder-strip" id="finder">
-        <p className="finder-strip-title">⌕ Scent Finder — Filter by feel, not name</p>
+        <p className="finder-strip-title">⌕ Scent Finder, Filter by feel, not name</p>
         <div className="finder-filters">
           <FilterGroup label="Notes Family" options={FAMILY_OPTS} selected={filters.family} onToggle={(v) => toggle('family', v)} />
           <FilterGroup label="Season"       options={SEASON_OPTS} selected={filters.season} onToggle={(v) => toggle('season', v)} />
@@ -241,9 +241,9 @@ export function ShopPage() {
       </div>
 
       <section className="source-cta section">
-        <p className="section-label" style={{ textAlign: 'center', color: 'var(--gold)' }}>Try anything from 2ml — or skip straight to the full bottle.</p>
+        <p className="section-label" style={{ textAlign: 'center', color: 'var(--gold)' }}>Try anything from 2ml, or skip straight to the full bottle.</p>
         <h2 className="section-title" style={{ textAlign: 'center', marginBottom: 16, color: 'var(--fg)' }}>Know what you<br/><em className="gradient-em">want?</em></h2>
-        <p style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--fg-soft)', maxWidth: 460, margin: '0 auto 40px', lineHeight: 1.8 }}>Order a sample of any fragrance — designer, niche, or anything we don't list. Found your signature already? We'll source the full bottle at a discount.</p>
+        <p style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--fg-soft)', maxWidth: 460, margin: '0 auto 40px', lineHeight: 1.8 }}>Order a sample of any fragrance, designer, niche, or anything we don't list. Found your signature already? We'll source the full bottle at a discount.</p>
         <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
           <button type="button" className="btn-gold" onClick={() => openSampleModal('')}>Order a Sample</button>
           <button type="button" className="btn-ghost" style={{ color: 'var(--fg)', borderColor: 'var(--hairline)' }} onClick={() => openSourceModal('')}>Source a Full Bottle</button>

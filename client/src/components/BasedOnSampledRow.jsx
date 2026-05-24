@@ -8,7 +8,7 @@ import { useApp } from '../context/AppContext.jsx';
  * mood/season with the user's most-recent sampled fragrances, while
  * excluding anything they already own or have already sampled.
  *
- * Returns null for guests and for users with no SAMPLED entries —
+ * Returns null for guests and for users with no SAMPLED entries ,
  * preventing an empty "Based on what you sampled" header from ever
  * showing up. That's the whole point of restrained personalization:
  * the section only exists when it earns its place.

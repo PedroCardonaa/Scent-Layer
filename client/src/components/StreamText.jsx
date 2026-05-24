@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
  * once the full string is visible so callers can reveal follow-on
  * controls like "Why this rec?" only after the streaming completes.
  *
- * The character chunk size + interval are tuned so it feels brisk —
+ * The character chunk size + interval are tuned so it feels brisk ,
  * not painfully slow but visibly drafted. ~50ms per beat at 3 chars
  * per beat lands around 60 chars/sec, faster than a person types but
  * slow enough to register as motion.
@@ -18,7 +18,7 @@ export function StreamText({ text, speed = 50, chunk = 3, onDone, className, as:
   useEffect(() => {
     if (!text) { setShown(''); return; }
 
-    // Respect prefers-reduced-motion — jump to full text.
+    // Respect prefers-reduced-motion, jump to full text.
     const reduce = typeof window !== 'undefined'
       && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce) {
@@ -41,7 +41,7 @@ export function StreamText({ text, speed = 50, chunk = 3, onDone, className, as:
     }, speed);
 
     return () => { cancelled = true; clearInterval(id); };
-  // We intentionally re-run on text identity change only — chunk/speed
+  // We intentionally re-run on text identity change only, chunk/speed
   // are usually constants chosen per-callsite.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text]);

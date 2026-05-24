@@ -13,7 +13,7 @@ export async function shareOrCopy({ title, text, url }) {
       await navigator.share(payload);
       return 'shared';
     } catch (e) {
-      // AbortError = user cancelled the share sheet — treat as a non-error.
+      // AbortError = user cancelled the share sheet, treat as a non-error.
       if (e?.name === 'AbortError') return 'cancelled';
       // Fall through to clipboard on any other error.
     }

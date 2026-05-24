@@ -5,7 +5,7 @@ import { useApp } from '../context/AppContext.jsx';
 import { useDocumentMeta } from '../lib/seo.js';
 
 /**
- * Editorial 404 — catches any unmatched route. Offers obvious exits
+ * Editorial 404, catches any unmatched route. Offers obvious exits
  * (catalog, home) plus the source modal in case the user was looking
  * for a specific fragrance we don't have indexed yet.
  */
@@ -25,8 +25,8 @@ export function NotFoundPage() {
         </h1>
         <p className="notfound-body">
           You might have followed an old link, or the page moved during a rewrite.
-          The catalog is where most things live. Or — if you were chasing a specific
-          fragrance — we can probably source it.
+          The catalog is where most things live. Or, if you were chasing a specific
+          fragrance, we can probably source it.
         </p>
         <div className="notfound-actions">
           <Link to="/shop" className="btn-gold">Browse the Catalog</Link>

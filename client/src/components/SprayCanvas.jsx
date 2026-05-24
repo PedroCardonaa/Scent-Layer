@@ -8,7 +8,7 @@ import { onSpray } from '../lib/spray.js';
  *
  * The particles use 'lighter' composite blending for a glowing additive
  * look. Each particle fades in fast (~80ms), peaks, then fades out over
- * ~1.6–2.2s with a slow rise and dispersion — reads as fragrance mist
+ * ~1.6,2.2s with a slow rise and dispersion, reads as fragrance mist
  * rather than smoke.
  *
  * On reduced-motion preference, we render a single, short, soft puff
@@ -101,18 +101,18 @@ export function SprayCanvas() {
           case 'up-right': return -Math.PI / 2 + 0.35;
           case 'up-left':  return -Math.PI / 2 - 0.35;
           case 'right':    return 0;
-          case 'burst':    return 0; // unused — burst picks per-particle
+          case 'burst':    return 0; // unused, burst picks per-particle
           default:         return -Math.PI / 2;
         }
       })();
 
-      // Distance the spray needs to travel to fill the viewport — used
+      // Distance the spray needs to travel to fill the viewport, used
       // to set particle speed on 'burst' mode so the mist actually
       // reaches the edges.
       const reach = Math.hypot(w, h) / 2;
 
       for (let i = 0; i < count; i++) {
-        // Cone spread — narrow at first, wider further out
+        // Cone spread, narrow at first, wider further out
         const angle = isBurst
           ? Math.random() * Math.PI * 2
           : baseAngle + (Math.random() - 0.5) * 0.9;
@@ -151,7 +151,7 @@ export function SprayCanvas() {
           life: reduced
             ? (isBurst ? 1400 : 800)
             : (isBurst ? (2400 + Math.random() * 1200) : (1600 + Math.random() * 800)),
-          // Burst particles have no buoyancy — they expand radially
+          // Burst particles have no buoyancy, they expand radially
           buoyant: !isBurst,
         });
       }

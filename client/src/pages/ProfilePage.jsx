@@ -25,7 +25,7 @@ function ReferralBlock({ showToast }) {
         <h2 className="referral-title">Refer a friend,<br/><em className="gradient-em">both smell better.</em></h2>
         <p className="referral-body">When we launch, every referral earns you and your friend a discount on your first sourcing order. The more people you bring in, the more you save.</p>
         <div className="referral-form">
-          <input className="fotm-input" id="profileReferralEmail" placeholder="Your email — we'll send your referral link at launch" type="email" />
+          <input className="fotm-input" id="profileReferralEmail" placeholder="Your email, we'll send your referral link at launch" type="email" />
           <button className="fotm-btn" type="button" onClick={joinWaitlist}>Reserve My Spot</button>
         </div>
         <p className="fotm-note">Launch pricing and referral details coming soon.</p>
@@ -37,11 +37,11 @@ function ReferralBlock({ showToast }) {
 const QUIZ_COLORS = ['#7a5c40','#4a6855','#9a7030','#503868','#5a4a70','#3a5858','#6a4830','#485a3a'];
 
 const QUESTIONS = [
-  { q: "How do you want people to feel when you walk into the room?", options: ["Intrigued — they can't quite place it","Impressed — undeniably confident","Comforted — warm and approachable","Captivated — romantic and mysterious"] },
-  { q: "What's your go-to setting?", options: ["Outdoors — fresh air, open spaces","The office — sharp, put-together","A dinner out — dressed up, present","Late nights — dim light, good music"] },
-  { q: "Which texture speaks to you?", options: ["Silk — smooth and clean","Leather — dark and structured","Velvet — rich and soft","Linen — light and effortless"] },
-  { q: "Pick a season for your signature scent:", options: ["Spring — green and floral","Summer — citrus and light","Fall — spiced and warm","Winter — deep and smoky"] },
-  { q: "How long do you want your scent to last?", options: ["All day — I want presence","A few hours — subtle is fine","I'll reapply — I like control","As long as possible — leave a trail"] }
+  { q: "How do you want people to feel when you walk into the room?", options: ["Intrigued, they can't quite place it","Impressed, undeniably confident","Comforted, warm and approachable","Captivated, romantic and mysterious"] },
+  { q: "What's your go-to setting?", options: ["Outdoors, fresh air, open spaces","The office, sharp, put-together","A dinner out, dressed up, present","Late nights, dim light, good music"] },
+  { q: "Which texture speaks to you?", options: ["Silk, smooth and clean","Leather, dark and structured","Velvet, rich and soft","Linen, light and effortless"] },
+  { q: "Pick a season for your signature scent:", options: ["Spring, green and floral","Summer, citrus and light","Fall, spiced and warm","Winter, deep and smoky"] },
+  { q: "How long do you want your scent to last?", options: ["All day, I want presence","A few hours, subtle is fine","I'll reapply, I like control","As long as possible, leave a trail"] }
 ];
 
 const TABS = [
@@ -170,8 +170,8 @@ function WishlistPanel({ fragrances, wishlistIds, toggleWishlist, openSampleModa
                 <p className="wishlist-item-notes">{p.top}</p>
               </div>
               <div className="wishlist-item-actions">
-                <button type="button" className="wishlist-action sample" onClick={() => openSampleModal(`${p.name} — ${p.brand}`)}>Sample</button>
-                <button type="button" className="wishlist-action source" onClick={() => openSourceModal(`${p.name} — ${p.brand}`)} title="Source the full bottle">Bottle</button>
+                <button type="button" className="wishlist-action sample" onClick={() => openSampleModal(`${p.name}, ${p.brand}`)}>Sample</button>
+                <button type="button" className="wishlist-action source" onClick={() => openSourceModal(`${p.name}, ${p.brand}`)} title="Source the full bottle">Bottle</button>
                 <button type="button" className="wishlist-action remove" onClick={() => toggleWishlist(p.id)} aria-label="Remove">✕</button>
               </div>
             </div>
@@ -251,11 +251,11 @@ function BlendsPanel() {
       <div className="profile-panel">
         <p className="profile-panel-label">Layer Builder Recipes</p>
         <h2 className="profile-panel-title">My Blends</h2>
-        <p className="profile-panel-sub">Save any blend from the Layer Builder and it appears here — recipe, analysis, and tags intact.</p>
+        <p className="profile-panel-sub">Save any blend from the Layer Builder and it appears here, recipe, analysis, and tags intact.</p>
         <div className="wardrobe-empty">
           <div className="wardrobe-empty-icon">◈</div>
           <p className="wardrobe-empty-text">You haven't saved any blends yet</p>
-          <p className="wardrobe-empty-sub">Open the Layer Builder and combine 2–4 fragrances</p>
+          <p className="wardrobe-empty-sub">Open the Layer Builder and combine 2 to 4 fragrances</p>
           <Link to="/tools" className="btn-dark" style={{ marginTop: 20, display: 'inline-block' }}>Open Layer Builder</Link>
         </div>
       </div>
@@ -266,7 +266,7 @@ function BlendsPanel() {
     <div className="profile-panel">
       <p className="profile-panel-label">Layer Builder Recipes</p>
       <h2 className="profile-panel-title">My Blends</h2>
-      <p className="profile-panel-sub">Every blend you've saved — recipe, analysis, occasions. Click rename to give it a personal title.</p>
+      <p className="profile-panel-sub">Every blend you've saved, recipe, analysis, occasions. Click rename to give it a personal title.</p>
       <div className="blends-grid">
         {savedBlends.map(b => (
           <BlendCard key={b.id} blend={b} onDelete={deleteBlend} onRename={renameBlend} />
@@ -279,7 +279,7 @@ function BlendsPanel() {
 function BlendCard({ blend, onDelete, onRename }) {
   const { result, fragrances, createdAt, name } = blend;
   const recipe = Array.isArray(fragrances)
-    ? fragrances.map(f => `${f.name} — ${f.brand}`).join(' · ')
+    ? fragrances.map(f => `${f.name}, ${f.brand}`).join(' · ')
     : '';
   const tags = Array.isArray(result?.tags) ? result.tags : [];
 
@@ -322,7 +322,7 @@ function BlendCard({ blend, onDelete, onRename }) {
 function ReviewsPanel({ openSampleModal }) {
   const { myReviews, fragrances, submitReview, wardrobeItems } = useApp();
 
-  // Surface any fragrance the user has SAMPLED but not yet reviewed —
+  // Surface any fragrance the user has SAMPLED but not yet reviewed ,
   // that's exactly the pool we want them to write about.
   const sampledIds = wardrobeItems.filter(i => i.status === 'SAMPLED').map(i => i.fragranceId);
   const reviewedIds = myReviews.map(r => r.fragranceId);
@@ -387,7 +387,7 @@ function ReviewForm({ fragrance, onSubmit, existing }) {
   return (
     <div className="review-form" style={{ borderTop: '1px solid var(--hairline)', paddingTop: 20, marginTop: 20 }}>
       <p style={{ fontFamily: 'Lora, serif', fontSize: '1.05rem', color: 'var(--fg)' }}>
-        {fragrance.name} <span style={{ color: 'var(--fg-dim)', fontSize: '0.78rem' }}>— {fragrance.brand}</span>
+        {fragrance.name} <span style={{ color: 'var(--fg-dim)', fontSize: '0.78rem' }}>, {fragrance.brand}</span>
       </p>
       <div className="review-rating-row" style={{ marginTop: 12 }}>
         {Object.entries(RATING_LABELS).map(([k, label]) => (
@@ -401,7 +401,7 @@ function ReviewForm({ fragrance, onSubmit, existing }) {
       </div>
       <textarea
         className="review-text"
-        placeholder="Optional — how did it sit on your skin? Any context."
+        placeholder="Optional, how did it sit on your skin? Any context."
         value={text}
         onChange={(e) => setText(e.target.value)}
         maxLength={2000}
@@ -436,7 +436,7 @@ function ReviewSummaryRow({ review, onSubmit, openSampleModal }) {
       </div>
       <div style={{ display: 'flex', gap: 8 }}>
         <button type="button" className="blend-card-btn" onClick={() => setEditing(true)}>Edit</button>
-        <button type="button" className="blend-card-btn" onClick={() => openSampleModal(`${review.fragrance?.name} — ${review.fragrance?.brand}`)}>Reorder</button>
+        <button type="button" className="blend-card-btn" onClick={() => openSampleModal(`${review.fragrance?.name}, ${review.fragrance?.brand}`)}>Reorder</button>
       </div>
     </div>
   );
@@ -489,7 +489,7 @@ function QuizPanel({ savedResult, onSave, openSampleModal, openSourceModal }) {
         <div className="quiz-start">
           <div className="quiz-start-icon">✦</div>
           <p style={{ fontSize: '0.78rem', color: 'var(--taupe)', maxWidth: 300, margin: '0 auto 28px', lineHeight: 1.8 }}>
-            Tell us how you want to smell, feel, and be remembered — we'll find your match.
+            Tell us how you want to smell, feel, and be remembered, we'll find your match.
           </p>
           <button type="button" className="quiz-btn-start" onClick={start}>Begin the Quiz</button>
         </div>
@@ -531,8 +531,8 @@ function QuizPanel({ savedResult, onSave, openSampleModal, openSourceModal }) {
             {(result.tags ?? []).map(t => <span key={t} className="quiz-result-tag">{t}</span>)}
           </div>
           <div className="quiz-result-actions">
-            <button type="button" className="btn-dark" onClick={() => openSampleModal(`${result.name} — ${result.brand}`)}>Order a Sample</button>
-            <button type="button" className="quiz-retake" onClick={() => openSourceModal(`${result.name} — ${result.brand}`)}>Source full bottle</button>
+            <button type="button" className="btn-dark" onClick={() => openSampleModal(`${result.name}, ${result.brand}`)}>Order a Sample</button>
+            <button type="button" className="quiz-retake" onClick={() => openSourceModal(`${result.name}, ${result.brand}`)}>Source full bottle</button>
             <button type="button" className="quiz-retake" onClick={retake}>Retake quiz</button>
           </div>
 
@@ -542,7 +542,7 @@ function QuizPanel({ savedResult, onSave, openSampleModal, openSourceModal }) {
               <p className="quiz-alternates-sub">Order all three as 2ml decants and live with them for a couple of weeks before deciding. That's the best way to find your real signature.</p>
               <div className="quiz-alternates-list">
                 {result.alternates.map((alt, i) => {
-                  const label = `${alt.name} — ${alt.brand}`;
+                  const label = `${alt.name}, ${alt.brand}`;
                   return (
                     <div key={i} className="quiz-alt-card">
                       <div className="quiz-alt-info">
@@ -569,8 +569,8 @@ function QuizPanel({ savedResult, onSave, openSampleModal, openSourceModal }) {
 
 /**
  * Rotates four "thinking" stages while the quiz API call is in flight.
- * Makes the wait feel deliberate — the model is actually reading the
- * answers, cross-referencing the wardrobe, weighing options — rather
+ * Makes the wait feel deliberate, the model is actually reading the
+ * answers, cross-referencing the wardrobe, weighing options, rather
  * than canned. ~3.6 seconds full rotation; loops if the call takes
  * longer.
  */

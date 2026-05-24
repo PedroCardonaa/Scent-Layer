@@ -4,7 +4,7 @@ const router = Router();
 
 /**
  * Discovery Sets are curated 3-pack bundles. They're not a database
- * model — they're static editorial content that ships with the API
+ * model, they're static editorial content that ships with the API
  * (and is mirrored as a client fallback). When the user adds a set
  * to their cart, the client expands it into individual line items
  * priced at the set discount.
@@ -51,7 +51,7 @@ const SETS = [
     slug: 'date-night',
     name: 'Date Night, Their Place',
     eyebrow: 'For when you stay',
-    hook: 'Three scents that work in the close-up — when they lean in, hand you a drink, sit on the same couch.',
+    hook: 'Three scents that work in the close-up, when they lean in, hand you a drink, sit on the same couch.',
     fragranceIds: [2, 4, 7],                  // BR540, Santal 33, Black Opium
     size: '5ml',
     discountPct: 15,
@@ -73,7 +73,7 @@ const SETS = [
     slug: 'florals-not-perfume',
     name: 'Florals That Don\'t Smell Like Perfume',
     eyebrow: 'For people who don\'t wear florals',
-    hook: 'Three florals that get pulled away from anything sentimental — cumin, peony, jasmine handled with restraint.',
+    hook: 'Three florals that get pulled away from anything sentimental, cumin, peony, jasmine handled with restraint.',
     fragranceIds: [13, 3, 11],                // Rose 31, Blanche, Flowerbomb
     size: '5ml',
     discountPct: 15,

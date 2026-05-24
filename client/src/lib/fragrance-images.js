@@ -1,6 +1,6 @@
 // Per-fragrance product imagery. We don't have a license to use brand-
 // official product photos for every fragrance in the catalog (and
-// hotlinking sites like Jomashop or Fragrantica is fragile — Referer
+// hotlinking sites like Jomashop or Fragrantica is fragile, Referer
 // checks block them), so the practical move is a curated pool of
 // real bottle photography on Unsplash, varied by family and id so
 // every card on /shop looks distinct.
@@ -10,12 +10,12 @@
 //      by fragrance id
 //   2. The override wins over the family pool
 //
-// Image params are baked into the URL (width / quality / crop) — keeps
+// Image params are baked into the URL (width / quality / crop), keeps
 // the request cacheable at the CDN edge and prevents layout shift.
 
 const IMG_PARAMS = '?w=1200&h=1200&fit=crop&q=80';
 
-// Family pools — Unsplash photos that read as "real perfume bottle".
+// Family pools, Unsplash photos that read as "real perfume bottle".
 // All URLs are tested in production and stable. Add more entries to
 // any pool to increase per-family visual variety.
 const POOLS = {
@@ -52,7 +52,7 @@ const DEFAULT = `https://images.unsplash.com/photo-1592945403244-b3fbafd7f539${I
 // to a specific bottle photo. Add real product URLs here as they
 // become available (e.g. from Jomashop, Fragrantica, brand sites).
 const IMAGE_OVERRIDES = {
-  // 2 = Baccarat Rouge 540 — the existing imageUrl in fallback-catalog
+  // 2 = Baccarat Rouge 540, the existing imageUrl in fallback-catalog
   2: `https://images.unsplash.com/photo-1523293182086-7651a899d37f${IMG_PARAMS}`,
 };
 

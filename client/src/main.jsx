@@ -34,7 +34,7 @@ import './styles/note-brand.css';
 import './styles/search-palette.css';
 import './styles/intro-spray.css';
 import './styles/tailwind.css';
-// Loaded LAST — overrides the harder square defaults with softer
+// Loaded LAST, overrides the harder square defaults with softer
 // corners, gentle shadows, smoother transitions across every surface.
 import './styles/smooth.css';
 

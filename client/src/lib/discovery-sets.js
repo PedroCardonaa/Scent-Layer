@@ -1,5 +1,5 @@
 // Client-side fallback for Discovery Sets. Mirrors server/src/routes/sets.js.
-// Real source of truth is the API — this is the offline / unseeded /
+// Real source of truth is the API, this is the offline / unseeded /
 // frontend-only deploy fallback so the /shop page never lands empty.
 //
 // Each set expands into N individual cart items at the set discount when
@@ -45,7 +45,7 @@ export const FALLBACK_SETS = [
     slug: 'date-night',
     name: 'Date Night, Their Place',
     eyebrow: 'For when you stay',
-    hook: 'Three scents that work in the close-up — when they lean in, hand you a drink, sit on the same couch.',
+    hook: 'Three scents that work in the close-up, when they lean in, hand you a drink, sit on the same couch.',
     fragranceIds: [2, 4, 7],
     size: '5ml',
     discountPct: 15,
@@ -67,7 +67,7 @@ export const FALLBACK_SETS = [
     slug: 'florals-not-perfume',
     name: 'Florals That Don\'t Smell Like Perfume',
     eyebrow: 'For people who don\'t wear florals',
-    hook: 'Three florals that get pulled away from anything sentimental — cumin, peony, jasmine handled with restraint.',
+    hook: 'Three florals that get pulled away from anything sentimental, cumin, peony, jasmine handled with restraint.',
     fragranceIds: [13, 3, 11],
     size: '5ml',
     discountPct: 15,

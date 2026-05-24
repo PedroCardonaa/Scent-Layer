@@ -35,7 +35,7 @@ export function NewsletterStrip() {
     <section className="newsletter-strip">
       <div className="newsletter-strip-inner">
         <div className="newsletter-strip-left">
-          <p className="newsletter-strip-eyebrow">Pre-launch — early access</p>
+          <p className="newsletter-strip-eyebrow">Pre-launch, early access</p>
           <h2 className="newsletter-strip-title">
             Get the first <em className="gradient-em">drop</em> in your inbox.
           </h2>

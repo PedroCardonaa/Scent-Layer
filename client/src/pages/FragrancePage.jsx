@@ -39,7 +39,7 @@ export function FragrancePage() {
 
   // Subtle parallax on the hero image: ~18% of scroll speed, capped so
   // the image never drifts past its container. Reduces to no-op on
-  // prefers-reduced-motion via CSS (.parallax-hero-img). Cheap — single
+  // prefers-reduced-motion via CSS (.parallax-hero-img). Cheap, single
   // passive scroll listener writing a CSS var.
   useEffect(() => {
     const el = heroImgRef.current;
@@ -74,11 +74,11 @@ export function FragrancePage() {
     return () => obs.disconnect();
   }, [fragrance?.id]);
 
-  // Rich SEO meta — title, OG description, OG image. Uses the family hero
+  // Rich SEO meta, title, OG description, OG image. Uses the family hero
   // photo as the OG image so shares look right in iMessage / Discord / etc.
   useDocumentMeta(fragrance ? {
-    title: `${fragrance.name} — ${fragrance.brand}`,
-    description: `${fragrance.name} by ${fragrance.brand}. ${fragrance.family} composition with ${fragrance.top}. Order a 2ml–30ml sample or source the full bottle.`,
+    title: `${fragrance.name}, ${fragrance.brand}`,
+    description: `${fragrance.name} by ${fragrance.brand}. ${fragrance.family} composition with ${fragrance.top}. Order a 2ml,30ml sample or source the full bottle.`,
     type: 'product',
   } : { title: 'Not Found' });
 
@@ -120,10 +120,10 @@ export function FragrancePage() {
     );
   }
 
-  const label = `${fragrance.name} — ${fragrance.brand}`;
+  const label = `${fragrance.name}, ${fragrance.brand}`;
   const saved = wishlistIds.includes(fragrance.id);
   // Per-fragrance imageUrl wins; family-based hero is the fallback.
-  // Prefer the helper — it handles per-fragrance overrides + family
+  // Prefer the helper, it handles per-fragrance overrides + family
   // pools + the final fallback in one place. The old FAMILY_IMAGE map
   // remains as a redundant safety net if the helper ever returns null.
   const heroImage = getFragranceImage(fragrance) ?? FAMILY_IMAGE[fragrance.family] ?? FALLBACK_IMAGE;
@@ -258,11 +258,11 @@ export function FragrancePage() {
             or quick-request without the cart →
           </button>
 
-          {/* Personal status — own / sampled / backup. Signed-in only;
+          {/* Personal status, own / sampled / backup. Signed-in only;
               prompts to sign in for guests. */}
           <WardrobePills fragranceId={fragrance.id} />
 
-          {/* Sentinel — when this scrolls out of view, the sticky CTA appears. */}
+          {/* Sentinel, when this scrolls out of view, the sticky CTA appears. */}
           <div id="fragrance-cta-sentinel" aria-hidden="true" />
         </div>
       </section>
@@ -292,7 +292,7 @@ export function FragrancePage() {
         </section>
       )}
 
-      {/* Recently Viewed — skip the current fragrance, show only if there's
+      {/* Recently Viewed, skip the current fragrance, show only if there's
           more than just this one in the list. */}
       {recentlyViewed.filter(rid => rid !== fragrance.id).length > 0 && (
         <RecentlyViewedRow currentId={fragrance.id} />
@@ -348,7 +348,7 @@ function Attribute({ label, values = [] }) {
 function NoteAct({ num, label, sub, notes }) {
   // Render each note in the comma-separated string as a link to its
   // /notes/:slug page so users can drill into "saffron" or "iris" by
-  // tapping the word — no extra UI, no new tabs.
+  // tapping the word, no extra UI, no new tabs.
   const parts = parseNotes(notes);
   return (
     <div className="note-act">

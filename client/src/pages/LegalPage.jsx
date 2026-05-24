@@ -4,7 +4,7 @@ import { Footer } from '../components/Footer.jsx';
 import { useDocumentMeta } from '../lib/seo.js';
 
 /**
- * Two simple legal pages. Content is intentionally plain — no boilerplate
+ * Two simple legal pages. Content is intentionally plain, no boilerplate
  * legalese, no fake confidence. These are starting points; have an actual
  * lawyer review before relying on them past a soft launch.
  */
@@ -35,7 +35,7 @@ export function PrivacyPage() {
         </Section>
 
         <Section title="Cookies and analytics">
-          <p>We use Google Analytics to understand which fragrances and tools resonate. GA drops cookies on your device only if you've explicitly accepted the consent banner — decline and nothing about you is recorded. IP addresses are anonymized in transit. You can revoke consent at any time by clearing the <code>sl_analytics_consent</code> entry in your browser's storage; we'll show the banner again on your next visit.</p>
+          <p>We use Google Analytics to understand which fragrances and tools resonate. GA drops cookies on your device only if you've explicitly accepted the consent banner, decline and nothing about you is recorded. IP addresses are anonymized in transit. You can revoke consent at any time by clearing the <code>sl_analytics_consent</code> entry in your browser's storage; we'll show the banner again on your next visit.</p>
           <p>We also use minimal first-party storage (<code>localStorage</code>) for your theme preference, wishlist for guests, and visit count. None of that leaves your browser.</p>
         </Section>
 
@@ -46,11 +46,11 @@ export function PrivacyPage() {
         <Section title="Third parties">
           <p>The services we rely on:</p>
           <ul className="legal-list">
-            <li><strong>Anthropic</strong> — powers the AI features (Layer Builder, Similar Scents, Quiz, Compare). Your queries to those features are sent to Anthropic for processing. They do not store the content for training.</li>
-            <li><strong>Resend</strong> — sends transactional email on our behalf.</li>
-            <li><strong>Google Analytics</strong> — only if you've opted in via the cookie banner.</li>
-            <li><strong>Vercel and Railway</strong> — host the site and backend respectively.</li>
-            <li><strong>Sentry</strong> — captures application errors for debugging. No personal data is included in error reports.</li>
+            <li><strong>Anthropic</strong>, powers the AI features (Layer Builder, Similar Scents, Quiz, Compare). Your queries to those features are sent to Anthropic for processing. They do not store the content for training.</li>
+            <li><strong>Resend</strong>, sends transactional email on our behalf.</li>
+            <li><strong>Google Analytics</strong>, only if you've opted in via the cookie banner.</li>
+            <li><strong>Vercel and Railway</strong>, host the site and backend respectively.</li>
+            <li><strong>Sentry</strong>, captures application errors for debugging. No personal data is included in error reports.</li>
           </ul>
         </Section>
 
@@ -87,17 +87,17 @@ export function TermsPage() {
         <p className="legal-effective">Last updated: 2026</p>
 
         <Section title="Using the site">
-          <p>You're welcome to browse, sample, and source through Scent Layer. By using the site you agree to use it for personal, lawful purposes — not for resale, scraping, automated abuse of the AI endpoints, or anything that interferes with other users' experience. We may revoke access if you violate these terms.</p>
+          <p>You're welcome to browse, sample, and source through Scent Layer. By using the site you agree to use it for personal, lawful purposes, not for resale, scraping, automated abuse of the AI endpoints, or anything that interferes with other users' experience. We may revoke access if you violate these terms.</p>
         </Section>
 
         <Section title="What we sell">
-          <p>Samples are decanted by Scent Layer from full-size, authenticated bottles into clean glass atomizers in sizes of 2ml, 5ml, 10ml, or 30ml. We are not the original manufacturer of the fragrance — we are a sampler and concierge sourcing service. Brand names and fragrance names are trademarks of their respective owners and used here solely to identify the products you may sample or source.</p>
+          <p>Samples are decanted by Scent Layer from full-size, authenticated bottles into clean glass atomizers in sizes of 2ml, 5ml, 10ml, or 30ml. We are not the original manufacturer of the fragrance, we are a sampler and concierge sourcing service. Brand names and fragrance names are trademarks of their respective owners and used here solely to identify the products you may sample or source.</p>
           <p>Full-bottle sourcing is a concierge service: you tell us what you want, we source it through our supplier network, we confirm pricing with you before any bottle is purchased on your behalf, and we authenticate every bottle before it ships.</p>
         </Section>
 
         <Section title="Pricing and payment">
           <p>Sample prices are fixed at the size you select at order time. Full-bottle sourcing prices vary by current market availability and are quoted in writing before purchase. You're under no obligation to accept a quote.</p>
-          <p>Until payment integration is live, sample orders are processed as requests — we'll confirm pricing and arrange payment manually within 24 hours. Once payment is wired in, prices on the site are what you pay.</p>
+          <p>Until payment integration is live, sample orders are processed as requests, we'll confirm pricing and arrange payment manually within 24 hours. Once payment is wired in, prices on the site are what you pay.</p>
         </Section>
 
         <Section title="Shipping">
@@ -105,7 +105,7 @@ export function TermsPage() {
         </Section>
 
         <Section title="Returns and refunds">
-          <p>Decanted samples cannot be returned once opened, for hygiene reasons. Unopened full-size bottles may be returned within 14 days of delivery for a refund, less shipping. If you receive a bottle or sample that turns out to be inauthentic, contact us — we will refund or replace it. This authenticity guarantee is the foundation of the business; if we ever fall short of it, we make it right.</p>
+          <p>Decanted samples cannot be returned once opened, for hygiene reasons. Unopened full-size bottles may be returned within 14 days of delivery for a refund, less shipping. If you receive a bottle or sample that turns out to be inauthentic, contact us, we will refund or replace it. This authenticity guarantee is the foundation of the business; if we ever fall short of it, we make it right.</p>
         </Section>
 
         <Section title="Fragrance and skin">
@@ -117,7 +117,7 @@ export function TermsPage() {
         </Section>
 
         <Section title="Liability">
-          <p>Scent Layer's total liability for any claim related to an order is limited to the amount you paid for that order. We don't accept liability for indirect, incidental, or consequential losses — including loss of opportunity, loss of enjoyment, etc.</p>
+          <p>Scent Layer's total liability for any claim related to an order is limited to the amount you paid for that order. We don't accept liability for indirect, incidental, or consequential losses, including loss of opportunity, loss of enjoyment, etc.</p>
         </Section>
 
         <Section title="Changes to these terms">

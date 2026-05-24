@@ -1,10 +1,10 @@
 import Anthropic from '@anthropic-ai/sdk';
 
 const apiKey = process.env.ANTHROPIC_API_KEY;
-if (!apiKey) console.warn('[anthropic] ANTHROPIC_API_KEY not set — AI endpoints will return 503');
+if (!apiKey) console.warn('[anthropic] ANTHROPIC_API_KEY not set, AI endpoints will return 503');
 
 export const anthropic = apiKey ? new Anthropic({ apiKey }) : null;
-// Default to Sonnet 4.5 — cheap + fast + plenty for editorial copy.
+// Default to Sonnet 4.5, cheap + fast + plenty for editorial copy.
 // Override via ANTHROPIC_MODEL env var if you want Opus.
 // (The previous default `claude-opus-4-7` is not a real model identifier
 // and caused every AI endpoint to 404 silently.)
@@ -17,7 +17,7 @@ export const MODEL = process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-5';
  */
 export async function structuredCall({ system, user, toolName, schema, maxTokens = 1024 }) {
   if (!anthropic) {
-    const err = new Error('AI service not configured — ANTHROPIC_API_KEY missing on the server');
+    const err = new Error('AI service not configured, ANTHROPIC_API_KEY missing on the server');
     err.status = 503;
     throw err;
   }

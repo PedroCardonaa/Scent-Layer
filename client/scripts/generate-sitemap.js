@@ -1,6 +1,6 @@
 // Generates client/public/sitemap.xml from the catalog before vite
 // builds. Hooked into the build script via `prebuild`. Read the
-// fallback catalog so we never miss an entry — the server catalog
+// fallback catalog so we never miss an entry, the server catalog
 // only contains seeded fragrances, this list is the source of truth
 // for what the frontend will render.
 
@@ -21,7 +21,7 @@ function addUrl(loc, priority = '0.5', changefreq = 'weekly') {
   urls.push({ loc: `${ORIGIN}${loc}`, lastmod: today, priority, changefreq });
 }
 
-// Core routes — the surfaces every visitor lands on.
+// Core routes, the surfaces every visitor lands on.
 addUrl('/',         '1.0',  'daily');
 addUrl('/shop',     '0.9',  'daily');
 addUrl('/tools',    '0.7',  'weekly');

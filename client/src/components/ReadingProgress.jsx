@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
  * how far the user has scrolled through the current page. Auto-hides
  * if the page is too short to need it (under 1.5 viewports).
  *
- * Pure CSS bar driven by a single state value — cheap, no observers
+ * Pure CSS bar driven by a single state value, cheap, no observers
  * needed beyond a passive scroll listener.
  */
 export function ReadingProgress() {

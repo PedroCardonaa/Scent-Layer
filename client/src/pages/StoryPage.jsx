@@ -5,7 +5,7 @@ import { Footer } from '../components/Footer.jsx';
 import { useDocumentMeta } from '../lib/seo.js';
 
 /**
- * Brand-manifesto page — adapted from a 21st.dev "Digital Serenity" landing.
+ * Brand-manifesto page, adapted from a 21st.dev "Digital Serenity" landing.
  *
  * Kept from the original:
  *   - Slow word-by-word reveal driven by data-delay attributes
@@ -23,7 +23,7 @@ import { useDocumentMeta } from '../lib/seo.js';
 export function StoryPage() {
   useDocumentMeta({
     title: 'The Story',
-    description: 'A moment of pause. Find the fragrance that speaks before you do — Scent Layer.',
+    description: 'A moment of pause. Find the fragrance that speaks before you do, Scent Layer.',
   });
 
   const [mouseGlow, setMouseGlow] = useState({ left: '0px', top: '0px', opacity: 0 });
@@ -31,7 +31,7 @@ export function StoryPage() {
   const floatingElementsRef = useRef([]);
   const scrolledRef = useRef(false);
 
-  // Word-by-word reveal — runs once after a small delay so users see the
+  // Word-by-word reveal, runs once after a small delay so users see the
   // animation rather than a fully-rendered page.
   useEffect(() => {
     const t = setTimeout(() => {

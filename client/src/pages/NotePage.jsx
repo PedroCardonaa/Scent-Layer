@@ -10,10 +10,10 @@ import { slugify, unslugify, parseNotes } from '../lib/slug.js';
 import { SchemaJsonLd, buildArticleSchema, buildBreadcrumbSchema } from '../components/SchemaJsonLd.jsx';
 
 /**
- * /notes/:slug — single-note landing page. Doubles as an SEO surface
+ * /notes/:slug, single-note landing page. Doubles as an SEO surface
  * ("best fragrances with oud", "what is saffron in perfumery") and an
  * editorial entry point that users hit by clicking a note tag on any
- * fragrance page. NOT exposed in the main nav — discovered via links.
+ * fragrance page. NOT exposed in the main nav, discovered via links.
  */
 export function NotePage() {
   const { slug } = useParams();
@@ -36,7 +36,7 @@ export function NotePage() {
   }, [fragrances, slug]);
 
   useDocumentMeta({
-    title: `${displayName} — fragrances with ${displayName.toLowerCase()}`,
+    title: `${displayName}, fragrances with ${displayName.toLowerCase()}`,
     description: blurb
       ? blurb.slice(0, 160)
       : `Every fragrance in the Scent Layer catalog featuring ${displayName.toLowerCase()}.`,
@@ -90,7 +90,7 @@ export function NotePage() {
         {matches.length === 0 ? (
           <div className="note-empty">
             <p className="note-empty-eyebrow">No matches yet</p>
-            <h2 className="note-empty-title">Nothing in the catalog uses <em>{displayName}</em> — yet.</h2>
+            <h2 className="note-empty-title">Nothing in the catalog uses <em>{displayName}</em>, yet.</h2>
             <p className="note-empty-body">Try a different note, or <Link to="/shop">browse the full catalog</Link>.</p>
           </div>
         ) : (

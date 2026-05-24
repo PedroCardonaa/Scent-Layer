@@ -9,8 +9,8 @@ import { slugify } from '../lib/slug.js';
 import { SchemaJsonLd, buildCollectionSchema, buildBreadcrumbSchema } from '../components/SchemaJsonLd.jsx';
 
 /**
- * /brand/:slug — every fragrance from a single brand. SEO target
- * ("all Le Labo fragrances") and an internal-link target — clicking
+ * /brand/:slug, every fragrance from a single brand. SEO target
+ * ("all Le Labo fragrances") and an internal-link target, clicking
  * any brand name on a card or fragrance page lands here. NOT in the
  * main nav.
  */
@@ -20,7 +20,7 @@ export function BrandPage() {
 
   // Find the matching brand by slugifying every brand in the catalog
   // and matching against the URL slug. Case-insensitive, diacritic-
-  // insensitive, punctuation-tolerant — see lib/slug.js.
+  // insensitive, punctuation-tolerant, see lib/slug.js.
   const { brand, items } = useMemo(() => {
     if (!slug) return { brand: null, items: [] };
     const matches = fragrances.filter(f => slugify(f.brand) === slug);
@@ -29,7 +29,7 @@ export function BrandPage() {
   }, [fragrances, slug]);
 
   useDocumentMeta({
-    title: brand ? `${brand} — every fragrance in the catalog` : 'Brand not found',
+    title: brand ? `${brand}, every fragrance in the catalog` : 'Brand not found',
     description: brand
       ? `Every ${brand} fragrance available for sampling on Scent Layer.`
       : 'Brand not found in the Scent Layer catalog.',
@@ -49,7 +49,7 @@ export function BrandPage() {
     );
   }
 
-  // Quick stats — the eyebrow gets number of fragrances and a couple
+  // Quick stats, the eyebrow gets number of fragrances and a couple
   // of dominant family / mood signals so the page header carries some
   // information density beyond the title.
   const families = items.reduce((acc, f) => {

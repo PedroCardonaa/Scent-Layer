@@ -3,20 +3,20 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 /**
- * Layered parallax hero. Originally a 21st.dev / Osmo template — adapted
+ * Layered parallax hero. Originally a 21st.dev / Osmo template, adapted
  * for the Scent Layer editorial palette. Drives four parallax layers via
  * GSAP ScrollTrigger on native browser scroll.
  *
  * (Earlier versions of this component initialized Lenis for smooth-scroll
- * but it intercepted the wheel and made the page feel locked. Dropped —
+ * but it intercepted the wheel and made the page feel locked. Dropped ,
  * native scroll works correctly with ScrollTrigger and feels less stuck.)
  *
  * Honors `prefers-reduced-motion: reduce` by skipping the animation entirely.
  *
  * Props
- *   title       — large italic word centered over the layers (default: "Scent")
- *   eyebrow     — small caps label beneath the title
- *   layers      — optional override for the 3 image URLs (back → front)
+ *   title      , large italic word centered over the layers (default: "Scent")
+ *   eyebrow    , small caps label beneath the title
+ *   layers     , optional override for the 3 image URLs (back → front)
  */
 export function ParallaxScrolling({
   title = 'Scent',
@@ -64,7 +64,7 @@ export function ParallaxScrolling({
   }, []);
 
   // TODO(scent-layer): replace the three layer images below with brand
-  // photography — bottles, botanicals, atmospheric textures. The current
+  // photography, bottles, botanicals, atmospheric textures. The current
   // URLs are Osmo's demo CDN assets and shouldn't ship to production.
   const defaultLayers = [
     'https://cdn.prod.website-files.com/671752cd4027f01b1b8f1c7f/6717795be09b462b2e8ebf71_osmo-parallax-layer-3.webp',

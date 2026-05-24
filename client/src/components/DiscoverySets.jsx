@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useApp } from '../context/AppContext.jsx';
 
 /**
- * Discovery Sets strip — curated 3-pack bundles displayed near the top
+ * Discovery Sets strip, curated 3-pack bundles displayed near the top
  * of /shop. Each card shows the set's hook, the three fragrances in it,
  * and a single "Sample The Set" CTA that drops all three into the cart
  * at the set's discount.
@@ -28,7 +28,7 @@ export function DiscoverySets() {
 
   function handleAdd(set) {
     addSetToCart(set, fragrances);
-    showToast(`<span>${set.name}</span> added — 3 samples in cart`);
+    showToast(`<span>${set.name}</span> added, 3 samples in cart`);
     setTimeout(() => openCart(), 250);
   }
 

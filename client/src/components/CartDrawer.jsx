@@ -9,7 +9,7 @@ import { trackEvent } from '../lib/analytics.js';
  *   - 'checkout': name/email/address form; submitting fires the multi-
  *                 item order to /api/source with kind:'cart'
  *
- * Pricing isn't shown because we don't have it yet — once you wire
+ * Pricing isn't shown because we don't have it yet, once you wire
  * sample prices into the catalog (or per-size config), drop the prices
  * into the line items and the total line lights up automatically.
  */
@@ -72,7 +72,7 @@ export function CartDrawer() {
       trackEvent('cart_checkout', { units: totalUnits, items: cartItems.length });
       clearCart();
       closeCart();
-      showToast(`<span>Order placed.</span> ${totalUnits} sample${totalUnits !== 1 ? 's' : ''} — we'll confirm by email.`);
+      showToast(`<span>Order placed.</span> ${totalUnits} sample${totalUnits !== 1 ? 's' : ''}, we'll confirm by email.`);
     } catch (e) {
       showToast(e.message || 'Could not place order');
     } finally {
@@ -175,7 +175,7 @@ export function CartDrawer() {
                 <span className="cart-field-label">Notes <span className="cart-field-optional">(optional)</span></span>
                 <textarea
                   className="cart-textarea"
-                  placeholder="Anything we should know — concentration preferences, gift wrapping, etc."
+                  placeholder="Anything we should know, concentration preferences, gift wrapping, etc."
                   value={form.message}
                   onChange={(e) => setForm(f => ({ ...f, message: e.target.value }))}
                 />

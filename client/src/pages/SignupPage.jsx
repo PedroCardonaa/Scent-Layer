@@ -11,7 +11,7 @@ export function SignupPage() {
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
-  // Theme is now centralized in AppContext — page no longer touches body.dark.
+  // Theme is now centralized in AppContext, page no longer touches body.dark.
   useEffect(() => { if (user) navigate('/profile', { replace: true }); }, [user, navigate]);
 
   async function submit(e) {

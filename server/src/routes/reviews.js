@@ -60,7 +60,7 @@ router.get('/mine', requireAuth, async (req, res, next) => {
 
 /**
  * POST /api/reviews
- * Auth required. Upserts the user's review for a fragrance — each user
+ * Auth required. Upserts the user's review for a fragrance, each user
  * gets one review per fragrance, re-posting updates it. Returns the saved
  * row with the fragrance attached.
  */

@@ -3,10 +3,10 @@ import { Home, Store, Sparkles, ShoppingBag, User } from 'lucide-react';
 import { useApp } from '../context/AppContext.jsx';
 
 /**
- * Sticky mobile bottom nav — visible only ≤900px (hidden on desktop via CSS).
+ * Sticky mobile bottom nav, visible only ≤900px (hidden on desktop via CSS).
  * Five anchored shortcuts: Home, Shop, Tools, Cart, Profile.
  *
- * The Cart "tab" doesn't navigate — it opens the side drawer. Same UX
+ * The Cart "tab" doesn't navigate, it opens the side drawer. Same UX
  * pattern as the existing nav cart button.
  *
  * Hidden on the Story page (the only chrome-less brand-moment surface

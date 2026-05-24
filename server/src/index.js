@@ -2,7 +2,7 @@ import 'dotenv/config';
 
 // Sentry must be imported and initialized BEFORE anything else so it can
 // instrument http, express, and async stacks. Silent no-op if SENTRY_DSN
-// is unset — useful for local dev where you don't want to ship errors out.
+// is unset, useful for local dev where you don't want to ship errors out.
 import * as Sentry from '@sentry/node';
 if (process.env.SENTRY_DSN) {
   Sentry.init({
