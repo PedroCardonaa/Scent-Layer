@@ -282,6 +282,77 @@ body.dark .cart-item {
   box-shadow: var(--elev-2);
 }
 
+/* ── Centered editorial heros ──────────────────────────────────
+   Every main page headline now reads centered with a soft 720px
+   max-width — feels closer to a couture brand than a corporate
+   dashboard. Per-page sub-paragraphs centered too with auto margins
+   so the type sits as a single column. */
+.shop-hero,
+.tool-hero,
+.note-hero {
+  text-align: center;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.shop-hero .shop-hero-sub,
+.tool-hero .tool-hero-sub {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Profile hero — was a 2-column split (heading left, button right).
+   Restack as a single centered column so the typography leads. */
+.profile-hero {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  text-align: center;
+  gap: 28px;
+}
+.profile-hero .personalize-btn { margin-top: 4px; }
+
+/* Fragrance-page breadcrumb stays left-aligned (it's a nav), but the
+   section labels above the pyramid + similar grid feel better
+   centered along with their titles. */
+.fragrance-section-label,
+.fragrance-section-title { text-align: center; }
+.fragrance-section-title { max-width: 720px; margin-left: auto; margin-right: auto; }
+
+/* Sets / Occasions intro headers — same treatment */
+.sets-header > div,
+.ext-intro {
+  text-align: center;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.sets-header { justify-content: center; }
+.sets-sub { margin-left: auto; margin-right: auto; }
+
+/* Section titles inside the home feed (sotw, fotm hero, etc.) —
+   force centered alignment where the layout doesn't already enforce
+   one side. Keep the 2-column layouts intact (hero, sotw card). */
+.notes-section .section-header,
+.tools-promo .section-header,
+.social-proof .section-header { text-align: center; }
+.notes-section .section-header > div,
+.tools-promo .section-header > div { margin: 0 auto; }
+
+/* Note + brand sub-blurb under the hero — centered with comfortable
+   max-width for reading rather than left-aligned to a corner. */
+.note-blurb,
+.note-pairs {
+  margin-left: auto;
+  margin-right: auto;
+}
+.note-pairs { justify-content: center; }
+
+@media (max-width: 800px) {
+  .shop-hero,
+  .tool-hero,
+  .note-hero { padding-left: 24px; padding-right: 24px; }
+}
+
 /* ── Reduce motion fallback ───────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .product-card:hover,
