@@ -46,6 +46,26 @@
   --sp-6:  64px;
   --sp-7:  96px;
   --sp-8:  128px;
+
+  /* ── Radius & shadow tokens — the smoothness pass ───────────────
+     The site used to be all square corners + hard 1px borders. These
+     tokens soften that without losing the editorial restraint —
+     small radii (4–12px), gentle borders, soft elevation shadows. */
+  --r-xs:   4px;       /* buttons, chips, inputs */
+  --r-sm:   8px;       /* product cards, panels */
+  --r-md:   12px;      /* modals, drawers */
+  --r-lg:   16px;      /* hero cards, big surfaces */
+  --r-pill: 999px;     /* full pill */
+
+  --soft-border: 1px solid rgba(26,22,18,0.08);
+  --elev-1: 0 1px 2px rgba(26,22,18,0.04), 0 2px 6px rgba(26,22,18,0.04);
+  --elev-2: 0 2px 4px rgba(26,22,18,0.05), 0 8px 24px rgba(26,22,18,0.06);
+  --elev-3: 0 4px 12px rgba(26,22,18,0.08), 0 18px 48px rgba(26,22,18,0.10);
+
+  /* Standardized easing — used by every transition for visual
+     coherence. Out-cubic for entrances, in-out for hovers. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
 }
 body.dark {
   --fg:           var(--cream);
@@ -55,6 +75,10 @@ body.dark {
   --surface-soft: rgba(255,255,255,0.04);
   --surface-2:    rgba(255,255,255,0.06);
   --hairline:     rgba(201,169,110,0.15);
+  --soft-border:  1px solid rgba(245,240,232,0.08);
+  --elev-1: 0 1px 2px rgba(0,0,0,0.30), 0 2px 6px rgba(0,0,0,0.18);
+  --elev-2: 0 2px 4px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.22);
+  --elev-3: 0 4px 12px rgba(0,0,0,0.40), 0 18px 48px rgba(0,0,0,0.28);
 }
 html { scroll-behavior: smooth; }
 body { background: var(--warm-white); color: var(--ink); font-family: 'Inter', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }

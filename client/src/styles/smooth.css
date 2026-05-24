@@ -1,0 +1,293 @@
+/* ===== SMOOTHNESS PASS =====
+   Loaded LAST so it overrides the harder square defaults set by the
+   older surface-specific stylesheets. The site was reading as a
+   magazine grid (lots of hard 1px borders, square corners, sharp
+   contrast); this pass softens it into something closer to a
+   boutique — small radii, gentle elevation, smoother hovers.
+
+   Scope is deliberate: change visual chrome (corners, borders,
+   shadows, transitions), don't change layout. */
+
+/* ── Product cards ─────────────────────────────────────────────── */
+.product-card {
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  box-shadow: var(--elev-1);
+  transition: box-shadow 0.35s var(--ease-out), transform 0.35s var(--ease-out);
+}
+.product-card:hover {
+  box-shadow: var(--elev-3);
+  transform: translateY(-2px);
+}
+.product-img,
+.product-img-photo { border-radius: var(--r-sm) var(--r-sm) 0 0; }
+.product-info { border-radius: 0 0 var(--r-sm) var(--r-sm); }
+/* Quick-action chips inside the product card — softer pills */
+.product-action-btn {
+  border-radius: var(--r-pill) !important;
+  transition: all 0.25s var(--ease-soft);
+}
+
+/* ── Shop product grid — replace the harsh 2px hairline gap with
+   a softer spacing so cards breathe. */
+.shop-product-grid { gap: 10px; }
+
+/* ── Discovery set cards ──────────────────────────────────────── */
+.set-card {
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--elev-1);
+  transition: box-shadow 0.35s var(--ease-out), transform 0.35s var(--ease-out);
+}
+.set-card:hover {
+  box-shadow: var(--elev-3);
+  transform: translateY(-3px);
+}
+.set-card-btn { border-radius: var(--r-xs); }
+.sets-grid { gap: 14px; }
+
+/* ── Buttons ──────────────────────────────────────────────────── */
+.btn-gold,
+.btn-dark,
+.btn-ghost,
+.sample-btn,
+.compare-btn,
+.similar-submit,
+.analyze-btn,
+.quiz-btn-start,
+.save-blend-btn,
+.set-card-btn,
+.fragrance-quick-link,
+.add-slot-btn {
+  border-radius: var(--r-xs);
+  transition: all 0.28s var(--ease-soft);
+}
+.btn-gold:hover,
+.btn-dark:hover,
+.btn-ghost:hover,
+.sample-btn:hover,
+.compare-btn:hover,
+.similar-submit:hover {
+  box-shadow: var(--elev-2);
+  transform: translateY(-1px);
+}
+
+/* Wishlist heart + share button on the fragrance hero — soft circles */
+.fragrance-wishlist-btn {
+  border-radius: var(--r-pill);
+  transition: all 0.25s var(--ease-soft);
+}
+.fragrance-wishlist-btn:hover {
+  box-shadow: var(--elev-2);
+  transform: translateY(-1px);
+}
+
+/* ── Inputs ────────────────────────────────────────────────────── */
+.modal-input,
+.finder-search,
+.similar-input,
+.compare-select,
+.fotm-input,
+.newsletter-strip-input,
+.save-blend-input,
+.review-text,
+.auth-input {
+  border-radius: var(--r-xs);
+  transition: border-color 0.25s var(--ease-soft), box-shadow 0.25s var(--ease-soft);
+}
+.modal-input:focus,
+.finder-search:focus,
+.similar-input:focus,
+.save-blend-input:focus,
+.review-text:focus,
+.auth-input:focus {
+  box-shadow: 0 0 0 3px rgba(201,169,110,0.12);
+}
+
+/* ── Chips & pills ─────────────────────────────────────────────── */
+.chip,
+.active-chip,
+.size-pill,
+.fragrance-size-pill,
+.wardrobe-pill,
+.review-rating-btn,
+.tool-tab,
+.profile-tab,
+.tag,
+.result-tag,
+.blend-card-tag {
+  border-radius: var(--r-pill);
+  transition: all 0.25s var(--ease-soft);
+}
+
+/* Mood/season/time/family chips on the shop finder strip */
+.finder-clear { border-radius: var(--r-pill); }
+
+/* ── Modals ────────────────────────────────────────────────────── */
+.modal { border-radius: var(--r-md); }
+.modal-overlay { transition: opacity 0.35s var(--ease-out); }
+@media (max-width: 640px) {
+  /* Bottom-sheet treatment keeps its top-only radius */
+  .modal { border-radius: var(--r-lg) var(--r-lg) 0 0; }
+}
+
+/* ── Cart drawer ───────────────────────────────────────────────── */
+.cart-drawer {
+  border-radius: var(--r-md) 0 0 var(--r-md);
+  box-shadow: var(--elev-3);
+}
+@media (max-width: 640px) {
+  /* On mobile the sheet sits at the bottom — keep top-only radius */
+  .cart-drawer { border-radius: var(--r-lg) var(--r-lg) 0 0; }
+}
+.cart-checkout button { border-radius: var(--r-xs); }
+.cart-item { border-radius: var(--r-xs); }
+
+/* ── Profile panels & wardrobe / blend cards ─────────────────── */
+.profile-panel { transition: background 0.35s var(--ease-out); }
+.wardrobe-column,
+.blend-card,
+.set-card-body {
+  border-radius: var(--r-sm);
+}
+.blend-card,
+.wardrobe-column {
+  transition: box-shadow 0.3s var(--ease-out);
+}
+.blend-card:hover,
+.wardrobe-column:hover { box-shadow: var(--elev-1); }
+.blend-card-btn { border-radius: var(--r-xs); }
+.wardrobe-grid,
+.blends-grid { gap: 10px; }
+
+/* ── Search palette ────────────────────────────────────────────── */
+.search-palette {
+  border-radius: var(--r-md);
+  box-shadow: var(--elev-3);
+}
+.search-palette-item { border-radius: var(--r-xs); margin: 0 8px; }
+.search-palette-list { padding: 8px 0; }
+.search-palette-input-row {
+  border-bottom: 1px solid rgba(26,22,18,0.06);
+}
+body.dark .search-palette-input-row {
+  border-bottom-color: rgba(245,240,232,0.06);
+}
+.search-palette-surprise { border-radius: var(--r-pill); }
+.search-palette-shortcut { border-radius: var(--r-xs); }
+
+/* ── Nav controls — slightly rounded, more breathable ─────────── */
+.nav-profile { border-radius: var(--r-pill); }
+.nav-cart    { border-radius: var(--r-pill); }
+.nav-search  { border-radius: var(--r-pill); }
+.nav-search-kbd { border-radius: var(--r-xs); }
+
+/* ── Toast / Why this rec / review strip ──────────────────────── */
+.why-rec-text  { border-radius: 0 var(--r-xs) var(--r-xs) 0; }
+.review-strip  { border-radius: var(--r-sm); }
+.review-snippet { border-radius: var(--r-sm); padding: 14px 16px; background: var(--surface-soft); border-left: 2px solid var(--gold); }
+
+/* ── Theme toggle & ToggleTheme — pill shape ───────────────────── */
+[role='switch'],
+.theme-toggle,
+.theme-toggle-btn { border-radius: var(--r-pill) !important; }
+
+/* ── Quiz options ──────────────────────────────────────────────── */
+.quiz-option {
+  border-radius: var(--r-xs);
+  transition: all 0.28s var(--ease-soft);
+}
+.quiz-option:hover {
+  box-shadow: var(--elev-1);
+  transform: translateX(2px);
+}
+
+/* ── Layer builder slots ──────────────────────────────────────── */
+.scent-slot { border-radius: var(--r-sm); }
+.builder-panel { border-radius: var(--r-sm); }
+
+/* ── Occasion cards on /explore ───────────────────────────────── */
+.occ-card {
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  box-shadow: var(--elev-1);
+  transition: box-shadow 0.35s var(--ease-out), transform 0.35s var(--ease-out);
+}
+.occ-card:hover {
+  box-shadow: var(--elev-3);
+  transform: translateY(-2px);
+}
+.occasions-grid { gap: 14px; }
+
+/* ── Note + Brand pages — soft note pair links ────────────────── */
+.note-pair-link { border-radius: var(--r-pill); padding: 4px 10px; }
+.note-grid { gap: 10px; }
+
+/* ── Compare + Similar cards ──────────────────────────────────── */
+.compare-card,
+.similar-card,
+.quiz-alt-card,
+.compare-verdict {
+  border-radius: var(--r-sm);
+}
+.similar-cards { gap: 14px; }
+
+/* ── Soften filter strip — replace hard hairlines with subtle bg */
+.finder-strip,
+.calc-section,
+.sets-section,
+.shop-grid-section {
+  border-bottom-color: rgba(26,22,18,0.06) !important;
+}
+body.dark .finder-strip,
+body.dark .calc-section,
+body.dark .sets-section,
+body.dark .shop-grid-section {
+  border-bottom-color: rgba(201,169,110,0.10) !important;
+}
+
+/* ── Hover lift on inline product images ──────────────────────── */
+.product-img-photo .product-photo {
+  transition: transform 0.7s var(--ease-out), opacity 0.5s var(--ease-out);
+}
+
+/* ── Smoother route fade — keep the framer-motion fade but ease ──
+   the page surfaces in with a gentle scale instead of pure opacity. */
+@media (prefers-reduced-motion: no-preference) {
+  main, section, article {
+    animation: none; /* avoid stacking with framer-motion */
+  }
+}
+
+/* ── Hairlines globally — soften the existing 1px borders by
+   lowering the contrast where they're declared with hardcoded
+   rgba values. Targeted selectors only — generic borders left alone
+   so callsites that want hard separators still get them. */
+.fragrance-attr,
+.compare-row,
+.note-act,
+.cart-item {
+  border-color: rgba(26,22,18,0.06) !important;
+}
+body.dark .fragrance-attr,
+body.dark .compare-row,
+body.dark .note-act,
+body.dark .cart-item {
+  border-color: rgba(245,240,232,0.06) !important;
+}
+
+/* ── Newsletter strip — soften the dark band edge ─────────────── */
+.newsletter-strip {
+  border-radius: 0;            /* full-width band, no radius */
+  box-shadow: var(--elev-2);
+}
+
+/* ── Reduce motion fallback ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .product-card:hover,
+  .set-card:hover,
+  .occ-card:hover,
+  .btn-gold:hover,
+  .btn-dark:hover,
+  .quiz-option:hover { transform: none; }
+}
