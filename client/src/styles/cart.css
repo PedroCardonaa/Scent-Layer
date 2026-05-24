@@ -342,8 +342,44 @@ nav.dark .nav-cart { border-color: rgba(201, 169, 110, 0.3); color: var(--cream)
   padding: 0 5px;
 }
 
-@media (max-width: 480px) {
-  .cart-drawer { width: 100vw; }
-  .cart-head { padding: 22px 22px 18px; }
+/* ── Mobile bottom-sheet treatment ──
+   On small screens, the right-side drawer becomes a bottom sheet —
+   matches the SampleModal / SourceModal pattern, easier thumb reach,
+   page underneath stays visible at the top. */
+@media (max-width: 640px) {
+  .cart-drawer {
+    top: auto;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+    max-width: 100vw;
+    max-height: 88vh;
+    transform: translateY(100%);
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -24px 64px rgba(0, 0, 0, 0.4);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .cart-drawer.open { transform: translateY(0); }
+
+  /* Drag-handle affordance at the top */
+  .cart-drawer::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.18);
+    z-index: 1;
+  }
+  body:not(.dark) .cart-drawer::before { background: rgba(0, 0, 0, 0.12); }
+
+  .cart-head { padding: 24px 22px 16px; }
   .cart-item, .cart-checkout, .cart-foot { padding-left: 22px; padding-right: 22px; }
+}
+@media (max-width: 640px) and (prefers-reduced-motion: reduce) {
+  .cart-drawer { transition: none; }
 }

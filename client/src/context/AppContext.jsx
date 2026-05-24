@@ -207,6 +207,17 @@ export function AppProvider({ children }) {
   // The fallback keeps the UI populated when the backend isn't reachable
   // (local dev without the server running, DB unseeded, frontend-only
   // Vercel deploys, etc). API wins whenever it returns >0 rows.
+  const refreshCatalog = useCallback(async () => {
+    try {
+      const d = await api('/api/fragrances');
+      if (Array.isArray(d.fragrances) && d.fragrances.length > 0) {
+        setFragrances(d.fragrances);
+      }
+    } catch (e) {
+      console.warn('[catalog] refresh failed —', e.message);
+    }
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     setFragrances(FALLBACK_CATALOG); // immediate paint
@@ -460,11 +471,12 @@ export function AppProvider({ children }) {
     cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart,
     recentlyViewed, markViewed,
     sets, addSetToCart,
+    refreshCatalog,
     wardrobeItems, setWardrobeStatus, removeWardrobeStatus, refreshWardrobe,
     savedBlends, saveBlend, deleteBlend, renameBlend, refreshBlends,
     myReviews, submitReview, refreshMyReviews,
     buildUserContext,
-  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme, analyticsConsent, setAnalyticsConsent, cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart, recentlyViewed, markViewed, sets, addSetToCart, wardrobeItems, setWardrobeStatus, removeWardrobeStatus, refreshWardrobe, savedBlends, saveBlend, deleteBlend, renameBlend, refreshBlends, myReviews, submitReview, refreshMyReviews, buildUserContext]);
+  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme, analyticsConsent, setAnalyticsConsent, cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart, recentlyViewed, markViewed, sets, addSetToCart, wardrobeItems, setWardrobeStatus, removeWardrobeStatus, refreshWardrobe, savedBlends, saveBlend, deleteBlend, renameBlend, refreshBlends, myReviews, submitReview, refreshMyReviews, buildUserContext, refreshCatalog]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

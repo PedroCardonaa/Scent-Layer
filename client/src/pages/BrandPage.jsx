@@ -6,6 +6,7 @@ import { ProductCard } from '../components/ProductCard.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useDocumentMeta } from '../lib/seo.js';
 import { slugify } from '../lib/slug.js';
+import { SchemaJsonLd, buildCollectionSchema, buildBreadcrumbSchema } from '../components/SchemaJsonLd.jsx';
 
 /**
  * /brand/:slug — every fragrance from a single brand. SEO target
@@ -60,9 +61,23 @@ export function BrandPage() {
     .slice(0, 3)
     .map(([k]) => k);
 
+  const schemaPayload = {
+    '@context': 'https://schema.org/',
+    '@graph': [
+      buildCollectionSchema({ brand, count: items.length, slug }),
+      buildBreadcrumbSchema([
+        { name: 'Home',    url: '/' },
+        { name: 'Catalog', url: '/shop' },
+        { name: 'Brands',  url: '/shop' },
+        { name: brand,     url: `/brand/${slug}` },
+      ]),
+    ],
+  };
+
   return (
     <>
       <Nav />
+      <SchemaJsonLd data={schemaPayload} id="sl-jsonld-brand" />
 
       <nav className="fragrance-crumb" aria-label="Breadcrumb">
         <Link to="/">Home</Link>

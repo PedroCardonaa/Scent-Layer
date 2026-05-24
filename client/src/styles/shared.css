@@ -170,6 +170,21 @@ nav.dark  .nav-hamburger span { background: var(--cream); }
 .product-img { aspect-ratio: 3/4; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; transition: transform 0.6s ease; }
 .product-card:hover .product-img { transform: scale(1.03); }
 .product-bg { position: absolute; inset: 0; }
+/* Real bottle photography overlays the gradient bg + SVG bottle. The
+   SVG stays in place as the fallback if the photo 404s or hasn't
+   loaded yet, so cards never go blank. */
+.product-img-photo .product-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 2;
+  transition: opacity 0.5s ease, transform 0.6s ease;
+  background: var(--surface-soft);
+}
+.product-img-photo:hover .product-photo { transform: scale(1.04); }
+.product-img-photo .product-badge { z-index: 3; }
 .p-bg-1{background:linear-gradient(160deg,#e8ddd0,#d4c5b0)}
 .p-bg-2{background:linear-gradient(160deg,#dde8e0,#c5d4c8)}
 .p-bg-3{background:linear-gradient(160deg,#e8e0d0,#d4c8b0)}
@@ -513,6 +528,44 @@ body.dark .mobile-bottom-nav {
   /* Lift the cookie banner above the mobile bottom-nav so it doesn't get
      hidden behind it. The bottom-nav is ~58px tall plus safe-area inset. */
   .cookie-consent { left: 16px; right: 16px; bottom: calc(72px + env(safe-area-inset-bottom)); max-width: none; padding: 18px 20px; }
+}
+
+/* ── PULL-TO-REFRESH INDICATOR ──
+   Touch-only chip that hangs below the top of the viewport, follows
+   the user's pull, and locks while the refresh resolves. */
+.ptr-indicator {
+  position: fixed;
+  top: -60px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  z-index: 150;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+  border-radius: 30px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+  margin-left: -100px;
+  transition: transform 0.18s ease-out;
+}
+.ptr-spinner {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold);
+  border-top-color: transparent;
+  display: inline-block;
+}
+.ptr-indicator.refreshing .ptr-spinner {
+  animation: ptr-spin 0.8s linear infinite;
+}
+@keyframes ptr-spin {
+  to { transform: rotate(360deg); }
 }
 
 /* ── WHY THIS REC ──

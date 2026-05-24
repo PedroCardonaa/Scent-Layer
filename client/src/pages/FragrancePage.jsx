@@ -10,6 +10,8 @@ import { useApp } from '../context/AppContext.jsx';
 import { useDocumentMeta } from '../lib/seo.js';
 import { slugify, parseNotes } from '../lib/slug.js';
 import { shareOrCopy } from '../lib/share.js';
+import { getFragranceImage } from '../lib/fragrance-images.js';
+import { SchemaJsonLd, buildProductSchema, buildBreadcrumbSchema } from '../components/SchemaJsonLd.jsx';
 
 const SAMPLE_SIZES = ['2ml', '5ml', '10ml', '30ml'];
 
@@ -121,12 +123,30 @@ export function FragrancePage() {
   const label = `${fragrance.name} — ${fragrance.brand}`;
   const saved = wishlistIds.includes(fragrance.id);
   // Per-fragrance imageUrl wins; family-based hero is the fallback.
-  const heroImage = fragrance.imageUrl ?? FAMILY_IMAGE[fragrance.family] ?? FALLBACK_IMAGE;
+  // Prefer the helper — it handles per-fragrance overrides + family
+  // pools + the final fallback in one place. The old FAMILY_IMAGE map
+  // remains as a redundant safety net if the helper ever returns null.
+  const heroImage = getFragranceImage(fragrance) ?? FAMILY_IMAGE[fragrance.family] ?? FALLBACK_IMAGE;
   const synthDescription = fragrance.description ?? buildSynthDescription(fragrance);
+
+  // Structured data for rich snippets in Google. Combines Product +
+  // Breadcrumbs into one ld+json payload via @graph so both register.
+  const schemaPayload = {
+    '@context': 'https://schema.org/',
+    '@graph': [
+      buildProductSchema({ fragrance, imageUrl: heroImage }),
+      buildBreadcrumbSchema([
+        { name: 'Home',            url: '/' },
+        { name: 'Catalog',         url: '/shop' },
+        { name: fragrance.name,    url: `/fragrance/${fragrance.id}` },
+      ]),
+    ],
+  };
 
   return (
     <>
       <Nav />
+      <SchemaJsonLd data={schemaPayload} id="sl-jsonld-fragrance" />
 
       {/* Breadcrumb */}
       <nav className="fragrance-crumb" aria-label="Breadcrumb">

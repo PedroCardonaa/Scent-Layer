@@ -191,6 +191,69 @@ router.post('/similar', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
+// ─── DESCRIBE ──────────────────────────────────────────────────────────
+// Free-form text → 3 catalog matches with reasoning. Reads the catalog
+// the user provides (rather than letting the model invent fragrances
+// from training data) so every pick links to a real /fragrance/:id
+// page on the site. The catalog is trimmed to id/name/brand/family +
+// notes per entry to keep the prompt cheap — at 61 fragrances that's
+// well under 4K tokens of context.
+const catalogShape = z.array(z.object({
+  id:     z.number().int(),
+  name:   z.string(),
+  brand:  z.string(),
+  family: z.string(),
+  top:    z.string().optional(),
+  heart:  z.string().optional(),
+  base:   z.string().optional(),
+})).min(1).max(120);
+
+router.post('/describe', async (req, res, next) => {
+  try {
+    const { description, catalog, userContext } = z.object({
+      description: z.string().min(8).max(600),
+      catalog: catalogShape,
+      userContext: userContextShape,
+    }).parse(req.body);
+
+    const list = catalog.map(f =>
+      `[id:${f.id}] ${f.name} — ${f.brand} (${f.family}) | top: ${f.top || '?'} | heart: ${f.heart || '?'} | base: ${f.base || '?'}`
+    ).join('\n');
+
+    const result = await structuredCall({
+      system: VOICE,
+      user: `Someone described a fragrance they smelled — or want to smell — like this:\n\n"${description}"\n\nPick the THREE closest matches from the catalog below. Match on note overlap, structural similarity, mood, and what the description literally says. If the description mentions something specific (a place, a memory, a person, a feeling), let that anchor your reasoning. ONLY pick from the catalog — return the exact id, name, and brand for each pick.\n\nCATALOG:\n${list}${formatUserContext(userContext)}`,
+      toolName: 'describe_matches',
+      maxTokens: 1100,
+      schema: {
+        type: 'object',
+        properties: {
+          matches: {
+            type: 'array',
+            minItems: 3,
+            maxItems: 3,
+            items: {
+              type: 'object',
+              properties: {
+                id:    { type: 'integer', description: 'The exact catalog id of the matching fragrance.' },
+                name:  { type: 'string',  description: 'Fragrance name only.' },
+                brand: { type: 'string' },
+                rank:  { type: 'string',  description: 'Short label: "Closest Match", "Strong Match", "Worth Considering".' },
+                why:   { type: 'string',  description: '2-3 sentences linking the description to this fragrance. Reference specific words from the description.' },
+                match: { type: 'string',  description: 'Short phrase naming the shared notes/qualities (e.g. "Smoky birch + vanilla core").' },
+              },
+              required: ['id', 'name', 'brand', 'rank', 'why', 'match'],
+            },
+          },
+          reasoning: { type: 'string', description: 'One sentence on what about the description you triangulated on. If user context was provided, reference it.' },
+        },
+        required: ['matches', 'reasoning'],
+      },
+    });
+    res.json(result);
+  } catch (err) { next(err); }
+});
+
 // ─── QUIZ ──────────────────────────────────────────────────────────────
 router.post('/quiz', async (req, res, next) => {
   try {

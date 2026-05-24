@@ -7,6 +7,7 @@ import { useApp } from '../context/AppContext.jsx';
 import { useDocumentMeta } from '../lib/seo.js';
 import { NOTE_CATALOG } from '../lib/notes-catalog.js';
 import { slugify, unslugify, parseNotes } from '../lib/slug.js';
+import { SchemaJsonLd, buildArticleSchema, buildBreadcrumbSchema } from '../components/SchemaJsonLd.jsx';
 
 /**
  * /notes/:slug — single-note landing page. Doubles as an SEO surface
@@ -41,9 +42,23 @@ export function NotePage() {
       : `Every fragrance in the Scent Layer catalog featuring ${displayName.toLowerCase()}.`,
   });
 
+  const schemaPayload = {
+    '@context': 'https://schema.org/',
+    '@graph': [
+      buildArticleSchema({ noteName: displayName, blurb, slug }),
+      buildBreadcrumbSchema([
+        { name: 'Home',         url: '/' },
+        { name: 'Catalog',      url: '/shop' },
+        { name: 'Notes',        url: '/shop' },
+        { name: displayName,    url: `/notes/${slug}` },
+      ]),
+    ],
+  };
+
   return (
     <>
       <Nav />
+      <SchemaJsonLd data={schemaPayload} id="sl-jsonld-note" />
 
       <nav className="fragrance-crumb" aria-label="Breadcrumb">
         <Link to="/">Home</Link>

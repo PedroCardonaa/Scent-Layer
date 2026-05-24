@@ -3,6 +3,7 @@ import { ShoppingBag } from 'lucide-react';
 import { useApp } from '../context/AppContext.jsx';
 import { ProductBottle } from './BottleSvg.jsx';
 import { MagicCard } from './ui/MagicCard.jsx';
+import { getFragranceImage } from '../lib/fragrance-images.js';
 
 export function ProductCard({ fragrance: p }) {
   const { wishlistIds, toggleWishlist, openSampleModal, openSourceModal, addToCart, openCart, showToast } = useApp();
@@ -28,9 +29,19 @@ export function ProductCard({ fragrance: p }) {
   return (
     <MagicCard className="product-card" spotlightColor="rgba(201,169,110,0.22)" spotlightSize={240}>
       <Link to={detailHref} className="product-card-link" aria-label={`Open details for ${label}`}>
-        <div className="product-img">
+        <div className="product-img product-img-photo">
+          {/* Real bottle photography overlaid on the family-tinted bg.
+              If the image fails the gradient + SVG bottle is still
+              visible underneath as a graceful fallback. */}
           <div className={`product-bg ${p.bg}`} />
           <ProductBottle />
+          <img
+            className="product-photo"
+            src={getFragranceImage(p)}
+            alt={`${p.name} by ${p.brand}`}
+            loading="lazy"
+            decoding="async"
+          />
           {p.badge && <div className="product-badge">{p.badge}</div>}
           <div className="product-actions">
             <button

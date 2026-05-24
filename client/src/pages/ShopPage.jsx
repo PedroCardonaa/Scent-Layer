@@ -8,6 +8,7 @@ import { DiscoverySets } from '../components/DiscoverySets.jsx';
 import { NumberTicker } from '../components/ui/NumberTicker.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useScrollReveal } from '../hooks/useScrollReveal.js';
+import { usePullToRefresh } from '../hooks/usePullToRefresh.js';
 import { useDocumentMeta } from '../lib/seo.js';
 
 // Sample sizes — match the four sizes users can actually order via the
@@ -36,7 +37,17 @@ const TIME_OPTS   = ['Morning','Daytime','Evening','Night'];
 const MOOD_OPTS   = ['Romantic','Confident','Relaxed','Bold','Minimal'];
 
 export function ShopPage() {
-  const { fragrances, openSampleModal, openSourceModal } = useApp();
+  const { fragrances, openSampleModal, openSourceModal, refreshCatalog, showToast } = useApp();
+
+  // Native pull-to-refresh on touch devices. Triggers a catalog refetch
+  // and a small toast confirming the refresh. Inert on desktop.
+  const { pullDistance, refreshing } = usePullToRefresh({
+    onRefresh: async () => {
+      await refreshCatalog();
+      showToast('<span>Catalog refreshed.</span>');
+    },
+    threshold: 80,
+  });
   const [params, setParams] = useSearchParams();
 
   // Spray calc state
@@ -118,6 +129,20 @@ export function ShopPage() {
   return (
     <>
       <Nav />
+
+      {/* Pull-to-refresh indicator — only visible while the user is
+          actively pulling or the refresh is in flight. Invisible on
+          desktop. */}
+      {(pullDistance > 0 || refreshing) && (
+        <div
+          className={`ptr-indicator ${refreshing ? 'refreshing' : ''}`}
+          style={{ transform: `translateY(${refreshing ? 60 : pullDistance}px)` }}
+          aria-hidden="true"
+        >
+          <span className="ptr-spinner" />
+          <span className="ptr-label">{refreshing ? 'Refreshing…' : 'Release to refresh'}</span>
+        </div>
+      )}
 
       <div className="shop-hero">
         <p className="shop-hero-label">The Collection</p>

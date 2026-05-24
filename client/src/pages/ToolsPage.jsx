@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '../components/ui/Command.jsx';
 import { StreamText } from '../components/StreamText.jsx';
@@ -18,6 +18,7 @@ export function ToolsPage() {
   const [tab, setTab] = useState(() => {
     if (hash === '#compare') return 'compare';
     if (hash === '#similar') return 'similar';
+    if (hash === '#describe') return 'describe';
     return 'builder';
   });
 
@@ -39,13 +40,15 @@ export function ToolsPage() {
             <button type="button" className={`tool-tab ${tab === 'builder' ? 'active' : ''}`} onClick={() => setTab('builder')}>Layer Builder</button>
             <button type="button" className={`tool-tab ${tab === 'compare' ? 'active' : ''}`} onClick={() => setTab('compare')}>Compare</button>
             <button type="button" className={`tool-tab ${tab === 'similar' ? 'active' : ''}`} onClick={() => setTab('similar')}>Similar Scents</button>
+            <button type="button" className={`tool-tab ${tab === 'describe' ? 'active' : ''}`} onClick={() => setTab('describe')}>Describe</button>
           </div>
         </div>
       </div>
 
-      {tab === 'builder' && <LayerBuilder fragrances={fragrances} />}
-      {tab === 'compare' && <Compare    fragrances={fragrances} />}
-      {tab === 'similar' && <Similar />}
+      {tab === 'builder'  && <LayerBuilder fragrances={fragrances} />}
+      {tab === 'compare'  && <Compare    fragrances={fragrances} />}
+      {tab === 'similar'  && <Similar />}
+      {tab === 'describe' && <Describe   fragrances={fragrances} />}
     </>
   );
 }
@@ -587,6 +590,125 @@ function Similar() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+// ─── DESCRIBE ──────────────────────────────────────────────────────────
+// Free-form text input → 3 catalog matches. The model only picks from
+// the catalog we pass it, so every result lands on a real /fragrance/
+// page on click. Reuses the thinking-stream + WhyThisRec infra so the
+// wait reads as deliberate reasoning rather than a frozen UI.
+function Describe({ fragrances }) {
+  const { openSampleModal, openSourceModal, buildUserContext } = useApp();
+  const navigate = useNavigate();
+  const [input, setInput] = useState('');
+  const [submitted, setSubmitted] = useState('');
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  async function find() {
+    const val = input.trim();
+    if (val.length < 8) return;
+    setLoading(true); setResult(null); setError(null); setSubmitted(val);
+    try {
+      // Trim catalog payload to the fields the model actually uses.
+      const catalog = fragrances.map(f => ({
+        id: f.id, name: f.name, brand: f.brand, family: f.family,
+        top: f.top, heart: f.heart, base: f.base,
+      }));
+      const r = await api('/api/ai/describe', {
+        method: 'POST',
+        body: { description: val, catalog, userContext: buildUserContext() },
+      });
+      trackEvent('describe_search');
+      setResult(r);
+    } catch (e) {
+      setError(e.message || 'Could not find matches');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <div className="tool-hero" id="describe">
+        <p className="tool-hero-label">Describe a Scent</p>
+        <h1 className="tool-hero-title">Smelled it once,<br/><em>never knew what it was.</em></h1>
+        <p className="tool-hero-sub">Describe a fragrance in your own words — a note, a place, a memory, a vibe — and we'll triangulate the three closest matches from the catalog.</p>
+      </div>
+      <div className="similar-layout">
+        <p className="similar-hint">Examples: "smoky, like a campfire but with vanilla underneath" · "I smelled this at a hotel bar in November, leather and rum" · "clean, like ironed linen and morning sun".</p>
+        <div className="similar-search-row">
+          <textarea
+            className="similar-input"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                e.preventDefault();
+                find();
+              }
+            }}
+            placeholder="Describe what you smelled, or what you want to smell like…"
+            rows={3}
+            style={{ resize: 'vertical', minHeight: 80, fontFamily: 'inherit' }}
+            maxLength={600}
+          />
+          <button type="button" className="similar-submit" onClick={find} disabled={loading || input.trim().length < 8}>
+            {loading ? 'Matching…' : 'Find Matches'}
+          </button>
+        </div>
+
+        {loading && <DescribeThinking active={loading} />}
+        {error && <p className="error-text">{error}</p>}
+        {result && (
+          <div className="similar-result">
+            <h3 className="similar-result-title">From <em>"{submitted.length > 60 ? submitted.slice(0, 60) + '…' : submitted}"</em></h3>
+            <WhyThisRec reasoning={result.reasoning} label="Why these picks?" />
+            <div className="similar-cards">
+              {result.matches.map((m) => {
+                const f = fragrances.find(x => x.id === m.id);
+                const label = `${m.name} — ${m.brand}`;
+                return (
+                  <div key={m.id} className="similar-card">
+                    <p className="similar-card-rank">{m.rank}</p>
+                    <h3
+                      className="similar-card-name"
+                      style={f ? { cursor: 'none' } : undefined}
+                      onClick={() => f && navigate(`/fragrance/${f.id}`)}
+                    >{m.name}</h3>
+                    <p className="similar-card-brand">{m.brand}</p>
+                    <StreamText as="p" className="similar-card-why" text={m.why} />
+                    <p className="similar-card-match">✦ {m.match}</p>
+                    <div className="similar-card-actions">
+                      <button type="button" className="sample-btn" onClick={() => openSampleModal(label)}>Order Sample</button>
+                      <button type="button" className="source-link" style={{ marginTop: 10 }} onClick={() => openSourceModal(label)}>or full bottle →</button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function DescribeThinking({ active }) {
+  const stages = [
+    'Reading your description',
+    'Scanning the catalog',
+    'Matching against notes',
+    'Triangulating the three closest',
+  ];
+  const label = useThinkingStages(active, stages);
+  return (
+    <div className="thinking">
+      <p className="thinking-label">{label || 'Matching'}</p>
+      <div className="dots"><div className="dot"/><div className="dot"/><div className="dot"/></div>
     </div>
   );
 }
