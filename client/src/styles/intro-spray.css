@@ -1,79 +1,162 @@
 /* ===== INTRO SPRAY OVERLAY =====
-   Full-screen take-over for the first visit of each session. The R3F
-   canvas paints a realistic glass bottle that auto-sprays the viewer,
-   then the overlay fades out and unmounts. */
+   Full-screen take-over for the first visit of each session. SVG glass
+   bottle (BDK Parfums silhouette) sprays a wide blush mist that drifts
+   and settles, then the overlay fades to the homepage. */
 
 .intro-spray {
   position: fixed;
   inset: 0;
-  z-index: 9000;             /* above everything, including nav (z-100) */
+  z-index: 9000;             /* above the fixed nav (z-100) */
   background:
-    radial-gradient(ellipse at center, #1a0e08 0%, #050302 70%, #000 100%);
-  display: block;
-  opacity: 1;
-  transition: opacity 0.6s ease;
-  cursor: none;
-  /* Prevent the scrollbar from flashing while the intro is on screen */
+    radial-gradient(ellipse at 50% 55%, #1a0e08 0%, #0d0907 55%, #050302 100%);
   overflow: hidden;
+  cursor: pointer;
+  transition: opacity 0.6s ease;
 }
-
 .intro-spray.fading {
   opacity: 0;
   pointer-events: none;
 }
 
-.intro-spray > canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-  background: transparent;
-}
-
-/* Soft vignette painted on top of the canvas to keep the eye on the
-   bottle and to mask the canvas edges if devicePixelRatio rounding
-   leaves a hairline. */
-.intro-spray-vignette {
+/* Particle canvas, full viewport, sits behind the bottle. */
+.intro-canvas {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  background:
-    radial-gradient(ellipse at center,
-      transparent 35%,
-      rgba(0,0,0,0.35) 80%,
-      rgba(0,0,0,0.7) 100%);
 }
 
-/* Skip button — discreet, top-right. The user can dismiss the intro
-   immediately if they've seen it. */
-.intro-spray-skip {
+/* Bottle stage, centered, above the canvas. */
+.intro-stage {
   position: absolute;
-  top: 28px;
-  right: 32px;
-  z-index: 2;
-  background: none;
-  border: 1px solid rgba(232, 205, 150, 0.4);
-  color: rgba(245, 235, 210, 0.85);
-  font-family: 'Inter', sans-serif;
-  font-size: 0.6rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  padding: 9px 18px;
-  cursor: none;
-  transition: all 0.25s ease;
-  opacity: 0;
-  animation: introSkipIn 0.5s ease 0.6s forwards;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
-.intro-spray-skip:hover {
-  border-color: rgba(232, 205, 150, 0.9);
-  color: rgba(255, 250, 235, 1);
+.intro-bottle-wrap {
+  position: relative;
+  width: 200px;
+  height: 460px;
+  filter: drop-shadow(0 30px 50px rgba(0,0,0,0.7));
+  will-change: transform, opacity;
 }
-@keyframes introSkipIn {
-  to { opacity: 1; }
+.intro-bottle-wrap svg {
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  overflow: visible;
 }
 
-/* Reduced motion: shorten the experience but still play it so the
-   user understands what they're seeing. The spray itself respects
-   prefers-reduced-motion in SprayCanvas. */
+/* Soft halo behind bottle */
+.intro-stage::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 700px; height: 700px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(232, 205, 150, 0.10) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+/* Vignette */
+.intro-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.45) 80%, rgba(0,0,0,0.85) 100%);
+  pointer-events: none;
+}
+
+/* Wordmark + loading hud, fades in after the burst settles. */
+.intro-hud {
+  position: absolute;
+  left: 0; right: 0;
+  bottom: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.intro-hud.show { opacity: 1; }
+.intro-wordmark {
+  font-family: 'Lora', serif;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: lowercase;
+  color: #f5ebd2;
+}
+.intro-wordmark-dot {
+  display: inline-block;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: #e8cd96;
+  margin: 0 10px 6px;
+  vertical-align: middle;
+}
+.intro-caption {
+  font-size: 10px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: rgba(245, 235, 210, 0.42);
+}
+.intro-progress {
+  width: 180px;
+  height: 1px;
+  background: rgba(245, 235, 210, 0.12);
+  overflow: hidden;
+}
+.intro-progress > i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, #e8cd96, transparent);
+  width: 40%;
+  transform: translateX(-100%);
+  animation: intro-progress-slide 1.8s ease-in-out infinite;
+}
+@keyframes intro-progress-slide {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+/* Skip hint */
+.intro-skip-hint {
+  position: absolute;
+  top: 32px; right: 36px;
+  font-size: 10px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: rgba(245, 235, 210, 0.42);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.intro-skip-hint.show { opacity: 1; }
+.intro-skip-key {
+  display: inline-block;
+  border: 1px solid rgba(245, 235, 210, 0.25);
+  padding: 3px 10px;
+  margin-left: 12px;
+  letter-spacing: 0.2em;
+}
+
+@media (max-width: 640px) {
+  .intro-bottle-wrap { width: 150px; height: 350px; }
+  .intro-hud { bottom: 40px; }
+  .intro-wordmark { font-size: 22px; }
+  .intro-skip-hint { top: 20px; right: 20px; font-size: 9px; }
+  .intro-skip-key { padding: 2px 8px; }
+}
+
+/* Respect reduced motion, kill the long timeline animations and let
+   the intro finish quickly. */
 @media (prefers-reduced-motion: reduce) {
   .intro-spray { transition: opacity 0.3s ease; }
+  .intro-progress > i { animation: none; }
 }
