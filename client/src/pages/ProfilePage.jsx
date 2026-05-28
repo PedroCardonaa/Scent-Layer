@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
 import { StreamText } from '../components/StreamText.jsx';
 import { WhyThisRec } from '../components/WhyThisRec.jsx';
+import { WardrobeInsight } from '../components/WardrobeInsight.jsx';
 import { useThinkingStages } from '../hooks/useThinkingStages.js';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
@@ -211,6 +212,7 @@ function WardrobePanel() {
       <p className="profile-panel-label">Your Fragrance Inventory</p>
       <h2 className="profile-panel-title">My Wardrobe</h2>
       <p className="profile-panel-sub">A snapshot of what you wear. Use it to plan rotations and reorders.</p>
+      <WardrobeInsight />
       <div className="wardrobe-grid">
         <WardrobeColumn label="Owned"   items={owned}   onRemove={removeWardrobeStatus} status="OWNED" />
         <WardrobeColumn label="Sampled" items={sampled} onRemove={removeWardrobeStatus} status="SAMPLED" />

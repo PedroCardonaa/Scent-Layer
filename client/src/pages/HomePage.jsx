@@ -13,6 +13,7 @@ import { ProductRevealCard } from '../components/ui/ProductRevealCard.jsx';
 import { GlowCard } from '../components/ui/GlowCard.jsx';
 import { QuizMatchCard } from '../components/QuizMatchCard.jsx';
 import { BasedOnSampledRow } from '../components/BasedOnSampledRow.jsx';
+import { TodaysEdit } from '../components/TodaysEdit.jsx';
 import { WishlistRecsRow } from '../components/WishlistRecsRow.jsx';
 import { RecentlyViewedRow } from '../components/RecentlyViewedRow.jsx';
 import { useApp } from '../context/AppContext.jsx';
@@ -86,6 +87,8 @@ export function HomePage() {
       </section>
 
       <NewsletterStrip />
+
+      <TodaysEdit />
 
       {/* Personalization rows, render only when there's data to show.
           Each component returns null for empty states so we don't end

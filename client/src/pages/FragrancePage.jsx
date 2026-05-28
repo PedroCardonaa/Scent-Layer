@@ -4,6 +4,7 @@ import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
 import { ProductCard } from '../components/ProductCard.jsx';
 import { RecentlyViewedRow } from '../components/RecentlyViewedRow.jsx';
+import { LayerWithBlock } from '../components/LayerWithBlock.jsx';
 import { ReviewStrip } from '../components/ReviewStrip.jsx';
 import { WardrobePills } from '../components/WardrobePills.jsx';
 import { useApp } from '../context/AppContext.jsx';
@@ -280,6 +281,9 @@ export function FragrancePage() {
           <NoteAct num="03" label="Base" sub="Hours into wear" notes={fragrance.base} />
         </div>
       </section>
+
+      {/* Layers Well With, AI-picked partners cached server-side */}
+      <LayerWithBlock fragrance={fragrance} />
 
       {/* Similar */}
       {similar.length > 0 && (

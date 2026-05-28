@@ -121,6 +121,50 @@ model SavedBlend {
   @@index([userId, createdAt])
 }
 
+// Layer suggestions, cached AI picks of 3 fragrances that layer well
+// with a given source fragrance. One row per source fragrance id; the
+// `partners` array stores [{id, name, brand, why}] and `result` stores
+// the full Anthropic response. Regenerated only when the source
+// fragrance changes meaningfully, otherwise reused across all visitors.
+model LayerSuggestion {
+  id          Int      @id @default(autoincrement())
+  fragranceId Int      @unique
+  partners    Json     // [{id, name, brand, why, match}]
+  result      Json     // full AI response
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([fragranceId])
+}
+
+// Orders, persisted record of every Stripe-completed purchase. The
+// Stripe webhook hook in /api/payments writes one row per successful
+// session. Used to drive lifecycle email triggers.
+model Order {
+  id              String   @id @default(cuid())
+  userId          String?
+  email           String
+  stripeSessionId String   @unique
+  amountTotal     Int      // cents
+  currency        String   @default("usd")
+  status          String   // 'paid' | 'fulfilled' | 'shipped'
+  items           Json     // [{ fragranceId, name, brand, size, qty, unitPrice }]
+  address         Json?
+  // Lifecycle email flags so we never send the same email twice. The
+  // cron job that runs the lifecycle scheduler flips these when each
+  // email goes out.
+  emailedConfirmation Boolean   @default(false)
+  emailedShipped      Boolean   @default(false)
+  emailedReviewPrompt Boolean   @default(false)
+  emailedReorder      Boolean   @default(false)
+  shippedAt           DateTime?
+  createdAt           DateTime  @default(now())
+
+  @@index([email, createdAt])
+  @@index([emailedReviewPrompt, createdAt])
+  @@index([emailedReorder, createdAt])
+}
+
 model SourceRequest {
   id        String   @id @default(cuid())
   name      String

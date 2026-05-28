@@ -45,36 +45,64 @@ export function CartDrawer() {
   const totalUnits = cartItems.reduce((s, i) => s + i.qty, 0);
 
   async function placeOrder() {
-    if (!form.name.trim() || !form.email.trim()) {
-      showToast('Please fill in your name and email');
-      return;
-    }
     if (cartItems.length === 0) return;
     setSubmitting(true);
     try {
-      await api('/api/source', {
+      // Real payments path, Stripe Checkout. Server returns the hosted
+      // Checkout URL; we redirect. Shipping + email collection happens
+      // on Stripe. The webhook persists the Order and fires the
+      // confirmation email.
+      const r = await api('/api/payments/checkout', {
         method: 'POST',
+        auth: true,
         body: {
-          kind: 'cart',
-          name: form.name,
-          email: form.email,
-          address: form.address || null,
-          message: form.message || null,
           items: cartItems.map(it => ({
             fragranceId: it.fragranceId,
             name: it.name,
-            brand: it.brand ?? null,
+            brand: it.brand ?? '',
             size: it.size,
             qty: it.qty,
           })),
+          address: form.message || form.address || undefined,
         },
       });
       trackEvent('cart_checkout', { units: totalUnits, items: cartItems.length });
-      clearCart();
-      closeCart();
-      showToast(`<span>Order placed.</span> ${totalUnits} sample${totalUnits !== 1 ? 's' : ''}, we'll confirm by email.`);
+      if (r?.url) {
+        window.location.href = r.url;
+        return;
+      }
+      throw new Error('Checkout URL missing');
     } catch (e) {
-      showToast(e.message || 'Could not place order');
+      // Stripe not configured? Fall back to the legacy request flow so
+      // the cart still works on environments without payments wired up.
+      if (e?.status === 503) {
+        try {
+          await api('/api/source', {
+            method: 'POST',
+            body: {
+              kind: 'cart',
+              name: form.name,
+              email: form.email,
+              address: form.address || null,
+              message: form.message || null,
+              items: cartItems.map(it => ({
+                fragranceId: it.fragranceId,
+                name: it.name,
+                brand: it.brand ?? null,
+                size: it.size,
+                qty: it.qty,
+              })),
+            },
+          });
+          clearCart();
+          closeCart();
+          showToast(`<span>Order placed.</span> ${totalUnits} sample${totalUnits !== 1 ? 's' : ''}, we'll confirm by email.`);
+        } catch (err) {
+          showToast(err.message || 'Could not place order');
+        }
+      } else {
+        showToast(e.message || 'Could not start checkout');
+      }
     } finally {
       setSubmitting(false);
     }

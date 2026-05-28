@@ -353,6 +353,292 @@ body.dark .cart-item {
   .note-hero { padding-left: 24px; padding-right: 24px; }
 }
 
+/* ── Layer With block on fragrance pages ───────────────────────── */
+.layer-with {
+  padding: 70px 60px;
+  border-top: var(--soft-border);
+}
+.layer-with-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  max-width: 1200px;
+  margin: 36px auto 0;
+}
+.layer-with-card {
+  background: var(--surface-soft);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--elev-1);
+  transition: box-shadow 0.35s var(--ease-out), transform 0.35s var(--ease-out);
+  display: flex;
+  flex-direction: column;
+}
+.layer-with-card:hover {
+  box-shadow: var(--elev-3);
+  transform: translateY(-2px);
+}
+.layer-with-card-img {
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+.layer-with-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s var(--ease-out);
+}
+.layer-with-card:hover .layer-with-card-img img { transform: scale(1.04); }
+.layer-with-card-body {
+  padding: 22px 22px 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.layer-with-card-brand {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  margin-bottom: 6px;
+}
+.layer-with-card-name {
+  font-family: 'Lora', serif;
+  font-size: 1.2rem;
+  color: var(--fg);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+.layer-with-card-name:hover { border-bottom-color: var(--gold); }
+.layer-with-card-match {
+  font-size: 0.7rem;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+.layer-with-card-why {
+  font-size: 0.84rem;
+  line-height: 1.7;
+  color: var(--fg-soft);
+  margin-bottom: 18px;
+  flex: 1;
+}
+.layer-with-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}
+.layer-with-pair-btn {
+  background: none;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 10px 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.64rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: none;
+  border-radius: var(--r-xs);
+  transition: all 0.25s var(--ease-soft);
+}
+.layer-with-pair-btn:hover {
+  background: var(--gold);
+  color: var(--ink);
+}
+@media (max-width: 1000px) {
+  .layer-with-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .layer-with { padding: 48px 24px; }
+  .layer-with-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Wardrobe Insight on profile ───────────────────────────────── */
+.wardrobe-insight {
+  margin: 20px 0 28px;
+  padding: 22px 24px;
+  border-left: 2px solid var(--gold);
+  background: rgba(201,169,110,0.05);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+}
+.wardrobe-insight-eyebrow {
+  font-size: 0.6rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+.wardrobe-insight-loading {
+  font-style: italic;
+  color: var(--fg-soft);
+  font-size: 0.88rem;
+}
+.wardrobe-insight-text {
+  font-family: 'Lora', serif;
+  font-size: 1.02rem;
+  line-height: 1.75;
+  color: var(--fg);
+  margin-bottom: 18px;
+}
+.wardrobe-insight-contrast {
+  border-top: 1px solid var(--hairline);
+  padding-top: 16px;
+  margin-top: 16px;
+}
+.wardrobe-insight-contrast-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  margin-bottom: 10px;
+}
+.wardrobe-insight-contrast-card {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.wardrobe-insight-contrast-name {
+  font-family: 'Lora', serif;
+  font-size: 1.2rem;
+  color: var(--fg);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+.wardrobe-insight-contrast-name:hover { border-bottom-color: var(--gold); }
+.wardrobe-insight-contrast-brand {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  margin-bottom: 8px;
+}
+.wardrobe-insight-contrast-why {
+  font-size: 0.84rem;
+  line-height: 1.7;
+  color: var(--fg-soft);
+  max-width: 560px;
+}
+
+/* ── Long-press ring on product cards ──────────────────────────── */
+.product-longpress {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  z-index: 4;
+  background: rgba(0,0,0,0.18);
+  backdrop-filter: blur(2px);
+  pointer-events: none;
+  animation: longpressIn 0.15s ease-out;
+}
+@keyframes longpressIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.product-longpress-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cream);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+
+/* ── Today's Edit, homepage editorial pick ────────────────────── */
+.todays-edit {
+  padding: 70px 60px;
+  border-bottom: var(--soft-border);
+  background: var(--surface-soft);
+}
+.todays-edit-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 56px;
+  align-items: center;
+}
+.todays-edit-image {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--elev-2);
+}
+.todays-edit-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.todays-edit-body { text-align: left; }
+.todays-edit-eyebrow {
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 18px;
+}
+.todays-edit-title {
+  font-family: 'Lora', serif;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--fg);
+  margin-bottom: 12px;
+}
+.todays-edit-title em { font-style: italic; color: var(--gold); }
+.todays-edit-brand {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  margin-bottom: 22px;
+}
+.todays-edit-lead {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--fg-soft);
+  margin-bottom: 16px;
+}
+.todays-edit-desc {
+  font-size: 0.88rem;
+  line-height: 1.85;
+  color: var(--fg-soft);
+  margin-bottom: 28px;
+}
+.todays-edit-actions {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.todays-edit-link {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg);
+  text-decoration: none;
+  border-bottom: 1px solid var(--gold);
+  padding-bottom: 4px;
+  transition: color 0.25s var(--ease-soft);
+}
+.todays-edit-link:hover { color: var(--gold); }
+@media (max-width: 800px) {
+  .todays-edit { padding: 48px 24px; }
+  .todays-edit-inner { grid-template-columns: 1fr; gap: 32px; }
+  .todays-edit-image { max-width: 280px; margin: 0 auto; }
+}
+
 /* ── Reduce motion fallback ───────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .product-card:hover,

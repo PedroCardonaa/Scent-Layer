@@ -126,23 +126,36 @@ router.post('/layer', async (req, res, next) => {
 });
 
 // ─── COMPARE ───────────────────────────────────────────────────────────
+// Accepts 2, 3, or 4 fragrances. The verdict adapts to the count:
+// 2 = pick-A-or-B verdict; 3+ = compare-and-rank verdict that names
+// the best for each major use case (date night, office, daily, etc.).
 router.post('/compare', async (req, res, next) => {
   try {
-    const { a, b, userContext } = z.object({
-      a: fragranceShape,
-      b: fragranceShape,
+    const { fragrances, userContext } = z.object({
+      fragrances: z.array(fragranceShape).min(2).max(4),
       userContext: userContextShape,
     }).parse(req.body);
+
+    const labels = ['A', 'B', 'C', 'D'];
+    const lineup = fragrances.map((f, i) =>
+      `${labels[i]}) ${f.name}, ${f.brand} (${f.family})\n   Top: ${f.top}\n   Heart: ${f.heart}\n   Base: ${f.base}`
+    ).join('\n\n');
+
+    const isMulti = fragrances.length > 2;
+    const userPrompt = isMulti
+      ? `Compare these ${fragrances.length} fragrances for someone choosing among them:\n\n${lineup}\n${formatUserContext(userContext)}\nWrite a single paragraph (5-7 sentences) that names each by their full name, contrasts what each one does best, and ends with concrete guidance ("for date night, go ${labels[0]}; for daily wear, ${labels[1]}; the most adventurous pick is ${labels[2]}"). If the choice is close or any are polarizing on skin, suggest sampling before committing. No bullet points.`
+      : `Compare these two fragrances for someone deciding between them:\n\n${lineup}\n${formatUserContext(userContext)}\nWrite a single-paragraph verdict (4-6 sentences) that names each by their full name, contrasts what they do best, and ends with concrete guidance on when to reach for each. If the choice is close or polarizing on skin, suggest sampling both. No bullet points.`;
+
     const result = await structuredCall({
       system: VOICE,
-      user: `Compare these two fragrances for someone deciding between them:\n\nA) ${a.name}, ${a.brand} (${a.family})\n   Top: ${a.top}\n   Heart: ${a.heart}\n   Base: ${a.base}\n\nB) ${b.name}, ${b.brand} (${b.family})\n   Top: ${b.top}\n   Heart: ${b.heart}\n   Base: ${b.base}\n${formatUserContext(userContext)}\nWrite a single-paragraph verdict (4-6 sentences) that names each by their full name, contrasts what they do best, and ends with concrete guidance on when to reach for each. If the choice is close or the fragrances are polarizing on skin, suggest sampling both before committing. No bullet points.`,
+      user: userPrompt,
       toolName: 'compare_verdict',
-      maxTokens: 700,
+      maxTokens: 800,
       schema: {
         type: 'object',
         properties: {
           verdict: { type: 'string', description: 'The full comparison paragraph.' },
-          reasoning: { type: 'string', description: 'One sentence explaining how you weighed the two. If user context was provided, reference it ("Because you LOVED Santal 33, I tilted toward the woodier of the two"). If not, name the deciding axis.' },
+          reasoning: { type: 'string', description: 'One sentence explaining how you weighed them. If user context was provided, reference it. If not, name the deciding axis.' },
         },
         required: ['verdict', 'reasoning'],
       },
@@ -248,6 +261,62 @@ router.post('/describe', async (req, res, next) => {
           reasoning: { type: 'string', description: 'One sentence on what about the description you triangulated on. If user context was provided, reference it.' },
         },
         required: ['matches', 'reasoning'],
+      },
+    });
+    res.json(result);
+  } catch (err) { next(err); }
+});
+
+// ─── WARDROBE INSIGHT ──────────────────────────────────────────────────
+// Reads the user's wardrobe + reviews and writes a one-paragraph
+// editorial reading of their collection, plus one concrete suggestion
+// for a "contrast pick" the user doesn't already own. The client caches
+// the result per content-hash so we don't re-charge for unchanged
+// wardrobes.
+router.post('/wardrobe-insight', async (req, res, next) => {
+  try {
+    const { wardrobe, reviews, catalog } = z.object({
+      wardrobe: z.array(wardrobeShape).min(1).max(60),
+      reviews:  z.array(reviewShape).max(40).optional(),
+      catalog:  z.array(z.object({
+        id: z.number().int(),
+        name: z.string(),
+        brand: z.string(),
+        family: z.string(),
+      })).min(1).max(120),
+    }).parse(req.body);
+
+    const ownedIds = new Set(wardrobe.filter(w => w.status !== 'BACKUP').map(w => `${w.name}|${w.brand}`));
+    const candidates = catalog.filter(f => !ownedIds.has(`${f.name}|${f.brand}`));
+
+    const wardrobeList = wardrobe.map(w => `${w.name} (${w.brand}) [${w.status}]`).join('\n');
+    const reviewList = (reviews || []).map(r => `${r.name} (${r.brand}) ${r.rating}`).join('\n');
+    const candidateList = candidates.slice(0, 80).map(f =>
+      `[id:${f.id}] ${f.name} (${f.brand}) ${f.family}`
+    ).join('\n');
+
+    const result = await structuredCall({
+      system: VOICE,
+      user: `Read this person's fragrance wardrobe and tell them what it says about their taste, then suggest ONE "contrast pick" from the catalog they don't already own.\n\nWARDROBE:\n${wardrobeList}\n\n${reviewList ? `PAST REVIEWS:\n${reviewList}\n\n` : ''}NOT-YET-OWNED CATALOG (you must pick from this list):\n${candidateList}\n\nReturn a short reading (3-4 sentences) of what their wardrobe skews toward, plus the single best contrast pick.`,
+      toolName: 'wardrobe_insight',
+      maxTokens: 700,
+      schema: {
+        type: 'object',
+        properties: {
+          reading: { type: 'string', description: '3-4 sentence editorial read of their wardrobe. Name patterns ("you skew warm-woody"). Reference specific fragrances they own.' },
+          contrast: {
+            type: 'object',
+            description: 'One pick from the catalog that would broaden their taste in a useful direction.',
+            properties: {
+              id:    { type: 'integer', description: 'Exact catalog id from the candidate list.' },
+              name:  { type: 'string' },
+              brand: { type: 'string' },
+              why:   { type: 'string', description: '1-2 sentences explaining WHY this is the right contrast for them.' },
+            },
+            required: ['id', 'name', 'brand', 'why'],
+          },
+        },
+        required: ['reading', 'contrast'],
       },
     });
     res.json(result);

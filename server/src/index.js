@@ -24,6 +24,8 @@ import wardrobeRoutes from './routes/wardrobe.js';
 import reviewRoutes from './routes/reviews.js';
 import blendRoutes from './routes/blends.js';
 import setRoutes from './routes/sets.js';
+import layerWithRoutes from './routes/layer-with.js';
+import paymentRoutes from './routes/payments.js';
 import { submitLimiter } from './middleware/rate-limit.js';
 
 const app = express();
@@ -32,6 +34,12 @@ app.use(cors({
   origin: process.env.CLIENT_ORIGIN?.split(',').map(s => s.trim()) ?? 'http://localhost:5173',
   credentials: true,
 }));
+
+// IMPORTANT: the Stripe webhook needs the RAW request body to verify
+// the signature, so it must be mounted BEFORE the global JSON parser.
+// The webhook route itself attaches express.raw().
+app.use('/api/payments/webhook', paymentRoutes);
+
 app.use(express.json({ limit: '64kb' }));
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
@@ -47,6 +55,10 @@ app.use('/api/wardrobe', wardrobeRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/blends', blendRoutes);
 app.use('/api/sets', setRoutes);
+app.use('/api/layer-with', layerWithRoutes);
+// Mounted after the JSON parser so checkout + run-lifecycle get parsed
+// bodies. The webhook subpath above intercepts /webhook before this.
+app.use('/api/payments', paymentRoutes);
 
 // Sentry's express error handler must come BEFORE our own handler so it
 // captures errors before we mask them as 500s.

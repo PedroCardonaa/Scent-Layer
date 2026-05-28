@@ -9,6 +9,28 @@ const BRAND_NAME = 'Scent Layer';
 const BRAND_DOMAIN = 'scentlayer.com';
 
 /**
+ * Generic helper used by the lifecycle scheduler. Silent no-op if
+ * Resend isn't configured (local dev / preview deploys without keys).
+ */
+export async function sendEmail({ to, from, subject, html }) {
+  if (!resend) {
+    console.warn('[email] Resend not configured, skipping', subject);
+    return { skipped: true };
+  }
+  try {
+    return await resend.emails.send({
+      from: from || FROM,
+      to,
+      subject,
+      html,
+    });
+  } catch (e) {
+    console.error('[email] send failed', e);
+    return { error: e.message };
+  }
+}
+
+/**
  * Founder notification, fires on every sample order, sourcing request, or
  * multi-item cart order. Goes to SOURCE_NOTIFY_EMAIL (scentlayer@gmail.com).
  */

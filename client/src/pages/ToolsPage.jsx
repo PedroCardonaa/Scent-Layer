@@ -385,46 +385,54 @@ function SlotInput({ slot, index, fragrances, onSelect, onRemove, onQuery }) {
 }
 
 // ─── COMPARE ───────────────────────────────────────────────────────────
+// Accepts 2, 3, or 4 fragrances. Add / remove slots dynamically. The
+// verdict adapts on the server side, single-paragraph pick-A-or-B for 2,
+// rank-and-recommend for 3+.
 function Compare({ fragrances }) {
   const { user, showToast, openSampleModal, openSourceModal, buildUserContext, wardrobeItems, myReviews } = useApp();
-  const [aId, setAId] = useState(null);
-  const [bId, setBId] = useState(null);
-  // Stores the full result object (verdict + reasoning) rather than
-  // just the verdict string so we can render WhyThisRec.
+  // Selected fragrance IDs, 2..4 entries. Starts at 2; user can add up to 4.
+  const [selectedIds, setSelectedIds] = useState([null, null]);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (fragrances.length < 2 || aId != null) return;
-    // Pre-fill with the user's last sampled + their most-recent LOVED
-    // review (or another sampled if no loved yet). Cleaner starting point
-    // than the first two alphabetical entries in the catalog.
+    if (fragrances.length < 2 || selectedIds[0] != null) return;
+    // Seed the first two with sampled + LOVED if available.
     const sampled = wardrobeItems.filter(w => w.status === 'SAMPLED');
     const loved   = myReviews.filter(r => r.rating === 'LOVED');
     const lastSampledId = sampled[0]?.fragranceId;
     const lastLovedId   = loved.find(r => r.fragranceId !== lastSampledId)?.fragranceId;
     const otherSampledId = sampled.find(w => w.fragranceId !== lastSampledId)?.fragranceId;
+    const pick0 = lastSampledId ?? fragrances[0].id;
+    const pick1 = lastLovedId ?? otherSampledId ?? fragrances.find(f => f.id !== pick0)?.id;
+    setSelectedIds([pick0, pick1]);
+  }, [fragrances, selectedIds, wardrobeItems, myReviews]);
 
-    const pickA = lastSampledId ?? fragrances[0].id;
-    const pickB = lastLovedId ?? otherSampledId ?? fragrances.find(f => f.id !== pickA)?.id;
-    setAId(pickA);
-    setBId(pickB);
-  }, [fragrances, aId, wardrobeItems, myReviews]);
+  function setSlot(idx, id) {
+    setSelectedIds(prev => prev.map((x, i) => i === idx ? id : x));
+  }
+  function addSlot() {
+    setSelectedIds(prev => prev.length < 4 ? [...prev, fragrances.find(f => !prev.includes(f.id))?.id ?? null] : prev);
+  }
+  function removeSlot(idx) {
+    setSelectedIds(prev => prev.length > 2 ? prev.filter((_, i) => i !== idx) : prev);
+  }
 
-  const a = fragrances.find(f => f.id === aId);
-  const b = fragrances.find(f => f.id === bId);
+  const selected = selectedIds.map(id => fragrances.find(f => f.id === id)).filter(Boolean);
+  const allUnique = new Set(selectedIds).size === selectedIds.length;
+  const canRun = selected.length >= 2 && allUnique && !loading;
 
   async function run() {
-    if (aId === bId) { showToast('Pick two different fragrances'); return; }
+    if (!allUnique) { showToast('Pick distinct fragrances'); return; }
     setLoading(true); setResult(null); setError(null);
     try {
       const shape = (f) => ({ name: f.name, brand: f.brand, family: f.family, top: f.top, heart: f.heart, base: f.base });
       const r = await api('/api/ai/compare', {
         method: 'POST',
-        body: { a: shape(a), b: shape(b), userContext: buildUserContext() },
+        body: { fragrances: selected.map(shape), userContext: buildUserContext() },
       });
-      trackEvent('compare_run', { a: a.name, b: b.name });
+      trackEvent('compare_run', { count: selected.length });
       setResult(r);
     } catch (e) {
       setError(e.message || 'Comparison failed');
@@ -433,53 +441,55 @@ function Compare({ fragrances }) {
     }
   }
 
+  const labels = ['First', 'Second', 'Third', 'Fourth'];
+
   return (
     <div>
       <div className="tool-hero" id="compare">
         <p className="tool-hero-label">Compare</p>
         <h1 className="tool-hero-title">Side by side,<br/><em>note by note.</em></h1>
-        <p className="tool-hero-sub">Pick two fragrances and see exactly how they stack up, notes, seasons, occasions, and which one wins for each situation.</p>
+        <p className="tool-hero-sub">Pick 2 to 4 fragrances and see exactly how they stack up, notes, seasons, occasions, and which one wins for each situation.</p>
       </div>
       <div className="compare-layout">
         <div className="compare-selectors">
-          <div>
-            <p style={{ fontSize: '0.6rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 10 }}>First Fragrance</p>
-            <select className="compare-select" value={aId ?? ''} onChange={(e) => setAId(Number(e.target.value))}>
-              {fragrances.map(f => <option key={f.id} value={f.id}>{f.name}, {f.brand}</option>)}
-            </select>
-          </div>
-          <div className="compare-vs">vs</div>
-          <div>
-            <p style={{ fontSize: '0.6rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 10 }}>Second Fragrance</p>
-            <select className="compare-select" value={bId ?? ''} onChange={(e) => setBId(Number(e.target.value))}>
-              {fragrances.map(f => <option key={f.id} value={f.id}>{f.name}, {f.brand}</option>)}
-            </select>
-          </div>
-          <button type="button" className="compare-btn" onClick={run} disabled={loading || !a || !b}>
-            {loading ? 'Analyzing…' : 'Compare These Fragrances'}
+          {selectedIds.map((id, idx) => (
+            <div key={idx} style={{ position: 'relative' }}>
+              <p style={{ fontSize: '0.6rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 10 }}>{labels[idx]} Fragrance</p>
+              <select className="compare-select" value={id ?? ''} onChange={(e) => setSlot(idx, Number(e.target.value))}>
+                {fragrances.map(f => <option key={f.id} value={f.id}>{f.name}, {f.brand}</option>)}
+              </select>
+              {selectedIds.length > 2 && (
+                <button
+                  type="button"
+                  className="blend-card-btn"
+                  onClick={() => removeSlot(idx)}
+                  style={{ position: 'absolute', top: 0, right: 0, padding: '2px 8px' }}
+                  aria-label={`Remove ${labels[idx]} fragrance`}
+                >✕</button>
+              )}
+            </div>
+          ))}
+          {selectedIds.length < 4 && (
+            <button type="button" className="add-slot-btn" onClick={addSlot}>+ Add Fragrance</button>
+          )}
+          <button type="button" className="compare-btn" onClick={run} disabled={!canRun}>
+            {loading ? 'Analyzing…' : `Compare ${selected.length} Fragrances`}
           </button>
         </div>
-        {a && b && (result || loading || error) && (
-          <div className="compare-result">
-            <div className="compare-card">
-              <div className="compare-card-brand">{a.brand}</div>
-              <div className="compare-card-name">{a.name}</div>
-              <CompareRows fragrance={a} />
-              <div className="compare-card-actions">
-                <button type="button" className="sample-btn" onClick={() => openSampleModal(`${a.name}, ${a.brand}`)}>Order Sample</button>
-                <button type="button" className="source-link" style={{ marginTop: 10 }} onClick={() => openSourceModal(`${a.name}, ${a.brand}`)}>or full bottle →</button>
+        {selected.length >= 2 && (result || loading || error) && (
+          <div className="compare-result" style={{ gridTemplateColumns: `repeat(${Math.min(selected.length, 4)}, 1fr)` }}>
+            {selected.map((f, i) => (
+              <div key={f.id} className="compare-card">
+                <div className="compare-card-brand">{f.brand}</div>
+                <div className="compare-card-name">{f.name}</div>
+                <CompareRows fragrance={f} />
+                <div className="compare-card-actions">
+                  <button type="button" className="sample-btn" onClick={() => openSampleModal(`${f.name}, ${f.brand}`)}>Order Sample</button>
+                  <button type="button" className="source-link" style={{ marginTop: 10 }} onClick={() => openSourceModal(`${f.name}, ${f.brand}`)}>or full bottle →</button>
+                </div>
               </div>
-            </div>
-            <div className="compare-card">
-              <div className="compare-card-brand">{b.brand}</div>
-              <div className="compare-card-name">{b.name}</div>
-              <CompareRows fragrance={b} />
-              <div className="compare-card-actions">
-                <button type="button" className="sample-btn" onClick={() => openSampleModal(`${b.name}, ${b.brand}`)}>Order Sample</button>
-                <button type="button" className="source-link" style={{ marginTop: 10 }} onClick={() => openSourceModal(`${b.name}, ${b.brand}`)}>or full bottle →</button>
-              </div>
-            </div>
-            <div className="compare-verdict">
+            ))}
+            <div className="compare-verdict" style={{ gridColumn: `span ${Math.min(selected.length, 4)}` }}>
               <p className="compare-verdict-label">AI Verdict</p>
               {loading && <CompareThinking active={loading} user={user} />}
               {error && <p className="error-text">{error}</p>}
@@ -487,7 +497,7 @@ function Compare({ fragrances }) {
                 <>
                   <StreamText as="p" className="compare-verdict-text" text={result.verdict} />
                   <WhyThisRec reasoning={result.reasoning} />
-                  <p className="compare-verdict-hint">Still on the fence? Sample both in 5ml decants before deciding, that's what they're for.</p>
+                  <p className="compare-verdict-hint">Still on the fence? Sample {selected.length === 2 ? 'both' : `all ${selected.length}`} in 5ml decants before deciding, that's what they're for.</p>
                 </>
               )}
             </div>

@@ -14,19 +14,25 @@ import { ReadingProgress } from './components/ReadingProgress.jsx';
 import { SearchPalette } from './components/SearchPalette.jsx';
 import { trackPageView } from './lib/analytics.js';
 
+// Route-level code splitting. Only HomePage ships in the initial
+// bundle, every other route is a separate chunk fetched on navigation.
+// Cuts the main bundle from ~200KB gzip to roughly half by deferring
+// ProfilePage (AI + reviews + blends), ToolsPage (AI tools), and
+// FragrancePage (heavy detail page) until the user actually visits them.
 import { HomePage } from './pages/HomePage.jsx';
-import { ShopPage } from './pages/ShopPage.jsx';
-import { ToolsPage } from './pages/ToolsPage.jsx';
-import { ProfilePage } from './pages/ProfilePage.jsx';
-import { ExtrasPage } from './pages/ExtrasPage.jsx';
-import { FragrancePage } from './pages/FragrancePage.jsx';
-import { NotePage } from './pages/NotePage.jsx';
-import { BrandPage } from './pages/BrandPage.jsx';
-import { StoryPage } from './pages/StoryPage.jsx';
-import { NotFoundPage } from './pages/NotFoundPage.jsx';
-import { PrivacyPage, TermsPage } from './pages/LegalPage.jsx';
-import { LoginPage } from './pages/LoginPage.jsx';
-import { SignupPage } from './pages/SignupPage.jsx';
+const ShopPage     = lazy(() => import('./pages/ShopPage.jsx').then(m => ({ default: m.ShopPage })));
+const ToolsPage    = lazy(() => import('./pages/ToolsPage.jsx').then(m => ({ default: m.ToolsPage })));
+const ProfilePage  = lazy(() => import('./pages/ProfilePage.jsx').then(m => ({ default: m.ProfilePage })));
+const ExtrasPage   = lazy(() => import('./pages/ExtrasPage.jsx').then(m => ({ default: m.ExtrasPage })));
+const FragrancePage = lazy(() => import('./pages/FragrancePage.jsx').then(m => ({ default: m.FragrancePage })));
+const NotePage     = lazy(() => import('./pages/NotePage.jsx').then(m => ({ default: m.NotePage })));
+const BrandPage    = lazy(() => import('./pages/BrandPage.jsx').then(m => ({ default: m.BrandPage })));
+const StoryPage    = lazy(() => import('./pages/StoryPage.jsx').then(m => ({ default: m.StoryPage })));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx').then(m => ({ default: m.NotFoundPage })));
+const LoginPage    = lazy(() => import('./pages/LoginPage.jsx').then(m => ({ default: m.LoginPage })));
+const SignupPage   = lazy(() => import('./pages/SignupPage.jsx').then(m => ({ default: m.SignupPage })));
+const PrivacyPage  = lazy(() => import('./pages/LegalPage.jsx').then(m => ({ default: m.PrivacyPage })));
+const TermsPage    = lazy(() => import('./pages/LegalPage.jsx').then(m => ({ default: m.TermsPage })));
 
 // About page pulls in GSAP for the parallax hero, lazy-load so it
 // doesn't ship with the initial bundle.
