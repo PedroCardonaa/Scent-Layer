@@ -4,32 +4,79 @@ import { Nav } from '../components/Nav.jsx';
 import { StreamText } from '../components/StreamText.jsx';
 import { WhyThisRec } from '../components/WhyThisRec.jsx';
 import { WardrobeInsight } from '../components/WardrobeInsight.jsx';
+import { WardrobeStats } from '../components/WardrobeStats.jsx';
 import { useThinkingStages } from '../hooks/useThinkingStages.js';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
 import { trackEvent } from '../lib/analytics.js';
 
 function ReferralBlock({ showToast }) {
-  async function joinWaitlist() {
-    const el = document.getElementById('profileReferralEmail');
-    const email = el?.value?.trim();
-    if (!email || !email.includes('@')) { showToast('Please enter a valid email'); return; }
+  const { user } = useApp();
+  const [info, setInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user) { setLoading(false); return; }
+    let cancelled = false;
+    api('/api/referrals/me', { auth: true })
+      .then(d => { if (!cancelled) setInfo(d); })
+      .catch(() => { /* silent, fall back to waitlist UI */ })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [user]);
+
+  async function copyLink() {
+    if (!info?.shareUrl) return;
     try {
-      await api('/api/waitlist', { method: 'POST', body: { email, type: 'referral' } });
-      if (el) el.value = '';
-      showToast('<span>You\'re on the list!</span> We\'ll send your link at launch.');
-    } catch (e) { showToast(e.message); }
+      await navigator.clipboard.writeText(info.shareUrl);
+      showToast('<span>Link copied.</span> Send it to whoever has bad taste in fragrance.');
+    } catch {
+      showToast('Could not copy. Long-press to copy manually.');
+    }
   }
+
+  async function shareLink() {
+    if (!info?.shareUrl) return;
+    if (typeof navigator.share === 'function') {
+      try {
+        await navigator.share({
+          title: 'Scent Layer',
+          text: 'Sample niche and designer fragrances before committing. Use my link for 15% off your first order.',
+          url: info.shareUrl,
+        });
+        return;
+      } catch { /* fall through to copy */ }
+    }
+    copyLink();
+  }
+
+  if (loading) return null;
+
+  // Signed-in users get the real referral panel. Signed-out viewers
+  // (which won't normally see ProfilePage anyway, but just in case)
+  // fall back to the waitlist UI from before.
+  if (info?.code) {
+    return (
+      <section className="referral">
+        <div className="referral-inner">
+          <h2 className="referral-title">Refer a friend,<br/><em className="gradient-em">both smell better.</em></h2>
+          <p className="referral-body">Send your link to a friend. They get <strong>15% off</strong> their first order. You get credit toward future bottles.</p>
+          <div className="referral-link-row">
+            <code className="referral-link-text">{info.shareUrl}</code>
+            <button type="button" className="referral-link-btn" onClick={copyLink}>Copy</button>
+            <button type="button" className="referral-link-btn" onClick={shareLink}>Share</button>
+          </div>
+          <p className="fotm-note">{info.redemptions || 0} friend{info.redemptions === 1 ? '' : 's'} have used your link so far.</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="referral">
       <div className="referral-inner">
         <h2 className="referral-title">Refer a friend,<br/><em className="gradient-em">both smell better.</em></h2>
-        <p className="referral-body">When we launch, every referral earns you and your friend a discount on your first sourcing order. The more people you bring in, the more you save.</p>
-        <div className="referral-form">
-          <input className="fotm-input" id="profileReferralEmail" placeholder="Your email, we'll send your referral link at launch" type="email" />
-          <button className="fotm-btn" type="button" onClick={joinWaitlist}>Reserve My Spot</button>
-        </div>
-        <p className="fotm-note">Launch pricing and referral details coming soon.</p>
+        <p className="referral-body">Sign in to get your personal referral link. Friends save 15% on their first order.</p>
       </div>
     </section>
   );
@@ -37,12 +84,65 @@ function ReferralBlock({ showToast }) {
 
 const QUIZ_COLORS = ['#7a5c40','#4a6855','#9a7030','#503868','#5a4a70','#3a5858','#6a4830','#485a3a'];
 
+// Quiz now ships with atmospheric mood photography per question and
+// richer, more specific question copy. The result endpoint is
+// unchanged, the experience is denser.
 const QUESTIONS = [
-  { q: "How do you want people to feel when you walk into the room?", options: ["Intrigued, they can't quite place it","Impressed, undeniably confident","Comforted, warm and approachable","Captivated, romantic and mysterious"] },
-  { q: "What's your go-to setting?", options: ["Outdoors, fresh air, open spaces","The office, sharp, put-together","A dinner out, dressed up, present","Late nights, dim light, good music"] },
-  { q: "Which texture speaks to you?", options: ["Silk, smooth and clean","Leather, dark and structured","Velvet, rich and soft","Linen, light and effortless"] },
-  { q: "Pick a season for your signature scent:", options: ["Spring, green and floral","Summer, citrus and light","Fall, spiced and warm","Winter, deep and smoky"] },
-  { q: "How long do you want your scent to last?", options: ["All day, I want presence","A few hours, subtle is fine","I'll reapply, I like control","As long as possible, leave a trail"] }
+  {
+    q: "How do you want people to feel when you walk into the room?",
+    sub: "There's no wrong answer, just the one that's most you.",
+    bg: "https://images.unsplash.com/photo-1495121605193-b116b5b9c5fe?w=1600&h=900&fit=crop&q=80",
+    options: [
+      "Intrigued, they can't quite place it",
+      "Impressed, undeniably confident",
+      "Comforted, warm and approachable",
+      "Captivated, romantic and mysterious",
+    ],
+  },
+  {
+    q: "What's your default setting?",
+    sub: "Where do you spend the bulk of your week.",
+    bg: "https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=1600&h=900&fit=crop&q=80",
+    options: [
+      "Outdoors, fresh air, open spaces",
+      "The office, sharp, put-together",
+      "A dinner out, dressed up, present",
+      "Late nights, dim light, good music",
+    ],
+  },
+  {
+    q: "Which texture speaks to you?",
+    sub: "Trust the gut answer.",
+    bg: "https://images.unsplash.com/photo-1582038944307-46f17d0cb84e?w=1600&h=900&fit=crop&q=80",
+    options: [
+      "Silk, smooth and clean",
+      "Leather, dark and structured",
+      "Velvet, rich and soft",
+      "Linen, light and effortless",
+    ],
+  },
+  {
+    q: "Pick a season for your signature scent.",
+    sub: "Even if you wear it year-round, the season is the soul.",
+    bg: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=1600&h=900&fit=crop&q=80",
+    options: [
+      "Spring, green and floral",
+      "Summer, citrus and light",
+      "Fall, spiced and warm",
+      "Winter, deep and smoky",
+    ],
+  },
+  {
+    q: "How long do you want your scent to last?",
+    sub: "Projection and longevity are independent. Pick what matters more.",
+    bg: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1600&h=900&fit=crop&q=80",
+    options: [
+      "All day, I want presence",
+      "A few hours, subtle is fine",
+      "I'll reapply, I like control",
+      "As long as possible, leave a trail",
+    ],
+  },
 ];
 
 const TABS = [
@@ -212,6 +312,7 @@ function WardrobePanel() {
       <p className="profile-panel-label">Your Fragrance Inventory</p>
       <h2 className="profile-panel-title">My Wardrobe</h2>
       <p className="profile-panel-sub">A snapshot of what you wear. Use it to plan rotations and reorders.</p>
+      <WardrobeStats />
       <WardrobeInsight />
       <div className="wardrobe-grid">
         <WardrobeColumn label="Owned"   items={owned}   onRemove={removeWardrobeStatus} status="OWNED" />
@@ -503,13 +604,23 @@ function QuizPanel({ savedResult, onSave, openSampleModal, openSourceModal }) {
             <div className="quiz-progress-bar"><div className="quiz-progress-fill" style={{ width: `${(step / QUESTIONS.length) * 100}%` }} /></div>
             <p className="quiz-progress-label">Question {step + 1} of {QUESTIONS.length}</p>
           </div>
-          <div className="quiz-question">
-            <p className="quiz-q-num">0{step + 1}</p>
-            <p className="quiz-q-text">{QUESTIONS[step].q}</p>
-            <div className="quiz-options">
-              {QUESTIONS[step].options.map(o => (
-                <button key={o} type="button" className="quiz-option" onClick={() => selectAnswer(o)}>{o}</button>
-              ))}
+          <div
+            className="quiz-question quiz-question-rich"
+            style={{ '--quiz-bg': `url(${QUESTIONS[step].bg})` }}
+            key={step}
+          >
+            <div className="quiz-question-overlay" aria-hidden="true" />
+            <div className="quiz-question-content">
+              <p className="quiz-q-num">0{step + 1}</p>
+              <p className="quiz-q-text">{QUESTIONS[step].q}</p>
+              {QUESTIONS[step].sub && (
+                <p className="quiz-q-sub">{QUESTIONS[step].sub}</p>
+              )}
+              <div className="quiz-options">
+                {QUESTIONS[step].options.map(o => (
+                  <button key={o} type="button" className="quiz-option" onClick={() => selectAnswer(o)}>{o}</button>
+                ))}
+              </div>
             </div>
           </div>
           {error && <p className="error-text">{error}</p>}

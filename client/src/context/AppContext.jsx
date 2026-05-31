@@ -4,6 +4,8 @@ import { api, getToken, setToken } from '../lib/api.js';
 import { FALLBACK_CATALOG } from '../lib/fallback-catalog.js';
 import { FALLBACK_SETS } from '../lib/discovery-sets.js';
 import { initGA, trackEvent } from '../lib/analytics.js';
+import { playWhoosh, playChime } from '../lib/sound.js';
+import { captureRefFromUrl, getStoredRef, clearStoredRef, setPromoCode } from '../lib/referral.js';
 
 const AppContext = createContext(null);
 
@@ -21,6 +23,7 @@ export function AppProvider({ children }) {
   const [myReviews, setMyReviews] = useState([]);
   const [sourceModal, setSourceModal] = useState({ open: false, prefill: '' });
   const [sampleModal, setSampleModal] = useState({ open: false, prefill: '' });
+  const [giftModal,   setGiftModal]   = useState({ open: false, fragrance: null });
 
   // ── Cart ──────────────────────────────────────────────────────────
   // Each item is { id, fragranceId, name, brand, size, qty }. `id` is
@@ -58,6 +61,7 @@ export function AppProvider({ children }) {
       }];
     });
     trackEvent('add_to_cart', { fragrance_id: fragranceId, size, qty });
+    playWhoosh();
   }, []);
 
   const removeFromCart = useCallback((id) => {
@@ -272,6 +276,10 @@ export function AppProvider({ children }) {
   const openSampleModal = useCallback((prefill = '') => setSampleModal({ open: true, prefill }), []);
   const closeSampleModal = useCallback(() => setSampleModal({ open: false, prefill: '' }), []);
 
+  // ── Gift modal ────────────────────────────────────────────────────
+  const openGiftModal  = useCallback((fragrance) => setGiftModal({ open: true, fragrance }), []);
+  const closeGiftModal = useCallback(() => setGiftModal({ open: false, fragrance: null }), []);
+
   // ── Auth ──────────────────────────────────────────────────────────
   const login = useCallback(async (email, password) => {
     const d = await api('/api/auth/login', { method: 'POST', body: { email, password } });
@@ -292,9 +300,29 @@ export function AppProvider({ children }) {
       }
       localStorage.removeItem('sl_wishlist_local');
     } catch { /* ignore */ }
+    // Attribute the signup to an inviter if a ?ref=slug landed at any
+    // point in this session, then ask the server to issue a Stripe
+    // promo coupon. The promo code is cached in localStorage so the
+    // cart auto-applies it at checkout.
+    try {
+      const refSlug = getStoredRef();
+      if (refSlug) {
+        const r = await api('/api/referrals/attribute', { method: 'POST', auth: true, body: { code: refSlug } });
+        if (r?.ok) {
+          clearStoredRef();
+          try {
+            const coup = await api('/api/referrals/issue-coupon', { method: 'POST', auth: true, body: {} });
+            if (coup?.code) {
+              setPromoCode(coup.code);
+              showToast(`<span>Welcome.</span> ${coup.percentOff || 15}% off applied at checkout.`);
+            }
+          } catch { /* coupon optional */ }
+        }
+      }
+    } catch { /* attribution failed, swallow */ }
     await refreshWishlist();
     return d.user;
-  }, [refreshWishlist]);
+  }, [refreshWishlist, showToast]);
 
   const logout = useCallback(() => {
     setToken(null); setUser(null); loadLocalWishlist();
@@ -314,14 +342,14 @@ export function AppProvider({ children }) {
         if (isSaved) await api(`/api/wishlist/${id}`, { method: 'DELETE', auth: true });
         else        await api(`/api/wishlist/${id}`, { method: 'POST',   auth: true });
         setWishlistIds(p => isSaved ? p.filter(x => x !== id) : [...p, id]);
-        if (!isSaved) trackEvent('wishlist_add', { fragrance_id: id });
+        if (!isSaved) { trackEvent('wishlist_add', { fragrance_id: id }); playChime(); }
         showToast(isSaved ? 'Removed from wishlist' : '<span>Saved</span> to wishlist ♡');
       } catch (e) { showToast(e.message); }
     } else {
       const next = isSaved ? wishlistIds.filter(x => x !== id) : [...wishlistIds, id];
       setWishlistIds(next);
       localStorage.setItem('sl_wishlist_local', JSON.stringify(next));
-      if (!isSaved) trackEvent('wishlist_add', { fragrance_id: id, guest: true });
+      if (!isSaved) { trackEvent('wishlist_add', { fragrance_id: id, guest: true }); playChime(); }
       showToast(isSaved ? 'Removed from wishlist' : '<span>Saved</span> to wishlist ♡');
     }
   }, [user, wishlistIds, showToast]);
@@ -465,6 +493,7 @@ export function AppProvider({ children }) {
     showToast,
     sourceModal, openSourceModal, closeSourceModal,
     sampleModal, openSampleModal, closeSampleModal,
+    giftModal, openGiftModal, closeGiftModal,
     visitCount,
     themePref, setThemePref, effectiveTheme,
     analyticsConsent, setAnalyticsConsent,
@@ -476,7 +505,7 @@ export function AppProvider({ children }) {
     savedBlends, saveBlend, deleteBlend, renameBlend, refreshBlends,
     myReviews, submitReview, refreshMyReviews,
     buildUserContext,
-  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme, analyticsConsent, setAnalyticsConsent, cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart, recentlyViewed, markViewed, sets, addSetToCart, wardrobeItems, setWardrobeStatus, removeWardrobeStatus, refreshWardrobe, savedBlends, saveBlend, deleteBlend, renameBlend, refreshBlends, myReviews, submitReview, refreshMyReviews, buildUserContext, refreshCatalog]);
+  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme, analyticsConsent, setAnalyticsConsent, cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart, recentlyViewed, markViewed, sets, addSetToCart, wardrobeItems, setWardrobeStatus, removeWardrobeStatus, refreshWardrobe, savedBlends, saveBlend, deleteBlend, renameBlend, refreshBlends, myReviews, submitReview, refreshMyReviews, buildUserContext, refreshCatalog, giftModal, openGiftModal, closeGiftModal]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

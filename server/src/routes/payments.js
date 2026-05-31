@@ -26,9 +26,10 @@ router.post('/checkout', optionalAuth, async (req, res, next) => {
   try {
     if (!stripe) return res.status(503).json({ error: 'Payments not configured' });
 
-    const { items, address } = z.object({
+    const { items, address, promoCode } = z.object({
       items: z.array(lineItemShape).min(1).max(20),
       address: z.string().max(500).optional(),
+      promoCode: z.string().max(40).optional(),
     }).parse(req.body);
 
     const origin = req.headers.origin || process.env.SITE_URL || 'https://scentlayer.example';
@@ -46,6 +47,19 @@ router.post('/checkout', optionalAuth, async (req, res, next) => {
       },
     }));
 
+    // Resolve a promo code into its Stripe promotion_code id so we can
+    // hand it to Checkout as a server-applied discount (no need for the
+    // user to retype it on the Stripe-hosted page).
+    let stripeDiscounts = undefined;
+    if (promoCode) {
+      try {
+        const list = await stripe.promotionCodes.list({ code: promoCode, active: true, limit: 1 });
+        if (list.data?.[0]) {
+          stripeDiscounts = [{ promotion_code: list.data[0].id }];
+        }
+      } catch { /* silent, checkout still proceeds at full price */ }
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       payment_method_types: ['card'],
@@ -54,6 +68,10 @@ router.post('/checkout', optionalAuth, async (req, res, next) => {
       shipping_address_collection: { allowed_countries: ['US', 'CA', 'GB', 'AU', 'NZ', 'IE'] },
       // Stripe Tax pulls per-jurisdiction rates if enabled in the dashboard.
       automatic_tax: { enabled: false },
+      // Either pre-applied promo code (from a referral landing) OR
+      // allow the customer to enter one manually on the Stripe page.
+      discounts: stripeDiscounts,
+      allow_promotion_codes: stripeDiscounts ? undefined : true,
       // Used by the webhook to write the Order row.
       metadata: {
         userId: req.userId || '',

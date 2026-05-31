@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { playPuff } from '../lib/sound.js';
 
 /**
  * Full-screen intro overlay. SVG glass bottle (BDK Parfums silhouette)
@@ -230,13 +231,14 @@ function Bottle({ bodyRef, capRef, pumpRef }) {
         <rect x="153" y="208" width="1.2" height="190"        fill="rgba(255,250,240,0.22)" />
         <rect x="32"  y="402" width="136" height="8"   rx="6" fill="rgba(120,40,70,0.18)" />
 
-        {/* Label */}
+        {/* Label, branded "Scent Layer" (italic serif "scent" + spaced
+            sans "LAYER", no city tag). */}
         <g>
           <rect x="60" y="280" width="80" height="92" fill="#f7f3ec" />
           <rect x="60" y="280" width="80" height="92" fill="none" stroke="#0a0908" strokeWidth="0.6" />
-          <text x="100" y="320" textAnchor="middle" fontFamily="Lora, serif" fontStyle="italic" fontWeight="600" fontSize="20"  fill="#0a0908">scent</text>
-          <text x="100" y="340" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="6.5" letterSpacing="3"   fontWeight="500" fill="#0a0908">LAYER</text>
-          <text x="100" y="356" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="4.5" letterSpacing="2.5" fill="rgba(10,9,8,0.65)">PARIS</text>
+          <text x="100" y="328" textAnchor="middle" fontFamily="Lora, serif" fontStyle="italic" fontWeight="600" fontSize="22"  fill="#0a0908">scent</text>
+          <line x1="80" y1="342" x2="120" y2="342" stroke="rgba(10,9,8,0.35)" strokeWidth="0.5" />
+          <text x="100" y="356" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="7" letterSpacing="3.5" fontWeight="500" fill="#0a0908">LAYER</text>
         </g>
 
         {/* Neck */}
@@ -405,6 +407,7 @@ export function IntroSpray({ onFinish }) {
           const vp = ctrl._getViewport ? ctrl._getViewport() : { w: window.innerWidth, h: window.innerHeight };
           ctrl.setNozzle(cx / vp.w, cy / vp.h);
           ctrl.fireBurst(vp.w, vp.h);
+          playPuff();
         }
       }
 

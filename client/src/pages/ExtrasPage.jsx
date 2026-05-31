@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
 import { useApp } from '../context/AppContext.jsx';
+import { slugify, parseNotes } from '../lib/slug.js';
 
 const TABS = [
   { key: 'top10',         label: 'Top 10 Lists' },
@@ -319,18 +320,13 @@ export function ExtrasPage() {
           <div className="ext-intro">
             <p className="ext-label">Fragrance Dictionary</p>
             <h2 className="ext-title">Know what they're <em>talking about.</em></h2>
-            <p className="ext-sub">Every term you'll encounter in fragrance, explained plainly.</p>
+            <p className="ext-sub">Every term you'll encounter in fragrance, explained plainly. Terms that match a note in the catalog link to the fragrances using it.</p>
           </div>
           <input className="glossary-search" placeholder="Search a term…" value={glossaryQ} onChange={(e) => setGlossaryQ(e.target.value)} />
           <div>
             {filteredGlossary.length === 0
               ? <div className="glossary-empty">No terms found for "{glossaryQ}"</div>
-              : filteredGlossary.map(g => (
-                  <div key={g.term} className="glossary-item">
-                    <div className="glossary-term">{g.term}</div>
-                    <div className="glossary-def">{g.def}</div>
-                  </div>
-                ))}
+              : filteredGlossary.map(g => <GlossaryItem key={g.term} term={g} fragrances={fragrances} />)}
           </div>
         </div>
       )}
@@ -414,6 +410,48 @@ export function ExtrasPage() {
 
       <Footer />
     </>
+  );
+}
+
+/**
+ * Glossary entry with cross-link to /notes/:slug whenever the term
+ * matches a real catalog note. Hovering the term gold-highlights it
+ * so the connective tissue is visible. Count comes from a count of
+ * catalog fragrances featuring the note.
+ */
+function GlossaryItem({ term, fragrances }) {
+  const slug = slugify(term.term);
+  // Count fragrances using this exact term as a note. Case-insensitive
+  // match via slug equality, so "Pink Pepper" / "Pepper" stay distinct.
+  const count = useMemo(() => {
+    let n = 0;
+    for (const f of fragrances) {
+      const notes = [
+        ...parseNotes(f.top),
+        ...parseNotes(f.heart),
+        ...parseNotes(f.base),
+      ];
+      if (notes.some(note => slugify(note) === slug)) n++;
+    }
+    return n;
+  }, [fragrances, slug]);
+
+  return (
+    <div className="glossary-item glossary-item-rich">
+      <div className="glossary-row">
+        {count > 0 ? (
+          <Link to={`/notes/${slug}`} className="glossary-term glossary-term-link">{term.term}</Link>
+        ) : (
+          <div className="glossary-term">{term.term}</div>
+        )}
+        {count > 0 && (
+          <Link to={`/notes/${slug}`} className="glossary-cross">
+            {count} fragrance{count === 1 ? '' : 's'} →
+          </Link>
+        )}
+      </div>
+      <div className="glossary-def">{term.def}</div>
+    </div>
   );
 }
 

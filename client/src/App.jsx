@@ -6,12 +6,14 @@ import { Cursor } from './components/Cursor.jsx';
 import { Toaster } from './components/Toaster.jsx';
 import { SourceModal } from './components/SourceModal.jsx';
 import { SampleModal } from './components/SampleModal.jsx';
+import { GiftModal } from './components/GiftModal.jsx';
 import { CartDrawer } from './components/CartDrawer.jsx';
 import { CookieConsent } from './components/CookieConsent.jsx';
 import { MobileBottomNav } from './components/MobileBottomNav.jsx';
 import { SprayCanvas } from './components/SprayCanvas.jsx';
 import { ReadingProgress } from './components/ReadingProgress.jsx';
 import { SearchPalette } from './components/SearchPalette.jsx';
+import { captureRefFromUrl } from './lib/referral.js';
 import { trackPageView } from './lib/analytics.js';
 
 // Route-level code splitting. Only HomePage ships in the initial
@@ -27,6 +29,7 @@ const ExtrasPage   = lazy(() => import('./pages/ExtrasPage.jsx').then(m => ({ de
 const FragrancePage = lazy(() => import('./pages/FragrancePage.jsx').then(m => ({ default: m.FragrancePage })));
 const NotePage     = lazy(() => import('./pages/NotePage.jsx').then(m => ({ default: m.NotePage })));
 const BrandPage    = lazy(() => import('./pages/BrandPage.jsx').then(m => ({ default: m.BrandPage })));
+const GiftRevealPage = lazy(() => import('./pages/GiftRevealPage.jsx').then(m => ({ default: m.GiftRevealPage })));
 const StoryPage    = lazy(() => import('./pages/StoryPage.jsx').then(m => ({ default: m.StoryPage })));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx').then(m => ({ default: m.NotFoundPage })));
 const LoginPage    = lazy(() => import('./pages/LoginPage.jsx').then(m => ({ default: m.LoginPage })));
@@ -43,6 +46,15 @@ const AboutPage = lazy(() => import('./pages/AboutPage.jsx').then(m => ({ defaul
 const IntroSpray = lazy(() => import('./components/IntroSpray.jsx').then(m => ({ default: m.IntroSpray })));
 
 const INTRO_KEY = 'sl-intro-played-v1';
+
+function RefCapture() {
+  // Capture ?ref=slug on first mount only. Stripping the query keeps
+  // the URL editorial-clean, and the slug survives in localStorage
+  // through any number of internal navigations until signup attributes
+  // and clears it.
+  useEffect(() => { captureRefFromUrl(); }, []);
+  return null;
+}
 
 function ScrollToHash() {
   const { hash, pathname } = useLocation();
@@ -96,6 +108,7 @@ function AnimatedRoutes() {
           <Route path="/fragrance/:id" element={<FragrancePage />} />
           <Route path="/notes/:slug" element={<NotePage />} />
           <Route path="/brand/:slug" element={<BrandPage />} />
+          <Route path="/gift/:slug" element={<GiftRevealPage />} />
           <Route path="/story" element={<StoryPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
@@ -127,6 +140,7 @@ export default function App() {
     <AppProvider>
       <Cursor />
       <ReadingProgress />
+      <RefCapture />
       <ScrollToHash />
       <PageviewTracker />
       <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
@@ -134,6 +148,7 @@ export default function App() {
       </Suspense>
       <SampleModal />
       <SourceModal />
+      <GiftModal />
       <CartDrawer />
       <MobileBottomNav />
       <Toaster />

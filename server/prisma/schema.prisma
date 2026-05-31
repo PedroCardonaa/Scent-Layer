@@ -13,6 +13,14 @@ model User {
   passwordHash String
   createdAt    DateTime        @default(now())
   quizResult   Json?
+  // Unique slug used in ?ref=slug links. Generated server-side on
+  // first /api/referrals/me hit so existing users get one lazily.
+  referralCode String?         @unique
+  // Who invited this user (nullable, only set on signups that arrived
+  // via a ?ref=slug link).
+  referredById String?
+  referredBy   User?           @relation("Referrals", fields: [referredById], references: [id])
+  referrals    User[]          @relation("Referrals")
   wishlist     WishlistItem[]
   wardrobe     WardrobeItem[]
   reviews      Review[]
@@ -135,6 +143,37 @@ model LayerSuggestion {
   updatedAt   DateTime @updatedAt
 
   @@index([fragranceId])
+}
+
+// Gift orders, separate model from Order because the user's intent
+// and the rendering are meaningfully different. Sender pays via
+// Stripe Checkout (same flow as a sample order), recipient receives
+// a branded email pointing at /gift/:slug where they can read the
+// editorial reveal page and trigger sample fulfillment via reply.
+model GiftOrder {
+  id              String   @id @default(cuid())
+  // Public slug used in /gift/:slug, short + memorable, generated server-side.
+  slug            String   @unique
+  senderUserId    String?
+  senderName      String
+  senderEmail     String
+  recipientName   String
+  recipientEmail  String
+  // Optional handwritten note from sender to recipient
+  message         String?
+  // The fragrance line items: same shape as Order.items
+  items           Json
+  amountTotal     Int
+  currency        String   @default("usd")
+  stripeSessionId String   @unique
+  // Has the recipient opened the reveal page yet?
+  openedAt        DateTime?
+  // Has the recipient email been sent?
+  emailedRecipient Boolean @default(false)
+  createdAt       DateTime @default(now())
+
+  @@index([recipientEmail, createdAt])
+  @@index([senderEmail, createdAt])
 }
 
 // Orders, persisted record of every Stripe-completed purchase. The

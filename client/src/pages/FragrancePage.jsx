@@ -31,7 +31,7 @@ const FALLBACK_IMAGE = FAMILY_IMAGE.Floral;
 
 export function FragrancePage() {
   const { id } = useParams();
-  const { fragrances, openSampleModal, openSourceModal, toggleWishlist, wishlistIds, addToCart, openCart, showToast, markViewed, recentlyViewed } = useApp();
+  const { fragrances, openSampleModal, openSourceModal, openGiftModal, toggleWishlist, wishlistIds, addToCart, openCart, showToast, markViewed, recentlyViewed } = useApp();
   const numericId = Number(id);
   const fragrance = fragrances.find(f => f.id === numericId);
   const [size, setSize] = useState('5ml');
@@ -251,6 +251,14 @@ export function FragrancePage() {
               ↗
             </button>
           </div>
+          <button
+            type="button"
+            className="fragrance-gift-cta"
+            onClick={() => openGiftModal(fragrance)}
+          >
+            ✦ Send as a gift
+          </button>
+
           <button
             type="button"
             className="fragrance-quick-link"

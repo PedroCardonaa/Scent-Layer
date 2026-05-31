@@ -26,6 +26,8 @@ import blendRoutes from './routes/blends.js';
 import setRoutes from './routes/sets.js';
 import layerWithRoutes from './routes/layer-with.js';
 import paymentRoutes from './routes/payments.js';
+import referralRoutes from './routes/referrals.js';
+import giftRoutes from './routes/gifts.js';
 import { submitLimiter } from './middleware/rate-limit.js';
 
 const app = express();
@@ -39,6 +41,7 @@ app.use(cors({
 // the signature, so it must be mounted BEFORE the global JSON parser.
 // The webhook route itself attaches express.raw().
 app.use('/api/payments/webhook', paymentRoutes);
+app.use('/api/gifts/webhook', giftRoutes);
 
 app.use(express.json({ limit: '64kb' }));
 
@@ -59,6 +62,8 @@ app.use('/api/layer-with', layerWithRoutes);
 // Mounted after the JSON parser so checkout + run-lifecycle get parsed
 // bodies. The webhook subpath above intercepts /webhook before this.
 app.use('/api/payments', paymentRoutes);
+app.use('/api/referrals', referralRoutes);
+app.use('/api/gifts', giftRoutes);
 
 // Sentry's express error handler must come BEFORE our own handler so it
 // captures errors before we mask them as 500s.

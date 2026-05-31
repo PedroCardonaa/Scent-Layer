@@ -52,6 +52,10 @@ export function CartDrawer() {
       // Checkout URL; we redirect. Shipping + email collection happens
       // on Stripe. The webhook persists the Order and fires the
       // confirmation email.
+      // If the user signed up via a referral link, they have a promo
+      // code cached in localStorage — pass it through so Stripe applies
+      // the discount automatically.
+      const { getPromoCode } = await import('../lib/referral.js');
       const r = await api('/api/payments/checkout', {
         method: 'POST',
         auth: true,
@@ -64,6 +68,7 @@ export function CartDrawer() {
             qty: it.qty,
           })),
           address: form.message || form.address || undefined,
+          promoCode: getPromoCode() || undefined,
         },
       });
       trackEvent('cart_checkout', { units: totalUnits, items: cartItems.length });
