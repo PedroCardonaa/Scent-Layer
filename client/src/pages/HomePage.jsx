@@ -61,7 +61,6 @@ export function HomePage() {
 
   return (
     <>
-      <div className="demo-banner">✦ Live Demo<span>·</span>Scent Layer, Coming Soon<span>·</span>Sample Niche & Designer Fragrances From 2ml</div>
       <Nav />
 
       <section className="hero">

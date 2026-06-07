@@ -1396,6 +1396,8 @@ nav.dark .sound-toggle:hover { color: var(--gold-light, #e8d5a8); border-color: 
 
 /* ── Editorial footer ──────────────────────────────────────────── */
 .footer {
+  position: relative;   /* keep it anchored in flow, never overlay content */
+  z-index: 1;
   background:
     radial-gradient(ellipse 80% 60% at 50% -20%, rgba(201,169,110,0.10), transparent 60%),
     linear-gradient(180deg, #14100c 0%, #0a0705 100%);
