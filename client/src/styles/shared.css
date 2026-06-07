@@ -106,7 +106,7 @@ nav.dark  { background: rgba(26,18,16,0.93); }
 nav.light .nav-logo { color: var(--ink); }
 nav.dark  .nav-logo { color: var(--cream); }
 .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
-.nav-links a { font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; text-decoration: none; opacity: 0.55; transition: opacity 0.3s; }
+.nav-links a { font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; text-decoration: none; opacity: 0.82; transition: opacity 0.3s; }
 nav.light .nav-links a { color: var(--ink); }
 nav.dark  .nav-links a { color: var(--cream); }
 .nav-links a:hover { opacity: 1; }

@@ -60,13 +60,33 @@ export function WardrobeStats() {
     const dominantMood = Object.entries(moodCounts)
       .sort((a, b) => b[1] - a[1])[0]?.[0];
 
-    return { familyData, seasonGap, dominantMood, total: items.length };
+    // Milestone, a small reward as the collection grows. Picks the
+    // highest threshold the user has crossed.
+    const total = items.length;
+    const MILESTONES = [
+      { at: 3,  label: 'Officially exploring' },
+      { at: 5,  label: 'Building a wardrobe' },
+      { at: 10, label: 'A serious collector' },
+      { at: 15, label: 'Connoisseur territory' },
+      { at: 25, label: 'A walking fragrance library' },
+    ];
+    const milestone = [...MILESTONES].reverse().find(m => total >= m.at) || null;
+
+    return { familyData, seasonGap, dominantMood, total, milestone };
   }, [wardrobeItems]);
 
   if (!stats) return null;
 
   return (
     <section className="wardrobe-stats" aria-label="Your wardrobe by the numbers">
+      {stats.milestone && (
+        <div className="wardrobe-milestone">
+          <span className="wardrobe-milestone-badge" aria-hidden="true">✦</span>
+          <span className="wardrobe-milestone-text">
+            <strong>{stats.milestone.label}.</strong> {stats.total} fragrances tracked, the next tier is closer than you think.
+          </span>
+        </div>
+      )}
       <p className="wardrobe-stats-eyebrow">By the numbers</p>
 
       <div className="wardrobe-stats-grid">

@@ -14,6 +14,10 @@ export function AppProvider({ children }) {
   const [authLoading, setAuthLoading] = useState(true);
   const [fragrances, setFragrances] = useState([]);
   const [sets, setSets] = useState(FALLBACK_SETS);
+  // null = unknown (not yet checked), true = reachable, false = down.
+  // Drives the thin "preview mode" banner so users understand why
+  // checkout / auth buttons may not work.
+  const [apiReachable, setApiReachable] = useState(null);
   const [wishlistIds, setWishlistIds] = useState([]);
   // Wardrobe: array of { id, fragranceId, status, sizeMl, notes, fragrance }
   const [wardrobeItems, setWardrobeItems] = useState([]);
@@ -231,9 +235,11 @@ export function AppProvider({ children }) {
         if (Array.isArray(d.fragrances) && d.fragrances.length > 0) {
           setFragrances(d.fragrances);
         }
+        setApiReachable(true);
       })
       .catch(e => {
         console.warn('[catalog] using fallback catalog ,', e.message);
+        if (!cancelled) setApiReachable(false);
       });
     return () => { cancelled = true; };
   }, []);
@@ -500,12 +506,12 @@ export function AppProvider({ children }) {
     cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart,
     recentlyViewed, markViewed,
     sets, addSetToCart,
-    refreshCatalog,
+    refreshCatalog, apiReachable,
     wardrobeItems, setWardrobeStatus, removeWardrobeStatus, refreshWardrobe,
     savedBlends, saveBlend, deleteBlend, renameBlend, refreshBlends,
     myReviews, submitReview, refreshMyReviews,
     buildUserContext,
-  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme, analyticsConsent, setAnalyticsConsent, cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart, recentlyViewed, markViewed, sets, addSetToCart, wardrobeItems, setWardrobeStatus, removeWardrobeStatus, refreshWardrobe, savedBlends, saveBlend, deleteBlend, renameBlend, refreshBlends, myReviews, submitReview, refreshMyReviews, buildUserContext, refreshCatalog, giftModal, openGiftModal, closeGiftModal]);
+  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme, analyticsConsent, setAnalyticsConsent, cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart, recentlyViewed, markViewed, sets, addSetToCart, wardrobeItems, setWardrobeStatus, removeWardrobeStatus, refreshWardrobe, savedBlends, saveBlend, deleteBlend, renameBlend, refreshBlends, myReviews, submitReview, refreshMyReviews, buildUserContext, refreshCatalog, apiReachable, giftModal, openGiftModal, closeGiftModal]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

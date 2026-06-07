@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
 import { trackEvent } from '../lib/analytics.js';
+import { getFragranceImage } from '../lib/fragrance-images.js';
+import { unitPriceCents, cartSubtotalCents, formatMoney } from '../lib/pricing.js';
 
 /**
  * Cart drawer slides in from the right. Two stages within the same panel:
@@ -14,7 +16,7 @@ import { trackEvent } from '../lib/analytics.js';
  * into the line items and the total line lights up automatically.
  */
 export function CartDrawer() {
-  const { cartItems, cartOpen, closeCart, updateCartQty, removeFromCart, clearCart, showToast, user } = useApp();
+  const { cartItems, cartOpen, closeCart, updateCartQty, removeFromCart, clearCart, showToast, user, fragrances } = useApp();
   const [stage, setStage] = useState('browse');
   const [form, setForm] = useState({
     name: user?.email?.split('@')[0] ?? '',
@@ -43,6 +45,7 @@ export function CartDrawer() {
   }, [cartOpen, closeCart]);
 
   const totalUnits = cartItems.reduce((s, i) => s + i.qty, 0);
+  const subtotalCents = cartSubtotalCents(cartItems);
 
   async function placeOrder() {
     if (cartItems.length === 0) return;
@@ -140,32 +143,44 @@ export function CartDrawer() {
         ) : stage === 'browse' ? (
           <>
             <ul className="cart-items">
-              {cartItems.map(it => (
-                <li key={it.id} className="cart-item">
-                  <div className="cart-item-info">
-                    {it.brand && <p className="cart-item-brand">{it.brand}</p>}
-                    <p className="cart-item-name">{it.name}</p>
-                    <p className="cart-item-size">{it.size}</p>
-                  </div>
-                  <div className="cart-item-controls">
-                    <div className="cart-qty">
-                      <button type="button" onClick={() => updateCartQty(it.id, it.qty - 1)} disabled={it.qty <= 1} aria-label="Decrease quantity">−</button>
-                      <span aria-label={`Quantity ${it.qty}`}>{it.qty}</span>
-                      <button type="button" onClick={() => updateCartQty(it.id, it.qty + 1)} disabled={it.qty >= 20} aria-label="Increase quantity">+</button>
+              {cartItems.map(it => {
+                const frag = fragrances.find(f => f.id === it.fragranceId);
+                const lineCents = unitPriceCents(it.size) * it.qty;
+                return (
+                  <li key={it.id} className="cart-item">
+                    <div className="cart-item-thumb">
+                      <img src={getFragranceImage(frag || it)} alt={it.name} loading="lazy" />
                     </div>
-                    <button type="button" className="cart-remove" onClick={() => removeFromCart(it.id)} aria-label={`Remove ${it.name}`}>Remove</button>
-                  </div>
-                </li>
-              ))}
+                    <div className="cart-item-main">
+                      <div className="cart-item-top">
+                        <div className="cart-item-info">
+                          {it.brand && <p className="cart-item-brand">{it.brand}</p>}
+                          <p className="cart-item-name">{it.name}</p>
+                          <p className="cart-item-size">{it.size} sample</p>
+                        </div>
+                        <button type="button" className="cart-remove-x" onClick={() => removeFromCart(it.id)} aria-label={`Remove ${it.name}`}>✕</button>
+                      </div>
+                      <div className="cart-item-bottom">
+                        <div className="cart-qty">
+                          <button type="button" onClick={() => updateCartQty(it.id, it.qty - 1)} disabled={it.qty <= 1} aria-label="Decrease quantity">−</button>
+                          <span aria-label={`Quantity ${it.qty}`}>{it.qty}</span>
+                          <button type="button" onClick={() => updateCartQty(it.id, it.qty + 1)} disabled={it.qty >= 20} aria-label="Increase quantity">+</button>
+                        </div>
+                        <span className="cart-item-price">{formatMoney(lineCents)}</span>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
             <footer className="cart-foot">
               <div className="cart-summary">
-                <span>Total samples</span>
-                <span className="cart-summary-val">{totalUnits}</span>
+                <span>Subtotal</span>
+                <span className="cart-summary-val">{formatMoney(subtotalCents)}</span>
               </div>
-              <p className="cart-foot-note">Pricing is confirmed by email after you place the order. No charge until you accept the quote.</p>
+              <p className="cart-foot-note">Shipping calculated at checkout. Secure payment via Stripe.</p>
               <button type="button" className="cart-checkout-btn" onClick={() => setStage('checkout')}>
-                Checkout
+                Checkout · {formatMoney(subtotalCents)}
               </button>
             </footer>
           </>
@@ -216,7 +231,7 @@ export function CartDrawer() {
             </div>
             <footer className="cart-foot">
               <button type="button" className="cart-checkout-btn" onClick={placeOrder} disabled={submitting}>
-                {submitting ? 'Placing order…' : `Place order · ${totalUnits} sample${totalUnits !== 1 ? 's' : ''}`}
+                {submitting ? 'Starting checkout…' : `Pay ${formatMoney(subtotalCents)}`}
               </button>
               <button type="button" className="cart-back-btn" onClick={() => setStage('browse')}>
                 ← Back to cart

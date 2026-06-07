@@ -123,45 +123,83 @@ body:not(.dark) .cart-drawer { background: var(--warm-white); color: var(--ink);
   flex: 1;
   overflow-y: auto;
 }
+/* Jomashop-style line item: square thumbnail + main column with a top
+   row (info / remove-x) and a bottom row (qty stepper / line price). */
 .cart-item {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 64px 1fr;
   gap: 16px;
-  padding: 22px 32px;
+  padding: 20px 28px;
   border-bottom: 1px solid var(--hairline);
+  align-items: start;
 }
-.cart-item-info {}
+.cart-item-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--surface-soft);
+  flex-shrink: 0;
+}
+.cart-item-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cart-item-main { min-width: 0; }
+.cart-item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
 .cart-item-brand {
-  font-size: 0.58rem;
+  font-size: 0.56rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--gold);
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 .cart-item-name {
   font-family: 'Lora', serif;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   color: var(--fg);
-  margin-bottom: 4px;
-  line-height: 1.3;
+  margin-bottom: 3px;
+  line-height: 1.25;
 }
 .cart-item-size {
-  font-size: 0.72rem;
-  letter-spacing: 0.16em;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--fg-soft);
 }
-.cart-item-controls {
+.cart-item-bottom {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
 }
+.cart-item-price {
+  font-family: 'Lora', serif;
+  font-size: 1rem;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+.cart-remove-x {
+  background: none;
+  border: none;
+  color: var(--fg-faint);
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: none;
+  padding: 2px 4px;
+  flex-shrink: 0;
+  transition: color 0.25s;
+}
+.cart-remove-x:hover { color: #e07070; }
 .cart-qty {
   display: inline-flex;
   align-items: center;
   border: 1px solid var(--hairline);
+  border-radius: 999px;
   background: var(--surface-soft);
+  overflow: hidden;
 }
 .cart-qty button {
   width: 32px;

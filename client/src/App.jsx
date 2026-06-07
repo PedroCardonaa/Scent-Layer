@@ -10,9 +10,11 @@ import { GiftModal } from './components/GiftModal.jsx';
 import { CartDrawer } from './components/CartDrawer.jsx';
 import { CookieConsent } from './components/CookieConsent.jsx';
 import { MobileBottomNav } from './components/MobileBottomNav.jsx';
-import { SprayCanvas } from './components/SprayCanvas.jsx';
 import { ReadingProgress } from './components/ReadingProgress.jsx';
 import { SearchPalette } from './components/SearchPalette.jsx';
+import { ErrorBoundary } from './components/ErrorBoundary.jsx';
+import { ApiStatusBanner } from './components/ApiStatusBanner.jsx';
+import { MiniCartBar } from './components/MiniCartBar.jsx';
 import { captureRefFromUrl } from './lib/referral.js';
 import { trackPageView } from './lib/analytics.js';
 
@@ -46,6 +48,23 @@ const AboutPage = lazy(() => import('./pages/AboutPage.jsx').then(m => ({ defaul
 const IntroSpray = lazy(() => import('./components/IntroSpray.jsx').then(m => ({ default: m.IntroSpray })));
 
 const INTRO_KEY = 'sl-intro-played-v1';
+
+function RouteFallback() {
+  // Branded shimmer shown during lazy-route loads instead of a blank
+  // viewport. A faux nav bar + hero block so the transition reads as
+  // intentional, not broken.
+  return (
+    <div className="route-fallback" aria-hidden="true">
+      <div className="route-fallback-bar" />
+      <div className="route-fallback-hero">
+        <span className="skeleton route-fallback-eyebrow" />
+        <span className="skeleton route-fallback-title" />
+        <span className="skeleton route-fallback-title short" />
+        <span className="skeleton route-fallback-line" />
+      </div>
+    </div>
+  );
+}
 
 function RefCapture() {
   // Capture ?ref=slug on first mount only. Stripping the query keeps
@@ -139,21 +158,24 @@ export default function App() {
   return (
     <AppProvider>
       <Cursor />
+      <ApiStatusBanner />
       <ReadingProgress />
       <RefCapture />
       <ScrollToHash />
       <PageviewTracker />
-      <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
-        <AnimatedRoutes />
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<RouteFallback />}>
+          <AnimatedRoutes />
+        </Suspense>
+      </ErrorBoundary>
       <SampleModal />
       <SourceModal />
       <GiftModal />
       <CartDrawer />
+      <MiniCartBar />
       <MobileBottomNav />
       <Toaster />
       <CookieConsent />
-      <SprayCanvas />
       <SearchPalette />
       {showIntro && (
         <Suspense fallback={null}>

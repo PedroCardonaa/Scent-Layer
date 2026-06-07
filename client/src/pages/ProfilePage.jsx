@@ -5,10 +5,13 @@ import { StreamText } from '../components/StreamText.jsx';
 import { WhyThisRec } from '../components/WhyThisRec.jsx';
 import { WardrobeInsight } from '../components/WardrobeInsight.jsx';
 import { WardrobeStats } from '../components/WardrobeStats.jsx';
+import { EmptyState } from '../components/EmptyState.jsx';
 import { useThinkingStages } from '../hooks/useThinkingStages.js';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
 import { trackEvent } from '../lib/analytics.js';
+import { getFragranceImage } from '../lib/fragrance-images.js';
+import { FROM_PRICE_CENTS, formatMoney } from '../lib/pricing.js';
 
 function ReferralBlock({ showToast }) {
   const { user } = useApp();
@@ -246,36 +249,54 @@ export function ProfilePage() {
 }
 
 // ─── WISHLIST PANEL ─────────────────────────────────────────────────
-function WishlistPanel({ fragrances, wishlistIds, toggleWishlist, openSampleModal, openSourceModal }) {
+function WishlistPanel({ fragrances, wishlistIds, toggleWishlist, openSampleModal }) {
+  const { addToCart, openCart, showToast } = useApp();
   const items = useMemo(() => fragrances.filter(c => wishlistIds.includes(c.id)), [fragrances, wishlistIds]);
+
+  function quickAdd(p) {
+    addToCart({ fragranceId: p.id, name: p.name, brand: p.brand, size: '5ml', qty: 1 });
+    showToast(`<span>Added</span> 5ml of ${p.name}`);
+    openCart();
+  }
+
   return (
     <div className="profile-panel">
       <p className="profile-panel-label">Saved Fragrances</p>
       <h2 className="profile-panel-title">My Wishlist</h2>
-      <p className="profile-panel-sub">Fragrances you've saved. Order any as a sample, or skip straight to a full bottle.</p>
+      <p className="profile-panel-sub">Everything you've saved, ready to sample. Add to cart in a tap.</p>
       {items.length === 0 ? (
         <div className="wishlist-empty">
           <div className="wishlist-empty-icon">♡</div>
           <p className="wishlist-empty-text">Your wishlist is empty</p>
-          <p className="wishlist-empty-sub">Browse the shop and save fragrances you love</p>
-          <Link to="/shop" className="btn-dark" style={{ marginTop: 20, display: 'inline-block' }}>Browse Shop</Link>
+          <p className="wishlist-empty-sub">Tap the heart on any fragrance to save it here</p>
+          <Link to="/shop" className="btn-dark" style={{ marginTop: 20, display: 'inline-block' }}>Browse the catalog</Link>
         </div>
       ) : (
-        <div className="wishlist-list">
-          {items.map((p, i) => (
-            <div key={p.id} className="wishlist-item">
-              <div className="wishlist-item-dot" style={{ background: QUIZ_COLORS[i % 8] }} />
-              <div className="wishlist-item-info">
-                <p className="wishlist-item-brand">{p.brand}</p>
-                <p className="wishlist-item-name">{p.name}</p>
-                <p className="wishlist-item-notes">{p.top}</p>
+        <div className="wishlist-grid">
+          {items.map((p) => (
+            <article key={p.id} className="wl-card">
+              <Link to={`/fragrance/${p.id}`} className="wl-card-thumb" aria-label={`Open ${p.name}`}>
+                <img src={getFragranceImage(p)} alt={`${p.name} by ${p.brand}`} loading="lazy" />
+                <button
+                  type="button"
+                  className="wl-card-heart"
+                  onClick={(e) => { e.preventDefault(); toggleWishlist(p.id); }}
+                  aria-label="Remove from wishlist"
+                  title="Remove"
+                >♥</button>
+              </Link>
+              <div className="wl-card-body">
+                <Link to={`/fragrance/${p.id}`} className="wl-card-brand-link">
+                  <p className="wl-card-brand">{p.brand}</p>
+                  <p className="wl-card-name">{p.name}</p>
+                </Link>
+                <p className="wl-card-price">from {formatMoney(FROM_PRICE_CENTS)}</p>
+                <div className="wl-card-actions">
+                  <button type="button" className="wl-card-add" onClick={() => quickAdd(p)}>Add 5ml</button>
+                  <button type="button" className="wl-card-sample" onClick={() => openSampleModal(`${p.name}, ${p.brand}`)}>Other sizes</button>
+                </div>
               </div>
-              <div className="wishlist-item-actions">
-                <button type="button" className="wishlist-action sample" onClick={() => openSampleModal(`${p.name}, ${p.brand}`)}>Sample</button>
-                <button type="button" className="wishlist-action source" onClick={() => openSourceModal(`${p.name}, ${p.brand}`)} title="Source the full bottle">Bottle</button>
-                <button type="button" className="wishlist-action remove" onClick={() => toggleWishlist(p.id)} aria-label="Remove">✕</button>
-              </div>
-            </div>
+            </article>
           ))}
         </div>
       )}
@@ -297,12 +318,11 @@ function WardrobePanel() {
         <p className="profile-panel-label">Your Fragrance Inventory</p>
         <h2 className="profile-panel-title">My Wardrobe</h2>
         <p className="profile-panel-sub">Track what you own, what you've sampled, and what you want a backup of. Open any fragrance and use the wardrobe pills to mark it.</p>
-        <div className="wardrobe-empty">
-          <div className="wardrobe-empty-icon">◈</div>
-          <p className="wardrobe-empty-text">Your wardrobe is empty</p>
-          <p className="wardrobe-empty-sub">Open any fragrance page to add it</p>
-          <Link to="/shop" className="btn-dark" style={{ marginTop: 20, display: 'inline-block' }}>Browse Shop</Link>
-        </div>
+        <EmptyState
+          title="Your wardrobe is empty"
+          sub="Mark what you own, what you've sampled, and what needs a backup. It starts with one fragrance."
+          action={{ to: '/shop', label: 'Browse the catalog' }}
+        />
       </div>
     );
   }
@@ -355,12 +375,11 @@ function BlendsPanel() {
         <p className="profile-panel-label">Layer Builder Recipes</p>
         <h2 className="profile-panel-title">My Blends</h2>
         <p className="profile-panel-sub">Save any blend from the Layer Builder and it appears here, recipe, analysis, and tags intact.</p>
-        <div className="wardrobe-empty">
-          <div className="wardrobe-empty-icon">◈</div>
-          <p className="wardrobe-empty-text">You haven't saved any blends yet</p>
-          <p className="wardrobe-empty-sub">Open the Layer Builder and combine 2 to 4 fragrances</p>
-          <Link to="/tools" className="btn-dark" style={{ marginTop: 20, display: 'inline-block' }}>Open Layer Builder</Link>
-        </div>
+        <EmptyState
+          title="No saved blends yet"
+          sub="Combine 2 to 4 fragrances in the Layer Builder, then save the ones worth keeping. They land here."
+          action={{ to: '/tools', label: 'Open Layer Builder' }}
+        />
       </div>
     );
   }
@@ -450,11 +469,11 @@ function ReviewsPanel({ openSampleModal }) {
       )}
 
       {myReviews.length === 0 && toReview.length === 0 ? (
-        <div className="wardrobe-empty">
-          <div className="wardrobe-empty-icon">◇</div>
-          <p className="wardrobe-empty-text">No reviews yet</p>
-          <p className="wardrobe-empty-sub">Once you've sampled something, mark it sampled in your wardrobe and a review form appears here</p>
-        </div>
+        <EmptyState
+          title="No reviews yet"
+          sub="Mark something sampled in your wardrobe and a review form appears here. Your verdicts tune every recommendation."
+          action={{ to: '/shop', label: 'Find something to sample' }}
+        />
       ) : (
         <div style={{ marginTop: 24 }}>
           <p className="profile-panel-label" style={{ color: 'var(--gold)' }}>Your past reviews</p>
