@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag } from 'lucide-react';
+import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
 import { BackToTop } from '../components/BackToTop.jsx';
 import { ProductCard } from '../components/ProductCard.jsx';
@@ -61,10 +61,7 @@ export function HomePage() {
 
   return (
     <>
-      {/* No top nav on the landing page, navigation lives in the footer
-          at the bottom. A minimal floating brand mark + cart keeps the
-          essentials reachable without a blocking header. */}
-      <HomeMiniHeader />
+      <Nav />
 
       <section className="hero">
         <div className="hero-left">
@@ -256,40 +253,5 @@ export function HomePage() {
       <BackToTop />
       <ExitIntentModal />
     </>
-  );
-}
-
-/**
- * Minimal floating header for the landing page, just the brand mark
- * (links home) on the left and search + cart on the right. No full nav
- * bar, no menu links: those live in the footer at the bottom. Sits in a
- * transparent strip that doesn't block the hero.
- */
-function HomeMiniHeader() {
-  const { cartCount, openCart } = useApp();
-  return (
-    <div className="home-mini-header">
-      <Link to="/" className="home-mini-mark" aria-label="Scent Layer, home">
-        <span className="home-mini-mark-text"><em>scent</em><span className="home-mini-dot" />layer</span>
-      </Link>
-      <div className="home-mini-actions">
-        <button
-          type="button"
-          className="home-mini-btn"
-          onClick={() => window.dispatchEvent(new Event('sl-open-search'))}
-          aria-label="Search"
-          title="Search (Cmd/Ctrl+K)"
-        >⌕</button>
-        <button
-          type="button"
-          className="home-mini-btn"
-          onClick={openCart}
-          aria-label={`Cart (${cartCount} items)`}
-        >
-          <ShoppingBag size={16} strokeWidth={1.5} />
-          {cartCount > 0 && <span className="home-mini-cart-badge">{cartCount}</span>}
-        </button>
-      </div>
-    </div>
   );
 }
