@@ -1907,3 +1907,42 @@ body.dark .wardrobe-stats-bar-track { background: rgba(245,240,232,0.06); }
   .btn-dark:hover,
   .quiz-option:hover { transform: none; }
 }
+
+/* ════════════════════════════════════════════════════════════════
+   DE-SQUARE + NATIVE CURSOR PASS
+   Two cleanups requested together: kill the custom gold-dot cursor
+   that trailed the mouse everywhere (reads as a template tell), and
+   round the last hard-cornered elements the token bump didn't reach.
+   This block loads last so it wins the cascade.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Native cursor restored ──
+   The app used `cursor: none` site-wide to show a custom dot+ring.
+   That component is gone, so force the real cursor back. `* !important`
+   beats every scattered `cursor: none` without editing each file. */
+*, *::before, *::after { cursor: auto !important; }
+a, button, [role="button"], label, summary, select,
+.btn-dark, .btn-ghost, .btn-gold, .source-link, .section-link,
+.filter-pill, .nav-links a, .nav-profile, .nav-cart, .nav-search,
+.product-card, .product-card-link, .product-action-btn,
+.tool-glow, .tool-glow-content, .back-to-top, .mbn-item,
+.theme-toggle-btn, .sound-toggle, .quiz-option, .set-card-btn,
+.blend-card-btn, .cart-checkout button, .cart-qty button {
+  cursor: pointer !important;
+}
+input:not([type="button"]):not([type="submit"]):not([type="range"]):not([type="checkbox"]):not([type="radio"]),
+textarea { cursor: text !important; }
+
+/* ── Round the stragglers ──
+   Elements that hardcoded square corners (or none) instead of a token. */
+.filter-pill        { border-radius: var(--r-pill); }
+.back-to-top        { border-radius: var(--r-pill); }
+.cookie-consent     { border-radius: var(--r-md); }
+.toast              { border-radius: var(--r-pill); }
+.nav-hamburger      { border-radius: var(--r-xs); }
+.sotw-card-wrap,
+.fotm-card          { border-radius: var(--r-lg); }
+.tool-glow          { border-radius: var(--r-md); }
+/* Soften the big sectioned image/panel corners a touch more */
+.review-strip,
+.discovery-set-card { border-radius: var(--r-sm); }

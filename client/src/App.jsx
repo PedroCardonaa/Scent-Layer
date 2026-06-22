@@ -2,7 +2,6 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AppProvider } from './context/AppContext.jsx';
-import { Cursor } from './components/Cursor.jsx';
 import { Toaster } from './components/Toaster.jsx';
 import { SourceModal } from './components/SourceModal.jsx';
 import { SampleModal } from './components/SampleModal.jsx';
@@ -157,7 +156,6 @@ export default function App() {
 
   return (
     <AppProvider>
-      <Cursor />
       <ApiStatusBanner />
       <ReadingProgress />
       <RefCapture />
