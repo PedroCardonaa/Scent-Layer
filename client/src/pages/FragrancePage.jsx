@@ -11,23 +11,10 @@ import { useApp } from '../context/AppContext.jsx';
 import { useDocumentMeta } from '../lib/seo.js';
 import { slugify, parseNotes } from '../lib/slug.js';
 import { shareOrCopy } from '../lib/share.js';
-import { getFragranceImage } from '../lib/fragrance-images.js';
+import { ScentTile } from '../components/ScentTile.jsx';
 import { SchemaJsonLd, buildProductSchema, buildBreadcrumbSchema } from '../components/SchemaJsonLd.jsx';
 
 const SAMPLE_SIZES = ['2ml', '5ml', '10ml', '30ml'];
-
-// One curated Unsplash hero photo per fragrance family. Replace with real
-// brand-commissioned imagery once available. All four URLs are verified
-// stock photos of perfume bottles / atmospheric fragrance still life.
-const FAMILY_IMAGE = {
-  Fresh:    'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=1200&h=1200&fit=crop&q=80',
-  Floral:   'https://images.unsplash.com/photo-1541643600914-78b084683601?w=1200&h=1200&fit=crop&q=80',
-  Woody:    'https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=1200&h=1200&fit=crop&q=80',
-  Oriental: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=1200&h=1200&fit=crop&q=80',
-  Gourmand: 'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=1200&h=1200&fit=crop&q=80',
-};
-
-const FALLBACK_IMAGE = FAMILY_IMAGE.Floral;
 
 export function FragrancePage() {
   const { id } = useParams();
@@ -123,11 +110,6 @@ export function FragrancePage() {
 
   const label = `${fragrance.name}, ${fragrance.brand}`;
   const saved = wishlistIds.includes(fragrance.id);
-  // Per-fragrance imageUrl wins; family-based hero is the fallback.
-  // Prefer the helper, it handles per-fragrance overrides + family
-  // pools + the final fallback in one place. The old FAMILY_IMAGE map
-  // remains as a redundant safety net if the helper ever returns null.
-  const heroImage = getFragranceImage(fragrance) ?? FAMILY_IMAGE[fragrance.family] ?? FALLBACK_IMAGE;
   const synthDescription = fragrance.description ?? buildSynthDescription(fragrance);
 
   // Structured data for rich snippets in Google. Combines Product +
@@ -135,7 +117,7 @@ export function FragrancePage() {
   const schemaPayload = {
     '@context': 'https://schema.org/',
     '@graph': [
-      buildProductSchema({ fragrance, imageUrl: heroImage }),
+      buildProductSchema({ fragrance }),
       buildBreadcrumbSchema([
         { name: 'Home',            url: '/' },
         { name: 'Catalog',         url: '/shop' },
@@ -161,13 +143,9 @@ export function FragrancePage() {
       {/* Hero */}
       <section className="fragrance-hero">
         <div className="fragrance-hero-image parallax-hero">
-          <img
-            ref={heroImgRef}
-            className="parallax-hero-img"
-            src={heroImage}
-            alt={`${fragrance.name} fragrance bottle`}
-            loading="eager"
-          />
+          <div ref={heroImgRef} className="parallax-hero-img" style={{ width: '100%', height: '100%' }}>
+            <ScentTile fragrance={fragrance} />
+          </div>
           {fragrance.badge && <div className="fragrance-badge">{fragrance.badge}</div>}
         </div>
         <div className="fragrance-hero-body">

@@ -1,16 +1,22 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
-  --cream: #f5f0e8;
-  --warm-white: #faf8f4;
-  --ink: #1a1612;
-  --taupe: #8b7d6b;
-  --gold: #c9a96e;
-  --gold-light: #e8d5a8;
-  --blush: #e8d5c4;
-  --deep: #2d2420;
-  --deep2: #1a1210;
-  --muted: #b0a090;
-  --green: #7a9e7e;
+  /* ── Clean-commerce palette ─────────────────────────────────────
+     Full restyle: the old warm cream + gold editorial palette is
+     retired. Neutral white/near-black base with a single decisive
+     commerce-blue accent. The legacy token NAMES are kept (--cream,
+     --gold, --deep…) because hundreds of rules reference them — only
+     their VALUES change, which re-skins every surface at once. */
+  --cream: #f6f7f9;        /* light neutral: card bg on light, text on dark */
+  --warm-white: #ffffff;   /* page background */
+  --ink: #111114;          /* primary text, solid CTAs */
+  --taupe: #5f6368;        /* secondary text */
+  --gold: #1f5eff;         /* accent (was gold, now commerce blue) */
+  --gold-light: #7aa0ff;   /* light accent */
+  --blush: #e3e6ea;        /* faint borders / underlines */
+  --deep: #1b1d22;         /* dark surface */
+  --deep2: #101216;        /* darkest surface, footer, dark theme bg */
+  --muted: #9aa0a6;
+  --green: #1d8a4e;
 
   /* ── Theme-adaptive tokens ──────────────────────────────────────
      Swap with body.dark. Use these in sections WITHOUT their own
@@ -19,11 +25,11 @@
      .fotm, .footer) should keep using --cream directly. */
   --fg:           var(--ink);                  /* primary text */
   --fg-soft:      var(--taupe);                /* secondary text */
-  --fg-dim:       rgba(26,22,18,0.45);         /* tertiary / labels */
-  --fg-faint:     rgba(26,22,18,0.30);         /* placeholders / hairlines */
-  --surface-soft: rgba(26,22,18,0.04);         /* faint card / input wash */
-  --surface-2:    rgba(26,22,18,0.06);
-  --hairline:     rgba(26,22,18,0.12);
+  --fg-dim:       rgba(17,17,20,0.45);         /* tertiary / labels */
+  --fg-faint:     rgba(17,17,20,0.30);         /* placeholders / hairlines */
+  --surface-soft: rgba(17,17,20,0.04);         /* faint card / input wash */
+  --surface-2:    rgba(17,17,20,0.06);
+  --hairline:     rgba(17,17,20,0.12);
 
   /* ── Type scale ─────────────────────────────────────────────────
      Use these tokens instead of ad-hoc font-size values. Keeps the
@@ -70,13 +76,13 @@
 }
 body.dark {
   --fg:           var(--cream);
-  --fg-soft:      rgba(245,240,232,0.55);
-  --fg-dim:       rgba(245,240,232,0.40);
-  --fg-faint:     rgba(245,240,232,0.30);
-  --surface-soft: rgba(255,255,255,0.04);
-  --surface-2:    rgba(255,255,255,0.06);
-  --hairline:     rgba(201,169,110,0.15);
-  --soft-border:  1px solid rgba(245,240,232,0.08);
+  --fg-soft:      rgba(246,247,249,0.60);
+  --fg-dim:       rgba(246,247,249,0.42);
+  --fg-faint:     rgba(246,247,249,0.30);
+  --surface-soft: rgba(255,255,255,0.05);
+  --surface-2:    rgba(255,255,255,0.08);
+  --hairline:     rgba(255,255,255,0.14);
+  --soft-border:  1px solid rgba(255,255,255,0.10);
   --elev-1: 0 1px 2px rgba(0,0,0,0.30), 0 2px 6px rgba(0,0,0,0.18);
   --elev-2: 0 2px 4px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.22);
   --elev-3: 0 4px 12px rgba(0,0,0,0.40), 0 18px 48px rgba(0,0,0,0.28);
@@ -91,11 +97,16 @@ html {
   background: var(--deep2);
   overscroll-behavior-y: none;
 }
-body { background: var(--warm-white); color: var(--ink); font-family: 'Inter', sans-serif; font-weight: 300; overflow-x: hidden; min-height: 100vh; }
+body { background: var(--warm-white); color: var(--ink); font-family: 'Inter', sans-serif; font-weight: 400; overflow-x: hidden; min-height: 100vh; }
 body.dark { background: var(--deep2); color: var(--cream); }
 
-/* NAV */
-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; padding: 16px 60px; border-bottom: 1px solid rgba(139,125,107,0.14); }
+/* NAV
+   IMPORTANT: scoped to nav.light / nav.dark (the top bar rendered by
+   Nav.jsx). A bare `nav` selector also matches <nav class="footer-cols">
+   inside the footer, which pinned the footer's link columns to the top
+   of the viewport on every page — the long-standing "ghost buttons
+   over the hero that never leave" bug. */
+nav.light, nav.dark { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; padding: 16px 60px; border-bottom: 1px solid rgba(139,125,107,0.14); }
 /* Solid background, no translucency, so page content never bleeds
    through and the bar reads as one clean strip. */
 nav.light { background: var(--warm-white); }

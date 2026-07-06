@@ -1,0 +1,298 @@
+/* ═══════════════════════════════════════════════════════════════════
+   COMMERCE.CSS — the clean-modern-commerce restyle. Loaded LAST.
+
+   Direction: white background, crisp grid, bold sans type, sentence
+   case, one decisive blue accent, strong clear CTAs. The palette swap
+   lives in shared.css tokens; this file re-skins the primitives that
+   carried the old editorial voice (serif italics, uppercase micro-
+   labels, gold hairlines) into a modern storefront.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Typography: retire the serif, embolden the sans ────────────── */
+h1, h2, h3, h4,
+[class*="-title"] {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: -0.02em;
+}
+[class*="-title"] em,
+h1 em, h2 em, h3 em {
+  font-style: normal;
+  color: inherit;
+}
+.hero-title  { font-weight: 800; line-height: 1.04; }
+.section-title { font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.15; }
+/* Serif line breaks were tuned for huge italic type; tighten display */
+.hero-title { font-size: clamp(2.6rem, 4.6vw, 4.2rem); }
+
+/* Sentence-case the old uppercase micro-labels and give them a
+   readable size. Eyebrows stay small-caps-ish but legible. */
+.hero-eyebrow, .section-label, .sotw-label, .fotm-badge,
+.waitlist-eyebrow, .wardrobe-stats-eyebrow {
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gold);
+}
+.hero-sub, .sotw-desc, .fotm-body, .waitlist-sub {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--fg-soft);
+}
+
+/* ── Nav: white commerce bar ──
+   Scoped to the top bar only — a bare `nav` selector would also hit
+   <nav class="footer-cols"> in the footer. */
+nav.light, nav.dark {
+  padding: 14px 40px;
+  border-bottom: 1px solid var(--hairline);
+  box-shadow: 0 1px 3px rgba(17,17,20,0.04);
+}
+nav.light { background: #fff; }
+.nav-links { gap: 28px; }
+.nav-links a {
+  font-size: 0.86rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  opacity: 0.9;
+}
+.nav-links a:hover { color: var(--gold); opacity: 1; }
+.nav-profile {
+  border-radius: var(--r-pill);
+  border: 1.5px solid var(--ink);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  padding: 8px 16px;
+}
+.nav-profile:hover { background: var(--ink); border-color: var(--ink); }
+.nav-search {
+  font-size: 0.82rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ── Buttons: solid, confident, sentence case ───────────────────── */
+.btn-dark, .btn-ghost, .btn-gold,
+.sample-btn, .fotm-btn, .waitlist-btn,
+.cart-checkout button, .set-card-btn, .blend-card-btn {
+  font-size: 0.86rem !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  border-radius: var(--r-xs) !important;
+}
+.btn-dark, .btn-gold, .fotm-btn, .waitlist-btn {
+  background: var(--ink);
+  color: #fff;
+  padding: 14px 30px;
+}
+.btn-dark:hover, .btn-gold:hover, .fotm-btn:hover, .waitlist-btn:hover {
+  background: var(--gold);
+  color: #fff;
+}
+.btn-ghost {
+  border: 1.5px solid var(--hairline);
+  color: var(--fg);
+  padding: 14px 30px;
+}
+.btn-ghost:hover { border-color: var(--ink); color: var(--fg); background: var(--surface-soft); }
+.sample-btn {
+  background: var(--gold);
+  color: #fff;
+  border: none;
+  padding: 9px 16px;
+}
+.sample-btn:hover { background: var(--ink); }
+.source-link {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.78rem;
+}
+
+/* ── Section headers & links ────────────────────────────────────── */
+.section-link {
+  color: var(--gold);
+  border-bottom: none;
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.section-link:hover { color: var(--ink); border: none; }
+
+/* ── Filter pills: crisp chips ──────────────────────────────────── */
+.filter-pill {
+  border: 1px solid var(--hairline);
+  background: #fff;
+  border-radius: var(--r-pill);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--fg);
+  padding: 8px 18px;
+}
+.filter-pill.active, .filter-pill:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+/* ── Product cards: white, bordered, hover-lift ─────────────────── */
+.product-card {
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-sm);
+  box-shadow: none;
+}
+.product-card:hover {
+  border-color: rgba(31,94,255,0.45);
+  box-shadow: var(--elev-2);
+}
+.product-brand {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--fg-soft);
+}
+.product-name {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 0.98rem;
+  letter-spacing: -0.01em;
+}
+.product-family {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.72rem;
+  color: var(--fg-dim);
+}
+
+/* ── Scent tiles: the image replacement ─────────────────────────── */
+/* Product photos are gone. Every product visual is now a soft family-
+   tinted tile with a minimal line-art bottle. Reads intentional and
+   uniform, like a brand system, not like missing images. */
+.scent-tile {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.scent-tile svg { opacity: 0.55; }
+.scent-tile-initial {
+  position: absolute;
+  left: 12px;
+  bottom: 8px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(17,17,20,0.35);
+}
+.product-img { aspect-ratio: 1/1; background: var(--cream); }
+.product-img .scent-tile svg { width: 34%; height: auto; }
+
+/* ── Inputs ─────────────────────────────────────────────────────── */
+.modal-input, .similar-input, .fotm-input, .newsletter-strip-input,
+.save-blend-input, .auth-input, .waitlist-input {
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-xs);
+  font-size: 0.9rem;
+}
+.modal-input:focus, .similar-input:focus, .fotm-input:focus,
+.save-blend-input:focus, .auth-input:focus, .waitlist-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(31,94,255,0.12);
+  outline: none;
+}
+
+/* ── SOTW / FOTM / waitlist panels: light, bordered ─────────────── */
+.sotw {
+  background: var(--cream);
+}
+.sotw-title, .sotw-brand { color: var(--fg); }
+.sotw-desc { color: var(--fg-soft); }
+.sotw-note {
+  background: #fff;
+  border: 1px solid var(--hairline);
+  color: var(--fg-soft);
+  border-radius: var(--r-pill);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.74rem;
+}
+
+/* ── Toast: commerce snackbar ───────────────────────────────────── */
+.toast {
+  background: var(--ink);
+  border: none;
+  color: #fff;
+  font-size: 0.84rem;
+  border-radius: var(--r-xs);
+  box-shadow: var(--elev-3);
+}
+
+/* ── Marquee strips: quiet neutral ──────────────────────────────── */
+.marquee-item {
+  text-transform: none;
+  letter-spacing: 0.01em;
+  font-size: 0.8rem;
+  color: var(--fg-soft);
+}
+
+/* ── Back-to-top / cookie / drawers already tokenized; tighten ──── */
+.back-to-top {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+.cookie-consent { background: var(--ink); }
+
+/* ── Home hero: centered, text-first, no photo ──────────────────── */
+.hero {
+  grid-template-columns: 1fr;
+  min-height: auto;
+  padding: 140px 24px 80px;
+  text-align: center;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% -10%, rgba(31,94,255,0.06), transparent 60%),
+    #fff;
+}
+.hero-left {
+  padding: 0;
+  align-items: center;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.hero-sub { max-width: 520px; margin-left: auto; margin-right: auto; }
+.hero-actions { justify-content: center; }
+.hero-right { display: none; }
+
+/* Mobile: keep the centered hero comfortable */
+@media (max-width: 640px) {
+  .hero { padding: 120px 20px 56px; }
+}
+
+/* ── Dark theme: neutral charcoal commerce ──────────────────────── */
+body.dark .filter-pill { background: var(--deep); color: var(--cream); }
+body.dark .filter-pill.active, body.dark .filter-pill:hover { background: var(--cream); border-color: var(--cream); color: var(--ink); }
+body.dark .product-card { background: var(--deep); }
+body.dark .product-img { background: rgba(255,255,255,0.06); }
+body.dark .hero { background: var(--deep2); }
+body.dark nav.dark { background: var(--deep2); }
+body.dark .sotw { background: var(--deep); }
+body.dark .modal-input, body.dark .auth-input, body.dark .fotm-input { background: var(--deep); color: var(--cream); }
+body.dark .btn-dark, body.dark .fotm-btn, body.dark .waitlist-btn { background: var(--gold); }
+body.dark .btn-dark:hover, body.dark .fotm-btn:hover, body.dark .waitlist-btn:hover { background: var(--gold-light); color: var(--ink); }
+body.dark .scent-tile-initial { color: rgba(246,247,249,0.4); }

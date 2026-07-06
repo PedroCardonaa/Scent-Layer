@@ -37,6 +37,9 @@ import './styles/tailwind.css';
 // Loaded LAST, overrides the harder square defaults with softer
 // corners, gentle shadows, smoother transitions across every surface.
 import './styles/smooth.css';
+// The clean-commerce restyle. Must stay the FINAL import — it re-skins
+// the primitives (type, nav, buttons, cards, pills) over everything above.
+import './styles/commerce.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

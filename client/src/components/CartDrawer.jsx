@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
 import { trackEvent } from '../lib/analytics.js';
-import { getFragranceImage } from '../lib/fragrance-images.js';
+import { ScentTile } from './ScentTile.jsx';
 import { unitPriceCents, cartSubtotalCents, formatMoney } from '../lib/pricing.js';
 
 /**
@@ -149,7 +149,7 @@ export function CartDrawer() {
                 return (
                   <li key={it.id} className="cart-item">
                     <div className="cart-item-thumb">
-                      <img src={getFragranceImage(frag || it)} alt={it.name} loading="lazy" />
+                      <ScentTile fragrance={frag || it} showInitial={false} />
                     </div>
                     <div className="cart-item-main">
                       <div className="cart-item-top">

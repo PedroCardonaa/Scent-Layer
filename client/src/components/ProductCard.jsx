@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
 import { ShoppingBag } from 'lucide-react';
 import { useApp } from '../context/AppContext.jsx';
-import { ProductBottle } from './BottleSvg.jsx';
 import { MagicCard } from './ui/MagicCard.jsx';
-import { getFragranceImage } from '../lib/fragrance-images.js';
+import { ScentTile } from './ScentTile.jsx';
 import { useLongPress } from '../hooks/useLongPress.js';
 
 export function ProductCard({ fragrance: p }) {
@@ -47,19 +46,10 @@ export function ProductCard({ fragrance: p }) {
   return (
     <MagicCard className="product-card" spotlightColor="rgba(201,169,110,0.22)" spotlightSize={240}>
       <Link to={detailHref} className="product-card-link" aria-label={`Open details for ${label}`} onClick={handleCardClick}>
-        <div className="product-img product-img-photo" {...handlers}>
-          {/* Real bottle photography overlaid on the family-tinted bg.
-              If the image fails the gradient + SVG bottle is still
-              visible underneath as a graceful fallback. */}
-          <div className={`product-bg ${p.bg}`} />
-          <ProductBottle />
-          <img
-            className="product-photo"
-            src={getFragranceImage(p)}
-            alt={`${p.name} by ${p.brand}`}
-            loading="lazy"
-            decoding="async"
-          />
+        <div className="product-img" {...handlers}>
+          {/* Product photography removed for the clean-commerce
+              restyle — a family-tinted ScentTile stands in. */}
+          <ScentTile fragrance={p} />
           {p.badge && <div className="product-badge">{p.badge}</div>}
 
           {/* Long-press fill ring, animates as the user holds the card.

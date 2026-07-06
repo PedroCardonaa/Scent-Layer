@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
-import { getFragranceImage } from '../lib/fragrance-images.js';
+import { ScentTile } from './ScentTile.jsx';
 
 /**
  * "Layer with these" block, renders at the bottom of every fragrance
@@ -46,14 +46,11 @@ export function LayerWithBlock({ fragrance }) {
       <div className="layer-with-grid">
         {partners.map(p => {
           const inCatalog = fragrances.find(f => f.id === p.id);
-          const img = inCatalog ? getFragranceImage(inCatalog) : null;
           return (
             <article key={p.id} className="layer-with-card">
-              {img && (
-                <Link to={`/fragrance/${p.id}`} className="layer-with-card-img" aria-label={`Open ${p.name}`}>
-                  <img src={img} alt={`${p.name} by ${p.brand}`} loading="lazy" decoding="async" />
-                </Link>
-              )}
+              <Link to={`/fragrance/${p.id}`} className="layer-with-card-img" aria-label={`Open ${p.name}`}>
+                <ScentTile fragrance={inCatalog || p} />
+              </Link>
               <div className="layer-with-card-body">
                 <p className="layer-with-card-brand">{p.brand}</p>
                 <Link to={`/fragrance/${p.id}`} className="layer-with-card-name">{p.name}</Link>

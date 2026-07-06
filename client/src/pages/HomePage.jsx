@@ -73,17 +73,6 @@ export function HomePage() {
             <Link to="/profile#personalize" className="btn-ghost">Find My Scent</Link>
           </div>
         </div>
-        <div className="hero-right">
-          <img
-            className="hero-lifestyle"
-            src="https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=1200&h=1600&fit=crop&q=80"
-            alt="A person applying fragrance to the inside of the wrist"
-            loading="eager"
-          />
-          <div className="hero-tint" aria-hidden="true" />
-          <div className="hero-orb orb-1" />
-          <div className="hero-orb orb-2" />
-        </div>
       </section>
 
       <NewsletterStrip />
@@ -124,7 +113,6 @@ export function HomePage() {
               base: 'Fir Resin, Cedar',
               season: ['Fall', 'Winter'],
             }}
-            image="https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=900&h=900&fit=crop&q=80"
             description="The fragrance that redefined modern luxury. An incandescent amber floral, jasmine and saffron over a cedar and ambergris base that glows for hours on skin."
             onOrderSample={() => openSampleModal('Baccarat Rouge 540, Maison Francis Kurkdjian')}
             onSourceBottle={() => openSourceModal('Baccarat Rouge 540, Maison Francis Kurkdjian')}

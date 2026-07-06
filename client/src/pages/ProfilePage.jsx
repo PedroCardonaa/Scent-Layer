@@ -10,7 +10,7 @@ import { useThinkingStages } from '../hooks/useThinkingStages.js';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
 import { trackEvent } from '../lib/analytics.js';
-import { getFragranceImage } from '../lib/fragrance-images.js';
+import { ScentTile } from '../components/ScentTile.jsx';
 import { FROM_PRICE_CENTS, formatMoney } from '../lib/pricing.js';
 
 function ReferralBlock({ showToast }) {
@@ -276,7 +276,7 @@ function WishlistPanel({ fragrances, wishlistIds, toggleWishlist, openSampleModa
           {items.map((p) => (
             <article key={p.id} className="wl-card">
               <Link to={`/fragrance/${p.id}`} className="wl-card-thumb" aria-label={`Open ${p.name}`}>
-                <img src={getFragranceImage(p)} alt={`${p.name} by ${p.brand}`} loading="lazy" />
+                <ScentTile fragrance={p} />
                 <button
                   type="button"
                   className="wl-card-heart"

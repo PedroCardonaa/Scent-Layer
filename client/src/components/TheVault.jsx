@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext.jsx';
-import { getFragranceImage } from '../lib/fragrance-images.js';
+import { ScentTile } from './ScentTile.jsx';
 
 /**
  * The Vault, a horizontal scroller of hand-picked editor favorites with
@@ -44,7 +44,7 @@ export function TheVault() {
         {picks.map(({ id, take, fragrance: f }) => (
           <article key={id} className="vault-card">
             <Link to={`/fragrance/${id}`} className="vault-card-thumb" aria-label={`Open ${f.name}`}>
-              <img src={getFragranceImage(f)} alt={`${f.name} by ${f.brand}`} loading="lazy" />
+              <ScentTile fragrance={f} />
             </Link>
             <div className="vault-card-body">
               <p className="vault-card-brand">{f.brand}</p>

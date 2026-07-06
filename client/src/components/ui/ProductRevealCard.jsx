@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { ShoppingCart } from 'lucide-react';
 import { buttonVariants } from './Button.jsx';
+import { ScentTile } from '../ScentTile.jsx';
 import { cn } from '../../lib/cn.js';
 
 /**
@@ -80,15 +81,26 @@ export function ProductRevealCard({
         className,
       )}
     >
-      {/* Image */}
+      {/* Visual: photo when provided, ScentTile placeholder otherwise
+          (product photography is removed in the commerce restyle). */}
       <div className="relative overflow-hidden">
-        <motion.img
-          src={image}
-          alt={fragrance.name}
-          className="h-72 w-full object-cover"
-          variants={imageVariants}
-          transition={{ type: 'spring', stiffness: 280, damping: 30 }}
-        />
+        {image ? (
+          <motion.img
+            src={image}
+            alt={fragrance.name}
+            className="h-72 w-full object-cover"
+            variants={imageVariants}
+            transition={{ type: 'spring', stiffness: 280, damping: 30 }}
+          />
+        ) : (
+          <motion.div
+            className="h-72 w-full"
+            variants={imageVariants}
+            transition={{ type: 'spring', stiffness: 280, damping: 30 }}
+          >
+            <ScentTile fragrance={fragrance} showInitial={false} />
+          </motion.div>
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-deep2/80 via-deep2/10 to-transparent" />
 
         {/* Brand badge */}

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext.jsx';
-import { getFragranceImage } from '../lib/fragrance-images.js';
+import { ScentTile } from './ScentTile.jsx';
 
 /**
  * Today's Edit, one editorial pick rotating per day. Deterministic
@@ -67,12 +67,7 @@ export function TodaysEdit() {
     <section className="todays-edit" aria-label="Today's Edit">
       <div className="todays-edit-inner">
         <div className="todays-edit-image">
-          <img
-            src={getFragranceImage(f)}
-            alt={`${f.name} by ${f.brand}`}
-            loading="lazy"
-            decoding="async"
-          />
+          <ScentTile fragrance={f} />
         </div>
         <div className="todays-edit-body">
           <p className="todays-edit-eyebrow">Today's Edit, {opener}</p>

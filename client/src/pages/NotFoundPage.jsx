@@ -4,7 +4,7 @@ import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useDocumentMeta } from '../lib/seo.js';
-import { getFragranceImage } from '../lib/fragrance-images.js';
+import { ScentTile } from '../components/ScentTile.jsx';
 import { trackEvent } from '../lib/analytics.js';
 
 /**
@@ -70,12 +70,9 @@ export function NotFoundPage() {
           <aside className="notfound-pick">
             <p className="notfound-pick-label">Or start here, picked for you</p>
             <Link to={`/fragrance/${pick.id}`} className="notfound-pick-card">
-              <img
-                className="notfound-pick-img"
-                src={getFragranceImage(pick)}
-                alt={`${pick.name} by ${pick.brand}`}
-                loading="lazy"
-              />
+              <div className="notfound-pick-img">
+                <ScentTile fragrance={pick} showInitial={false} />
+              </div>
               <div className="notfound-pick-info">
                 <p className="notfound-pick-brand">{pick.brand}</p>
                 <h3 className="notfound-pick-name">{pick.name}</h3>
