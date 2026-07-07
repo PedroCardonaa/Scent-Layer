@@ -262,12 +262,24 @@ body.dark .shop-toolbar-sort select { background-color: var(--deep); color: var(
 .product-img .scent-tile svg { width: 34%; height: auto; }
 
 /* ── Inputs ─────────────────────────────────────────────────────── */
+/* Several of these sit inside dark sections whose legacy styles gave
+   them cream text + faint white placeholders. The commerce restyle
+   made every input white, so force readable ink text and a visible
+   gray placeholder no matter which section the input lives in. */
 .modal-input, .similar-input, .fotm-input, .newsletter-strip-input,
 .save-blend-input, .auth-input, .waitlist-input {
   background: #fff;
   border: 1px solid var(--hairline);
   border-radius: var(--r-xs);
   font-size: 0.9rem;
+  color: var(--ink);
+}
+.modal-input::placeholder, .similar-input::placeholder,
+.fotm-input::placeholder, .newsletter-strip-input::placeholder,
+.save-blend-input::placeholder, .auth-input::placeholder,
+.waitlist-input::placeholder {
+  color: #8a9099;
+  opacity: 1;   /* Firefox dims placeholders by default */
 }
 .modal-input:focus, .similar-input:focus, .fotm-input:focus,
 .save-blend-input:focus, .auth-input:focus, .waitlist-input:focus {
