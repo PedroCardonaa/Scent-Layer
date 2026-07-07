@@ -12,9 +12,17 @@ const SAMPLE_SIZES = [
 ];
 
 export function SampleModal() {
-  const { sampleModal, closeSampleModal, openSourceModal, showToast } = useApp();
+  const { sampleModal, closeSampleModal, openSourceModal, showToast, fragrances } = useApp();
   const { open, prefill } = sampleModal;
   const overlayRef = useRef(null);
+
+  // Resolve the prefill label ("Name, Brand") back to a catalog entry
+  // so the size buttons show that fragrance's real per-ml pricing.
+  // Free-text requests (fragrances we don't list) fall back to the
+  // flat estimate table inside unitPriceCents.
+  const matched = prefill
+    ? fragrances.find(f => `${f.name}, ${f.brand}` === prefill)
+    : null;
 
   const [form, setForm] = useState({ name: '', email: '', perfume: '', message: '' });
   const [size, setSize] = useState('5ml');
@@ -87,7 +95,7 @@ export function SampleModal() {
               onClick={() => setSize(s.ml)}
             >
               <span className="sample-size-ml">{s.ml}</span>
-              <span className="sample-size-price">{formatMoney(unitPriceCents(s.ml))}</span>
+              <span className="sample-size-price">{formatMoney(unitPriceCents(s.ml, matched?.id))}</span>
               <span className="sample-size-sprays">{s.label}</span>
               <span className="sample-size-desc">{s.desc}</span>
             </button>
@@ -99,9 +107,13 @@ export function SampleModal() {
         <input className="modal-input" placeholder="Fragrance name & brand" value={form.perfume} onChange={(e) => setForm(f => ({ ...f, perfume: e.target.value }))} />
         <textarea className="modal-textarea" placeholder="Anything else? (concentration preference, multiple sizes, etc.)" value={form.message} onChange={(e) => setForm(f => ({ ...f, message: e.target.value }))} />
         <button className="modal-submit" onClick={submit} disabled={submitting} type="button">
-          {submitting ? 'Sending…' : `Order ${size} Sample · ${formatMoney(unitPriceCents(size))}`}
+          {submitting ? 'Sending…' : `Order ${size} Sample · ${formatMoney(unitPriceCents(size, matched?.id))}`}
         </button>
-        <p className="modal-note">We'll confirm your order and ship times within 24 hours.</p>
+        <p className="modal-note">
+          {matched
+            ? 'We\'ll confirm your order and ship times within 24 hours.'
+            : 'Prices shown are estimates for unlisted fragrances — we\'ll confirm the exact price before anything is charged.'}
+        </p>
         <button type="button" className="modal-switch" onClick={switchToBottle}>
           Or source a full bottle →
         </button>

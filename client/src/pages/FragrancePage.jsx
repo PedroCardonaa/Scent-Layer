@@ -177,7 +177,7 @@ export function FragrancePage() {
                   onClick={() => setSize(s)}
                   aria-pressed={size === s}
                 >
-                  {s} · {formatMoney(unitPriceCents(s))}
+                  {s} · {formatMoney(unitPriceCents(s, fragrance.id))}
                 </button>
               ))}
             </div>
@@ -193,7 +193,7 @@ export function FragrancePage() {
                 openCart();
               }}
             >
-              Add {size} to Cart · {formatMoney(unitPriceCents(size))}
+              Add {size} to Cart · {formatMoney(unitPriceCents(size, fragrance.id))}
             </button>
             <button
               type="button"

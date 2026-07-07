@@ -145,7 +145,7 @@ export function CartDrawer() {
             <ul className="cart-items">
               {cartItems.map(it => {
                 const frag = fragrances.find(f => f.id === it.fragranceId);
-                const lineCents = unitPriceCents(it.size) * it.qty;
+                const lineCents = unitPriceCents(it.size, it.fragranceId) * it.qty;
                 return (
                   <li key={it.id} className="cart-item">
                     <div className="cart-item-thumb">

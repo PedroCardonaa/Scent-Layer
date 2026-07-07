@@ -11,7 +11,7 @@ import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
 import { trackEvent } from '../lib/analytics.js';
 import { ScentTile } from '../components/ScentTile.jsx';
-import { FROM_PRICE_CENTS, formatMoney } from '../lib/pricing.js';
+import { fromPriceCents, formatMoney } from '../lib/pricing.js';
 
 function ReferralBlock({ showToast }) {
   const { user } = useApp();
@@ -290,7 +290,7 @@ function WishlistPanel({ fragrances, wishlistIds, toggleWishlist, openSampleModa
                   <p className="wl-card-brand">{p.brand}</p>
                   <p className="wl-card-name">{p.name}</p>
                 </Link>
-                <p className="wl-card-price">from {formatMoney(FROM_PRICE_CENTS)}</p>
+                <p className="wl-card-price">from {formatMoney(fromPriceCents(p.id))}</p>
                 <div className="wl-card-actions">
                   <button type="button" className="wl-card-add" onClick={() => quickAdd(p)}>Add 5ml</button>
                   <button type="button" className="wl-card-sample" onClick={() => openSampleModal(`${p.name}, ${p.brand}`)}>Other sizes</button>

@@ -51,7 +51,7 @@ router.post('/checkout', optionalAuth, async (req, res, next) => {
       quantity: it.qty,
       price_data: {
         currency: 'usd',
-        unit_amount: unitPriceFor(it.size),
+        unit_amount: unitPriceFor(it.size, it.fragranceId),
         product_data: {
           name: `${it.name} (${it.size}) , Gift for ${body.recipientName}`,
           description: it.brand,
