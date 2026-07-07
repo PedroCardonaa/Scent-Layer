@@ -8,7 +8,6 @@ import { HeroBottle, SotwBottle } from '../components/BottleSvg.jsx';
 import { NewsletterStrip } from '../components/NewsletterStrip.jsx';
 import { ExitIntentModal } from '../components/ExitIntentModal.jsx';
 import { Marquee } from '../components/ui/Marquee.jsx';
-import { BorderBeam } from '../components/ui/BorderBeam.jsx';
 import { ProductRevealCard } from '../components/ui/ProductRevealCard.jsx';
 import { GlowCard } from '../components/ui/GlowCard.jsx';
 import { QuizMatchCard } from '../components/QuizMatchCard.jsx';
@@ -216,8 +215,6 @@ export function HomePage() {
               <div className="fotm-card-row"><span>Retail price</span><span className="fotm-strike">$295</span></div>
               <div className="fotm-card-row"><span>Member price</span><span className="fotm-price">Members only</span></div>
               <div className="fotm-card-footer">Join the waitlist to unlock pricing</div>
-              <BorderBeam size={300} duration={10} colorFrom="#c9a96e" colorTo="#e8d5a8" />
-              <BorderBeam size={300} duration={10} delay={5} colorFrom="#e8d5a8" colorTo="#c9a96e" />
             </div>
           </div>
         </div>

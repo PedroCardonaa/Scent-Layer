@@ -3,7 +3,6 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ShoppingBag } from 'lucide-react';
 import { useApp } from '../context/AppContext.jsx';
 import { ToggleTheme } from './ui/ToggleTheme.jsx';
-import { ToggleSound } from './ui/ToggleSound.jsx';
 import { NavWordmark } from './NavWordmark.jsx';
 
 /**
@@ -49,7 +48,6 @@ export function Nav({ theme: themeOverride, children }) {
             <span className="nav-search-label">Search</span>
             <span className="nav-search-kbd">⌘K</span>
           </button>
-          <ToggleSound />
           <ToggleTheme />
           <button type="button" className="nav-cart" onClick={openCart} aria-label={`Cart (${cartCount} items)`}>
             <ShoppingBag size={16} strokeWidth={1.5} />
