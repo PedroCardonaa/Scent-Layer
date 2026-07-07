@@ -14,6 +14,7 @@ import { SearchPalette } from './components/SearchPalette.jsx';
 import { ErrorBoundary } from './components/ErrorBoundary.jsx';
 import { ApiStatusBanner } from './components/ApiStatusBanner.jsx';
 import { MiniCartBar } from './components/MiniCartBar.jsx';
+import { PromoBar } from './components/PromoBar.jsx';
 import { captureRefFromUrl } from './lib/referral.js';
 import { trackPageView } from './lib/analytics.js';
 
@@ -37,6 +38,9 @@ const LoginPage    = lazy(() => import('./pages/LoginPage.jsx').then(m => ({ def
 const SignupPage   = lazy(() => import('./pages/SignupPage.jsx').then(m => ({ default: m.SignupPage })));
 const PrivacyPage  = lazy(() => import('./pages/LegalPage.jsx').then(m => ({ default: m.PrivacyPage })));
 const TermsPage    = lazy(() => import('./pages/LegalPage.jsx').then(m => ({ default: m.TermsPage })));
+const ShippingPage = lazy(() => import('./pages/InfoPage.jsx').then(m => ({ default: m.ShippingPage })));
+const FAQPage      = lazy(() => import('./pages/InfoPage.jsx').then(m => ({ default: m.FAQPage })));
+const SharedWishlistPage = lazy(() => import('./pages/SharedWishlistPage.jsx').then(m => ({ default: m.SharedWishlistPage })));
 
 // About page pulls in GSAP for the parallax hero, lazy-load so it
 // doesn't ship with the initial bundle.
@@ -130,6 +134,9 @@ function AnimatedRoutes() {
           <Route path="/story" element={<StoryPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
+          <Route path="/shipping" element={<ShippingPage />} />
+          <Route path="/faq" element={<FAQPage />} />
+          <Route path="/wishlist/shared" element={<SharedWishlistPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           {/* Catch-all 404, must be last so explicit routes win */}
@@ -156,6 +163,7 @@ export default function App() {
 
   return (
     <AppProvider>
+      <PromoBar />
       <ApiStatusBanner />
       <ReadingProgress />
       <RefCapture />

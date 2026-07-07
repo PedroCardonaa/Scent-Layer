@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
 import { trackEvent } from '../lib/analytics.js';
 import { ScentTile } from './ScentTile.jsx';
-import { unitPriceCents, cartSubtotalCents, formatMoney } from '../lib/pricing.js';
+import { unitPriceCents, cartSubtotalCents, formatMoney, FREE_SHIPPING_THRESHOLD_CENTS, SHIPPING_FLAT_CENTS } from '../lib/pricing.js';
 
 /**
  * Cart drawer slides in from the right. Two stages within the same panel:
@@ -16,8 +16,9 @@ import { unitPriceCents, cartSubtotalCents, formatMoney } from '../lib/pricing.j
  * into the line items and the total line lights up automatically.
  */
 export function CartDrawer() {
-  const { cartItems, cartOpen, closeCart, updateCartQty, removeFromCart, clearCart, showToast, user, fragrances } = useApp();
+  const { cartItems, cartOpen, closeCart, updateCartQty, removeFromCart, clearCart, showToast, user, fragrances, addToCart } = useApp();
   const [stage, setStage] = useState('browse');
+  const [pairs, setPairs] = useState([]);
   const [form, setForm] = useState({
     name: user?.email?.split('@')[0] ?? '',
     email: user?.email ?? '',
@@ -46,6 +47,29 @@ export function CartDrawer() {
 
   const totalUnits = cartItems.reduce((s, i) => s + i.qty, 0);
   const subtotalCents = cartSubtotalCents(cartItems);
+
+  // Cross-sell: "pairs well with" picks for the first cart item, from
+  // the same layer-with data the fragrance pages use (cached server-
+  // side). Items already in the cart are filtered out; silent no-op
+  // when the API is down.
+  useEffect(() => {
+    const first = cartItems[0];
+    if (!cartOpen || !first?.fragranceId) { setPairs([]); return; }
+    let cancelled = false;
+    api(`/api/layer-with/${first.fragranceId}`)
+      .then(d => {
+        if (cancelled || !Array.isArray(d?.partners)) return;
+        const inCart = new Set(cartItems.map(it => it.fragranceId));
+        setPairs(d.partners.filter(p => !inCart.has(p.id)).slice(0, 2));
+      })
+      .catch(() => { if (!cancelled) setPairs([]); });
+    return () => { cancelled = true; };
+  }, [cartOpen, cartItems]);
+
+  function addPair(p) {
+    addToCart({ fragranceId: p.id, name: p.name, brand: p.brand ?? '', size: '5ml', qty: 1 });
+    showToast(`<span>Added</span> 5ml of ${p.name}`);
+  }
 
   async function placeOrder() {
     if (cartItems.length === 0) return;
@@ -173,12 +197,54 @@ export function CartDrawer() {
                 );
               })}
             </ul>
+
+            {/* Cross-sell row */}
+            {pairs.length > 0 && (
+              <div className="cart-pairs">
+                <p className="cart-pairs-label">Pairs well with</p>
+                {pairs.map(p => {
+                  const frag = fragrances.find(f => f.id === p.id);
+                  return (
+                    <div key={p.id} className="cart-pair">
+                      <div className="cart-pair-thumb">
+                        <ScentTile fragrance={frag || p} showInitial={false} />
+                      </div>
+                      <div className="cart-pair-info">
+                        <p className="cart-pair-name">{p.name}</p>
+                        <p className="cart-pair-why">{p.match || p.why || p.brand}</p>
+                      </div>
+                      <button type="button" className="cart-pair-add" onClick={() => addPair(p)}>
+                        +5ml · {formatMoney(unitPriceCents('5ml', p.id))}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
             <footer className="cart-foot">
+              {/* Free-shipping progress nudge */}
+              {subtotalCents >= FREE_SHIPPING_THRESHOLD_CENTS ? (
+                <p className="cart-ship-nudge unlocked">✓ Free US shipping unlocked</p>
+              ) : (
+                <>
+                  <p className="cart-ship-nudge">
+                    You're <strong>{formatMoney(FREE_SHIPPING_THRESHOLD_CENTS - subtotalCents)}</strong> away from free US shipping
+                  </p>
+                  <div className="cart-ship-track" aria-hidden="true">
+                    <span className="cart-ship-fill" style={{ width: `${Math.min(100, (subtotalCents / FREE_SHIPPING_THRESHOLD_CENTS) * 100)}%` }} />
+                  </div>
+                </>
+              )}
               <div className="cart-summary">
                 <span>Subtotal</span>
                 <span className="cart-summary-val">{formatMoney(subtotalCents)}</span>
               </div>
-              <p className="cart-foot-note">Shipping calculated at checkout. Secure payment via Stripe.</p>
+              <p className="cart-foot-note">
+                {subtotalCents >= FREE_SHIPPING_THRESHOLD_CENTS
+                  ? 'Free standard shipping. Secure payment via Stripe.'
+                  : `Standard shipping ${formatMoney(SHIPPING_FLAT_CENTS)}, free over ${formatMoney(FREE_SHIPPING_THRESHOLD_CENTS)}. Secure payment via Stripe.`}
+              </p>
               <button type="button" className="cart-checkout-btn" onClick={() => setStage('checkout')}>
                 Checkout · {formatMoney(subtotalCents)}
               </button>

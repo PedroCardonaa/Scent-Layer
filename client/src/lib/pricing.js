@@ -117,6 +117,12 @@ export function fromPriceCents(fragranceId) {
 // Generic minimum, for copy in contexts with no specific fragrance.
 export const FROM_PRICE_CENTS = Math.min(...Object.values(SAMPLE_PRICES_CENTS));
 
+// ── Shipping ──────────────────────────────────────────────────────
+// Mirrors server/src/services/stripe.js. Orders at or above the
+// threshold ship free (US); below it a flat standard rate applies.
+export const FREE_SHIPPING_THRESHOLD_CENTS = 5000;
+export const SHIPPING_FLAT_CENTS = 595;
+
 export function formatMoney(cents, currency = 'USD') {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',

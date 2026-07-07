@@ -6,7 +6,12 @@ const router = Router();
 
 const schema = z.object({
   email: z.string().email().max(200),
-  type: z.enum(['fotm', 'referral', 'general']),
+  // Fixed buckets plus per-fragrance alert signups ("fragrance-<id>",
+  // used by the restock/price-alert capture on fragrance pages).
+  type: z.union([
+    z.enum(['fotm', 'referral', 'general']),
+    z.string().regex(/^fragrance-\d{1,6}$/),
+  ]),
 });
 
 router.post('/', async (req, res, next) => {

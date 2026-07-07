@@ -7,8 +7,9 @@ import { fromPriceCents, formatMoney } from '../lib/pricing.js';
 import { useLongPress } from '../hooks/useLongPress.js';
 
 export function ProductCard({ fragrance: p }) {
-  const { wishlistIds, toggleWishlist, openSampleModal, openSourceModal, addToCart, openCart, showToast } = useApp();
+  const { wishlistIds, toggleWishlist, openSampleModal, openSourceModal, addToCart, openCart, showToast, reviewSummary } = useApp();
   const saved = wishlistIds.includes(p.id);
+  const rating = reviewSummary?.[p.id];
   const label = `${p.name}, ${p.brand}`;
   const detailHref = `/fragrance/${p.id}`;
 
@@ -97,6 +98,12 @@ export function ProductCard({ fragrance: p }) {
         <div className="product-info">
           <p className="product-brand">{p.brand}</p>
           <h3 className="product-name">{p.name}</h3>
+          {rating && rating.count > 0 && (
+            <p className="product-rating" aria-label={`Rated ${rating.avg} out of 5 by ${rating.count} wearers`}>
+              <span className="product-rating-star" aria-hidden="true">★</span>
+              {rating.avg} <span className="product-rating-count">({rating.count})</span>
+            </p>
+          )}
           <p className="product-price">from {formatMoney(fromPriceCents(p.id))}</p>
           <p className="product-notes-preview">{p.top}</p>
           <div className="product-footer">

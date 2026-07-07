@@ -98,6 +98,31 @@ export const SAMPLE_PRICES_CENTS = {
   '30ml': 5500,
 };
 
+// ── Shipping ──────────────────────────────────────────────────────
+// Mirrors client/src/lib/pricing.js. Orders at or above the threshold
+// ship free (US); below it a flat standard rate applies.
+export const FREE_SHIPPING_THRESHOLD_CENTS = 5000;
+export const SHIPPING_FLAT_CENTS = 595;
+
+/**
+ * Stripe shipping_options for a given subtotal: free at/above the
+ * threshold, flat standard rate below it.
+ */
+export function shippingOptionsFor(subtotalCents) {
+  const free = subtotalCents >= FREE_SHIPPING_THRESHOLD_CENTS;
+  return [{
+    shipping_rate_data: {
+      display_name: free ? 'Standard (free over $50)' : 'Standard',
+      type: 'fixed_amount',
+      fixed_amount: { amount: free ? 0 : SHIPPING_FLAT_CENTS, currency: 'usd' },
+      delivery_estimate: {
+        minimum: { unit: 'business_day', value: 3 },
+        maximum: { unit: 'business_day', value: 7 },
+      },
+    },
+  }];
+}
+
 /**
  * Unit price (cents) for a cart line item. Per-fragrance when the
  * fragranceId is in the table, flat fallback otherwise.

@@ -12,6 +12,7 @@ import { api } from '../lib/api.js';
 import { trackEvent } from '../lib/analytics.js';
 import { ScentTile } from '../components/ScentTile.jsx';
 import { fromPriceCents, formatMoney } from '../lib/pricing.js';
+import { shareOrCopy } from '../lib/share.js';
 
 function ReferralBlock({ showToast }) {
   const { user } = useApp();
@@ -150,6 +151,7 @@ const QUESTIONS = [
 
 const TABS = [
   { key: 'wishlist',    label: 'Wishlist' },
+  { key: 'orders',      label: 'Orders' },
   { key: 'wardrobe',    label: 'My Wardrobe' },
   { key: 'blends',      label: 'My Blends' },
   { key: 'reviews',     label: 'My Reviews' },
@@ -230,6 +232,7 @@ export function ProfilePage() {
           />
         )}
 
+        {tab === 'orders'      && <OrdersPanel />}
         {tab === 'wardrobe'    && <WardrobePanel />}
         {tab === 'blends'      && <BlendsPanel />}
         {tab === 'reviews'     && <ReviewsPanel openSampleModal={openSampleModal} />}
@@ -248,6 +251,67 @@ export function ProfilePage() {
   );
 }
 
+// ─── ORDERS PANEL ───────────────────────────────────────────────────
+function OrdersPanel() {
+  const [orders, setOrders] = useState(null);   // null = loading
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    api('/api/payments/orders', { auth: true })
+      .then(d => setOrders(d.orders ?? []))
+      .catch(e => { setError(e.message); setOrders([]); });
+  }, []);
+
+  return (
+    <div className="profile-panel">
+      <p className="profile-panel-label">Order History</p>
+      <h2 className="profile-panel-title">My Orders</h2>
+      <p className="profile-panel-sub">Every sample order placed with this account.</p>
+
+      {orders === null ? (
+        <p className="orders-loading">Loading orders…</p>
+      ) : orders.length === 0 ? (
+        <div className="wishlist-empty">
+          <div className="wishlist-empty-icon">◇</div>
+          <p className="wishlist-empty-text">{error ? 'Could not load orders' : 'No orders yet'}</p>
+          <p className="wishlist-empty-sub">
+            {error ? 'Try again in a minute.' : 'Your samples will show up here once you check out.'}
+          </p>
+          {!error && <Link to="/shop" className="btn-dark" style={{ marginTop: 20, display: 'inline-block' }}>Browse the catalog</Link>}
+        </div>
+      ) : (
+        <ul className="orders-list">
+          {orders.map(o => {
+            const items = Array.isArray(o.items) ? o.items : [];
+            const units = items.reduce((s, it) => s + (it.qty || 1), 0);
+            return (
+              <li key={o.id} className="order-card">
+                <div className="order-card-head">
+                  <span className="order-card-date">
+                    {new Date(o.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                  </span>
+                  <span className={`order-card-status ${o.status}`}>{o.status}</span>
+                </div>
+                <ul className="order-card-items">
+                  {items.map((it, i) => (
+                    <li key={i}>
+                      {it.qty > 1 ? `${it.qty}× ` : ''}{it.name} <span className="order-card-size">({it.size})</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="order-card-foot">
+                  <span>{units} item{units !== 1 ? 's' : ''}</span>
+                  <strong>{formatMoney(o.amountTotal)}</strong>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 // ─── WISHLIST PANEL ─────────────────────────────────────────────────
 function WishlistPanel({ fragrances, wishlistIds, toggleWishlist, openSampleModal }) {
   const { addToCart, openCart, showToast } = useApp();
@@ -259,11 +323,28 @@ function WishlistPanel({ fragrances, wishlistIds, toggleWishlist, openSampleModa
     openCart();
   }
 
+  async function shareWishlist() {
+    const url = `${window.location.origin}/wishlist/shared?ids=${wishlistIds.join(',')}`;
+    const r = await shareOrCopy({
+      title: 'My Scent Layer wishlist',
+      text: `${items.length} fragrances I want to try`,
+      url,
+    });
+    if (r === 'copied') showToast('<span>Wishlist link copied.</span> Send it to whoever buys your gifts.');
+    if (r === 'shared') showToast('<span>Shared.</span>');
+    if (r === 'error')  showToast('Could not share');
+  }
+
   return (
     <div className="profile-panel">
       <p className="profile-panel-label">Saved Fragrances</p>
       <h2 className="profile-panel-title">My Wishlist</h2>
       <p className="profile-panel-sub">Everything you've saved, ready to sample. Add to cart in a tap.</p>
+      {items.length > 0 && (
+        <button type="button" className="wl-share-btn" onClick={shareWishlist}>
+          Share this wishlist →
+        </button>
+      )}
       {items.length === 0 ? (
         <div className="wishlist-empty">
           <div className="wishlist-empty-icon">♡</div>

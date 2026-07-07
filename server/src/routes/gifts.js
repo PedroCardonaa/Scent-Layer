@@ -2,7 +2,7 @@ import { Router } from 'express';
 import express from 'express';
 import { z } from 'zod';
 import { prisma } from '../db.js';
-import { stripe, unitPriceFor, STRIPE_WEBHOOK_SECRET } from '../services/stripe.js';
+import { stripe, unitPriceFor, shippingOptionsFor, STRIPE_WEBHOOK_SECRET } from '../services/stripe.js';
 import { optionalAuth } from '../middleware/auth.js';
 import { sendEmail } from '../services/email.js';
 
@@ -60,11 +60,15 @@ router.post('/checkout', optionalAuth, async (req, res, next) => {
       },
     }));
 
+    const giftSubtotalCents = body.items.reduce(
+      (sum, it) => sum + unitPriceFor(it.size, it.fragranceId) * it.qty, 0);
+
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       payment_method_types: ['card'],
       line_items,
       shipping_address_collection: { allowed_countries: ['US', 'CA', 'GB', 'AU', 'NZ', 'IE'] },
+      shipping_options: shippingOptionsFor(giftSubtotalCents),
       customer_email: body.senderEmail,
       metadata: {
         kind: 'gift',

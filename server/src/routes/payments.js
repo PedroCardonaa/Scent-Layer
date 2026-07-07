@@ -2,8 +2,8 @@ import { Router } from 'express';
 import express from 'express';
 import { z } from 'zod';
 import { prisma } from '../db.js';
-import { stripe, unitPriceFor, STRIPE_WEBHOOK_SECRET } from '../services/stripe.js';
-import { optionalAuth } from '../middleware/auth.js';
+import { stripe, unitPriceFor, shippingOptionsFor, STRIPE_WEBHOOK_SECRET } from '../services/stripe.js';
+import { optionalAuth, requireAuth } from '../middleware/auth.js';
 import { sendOrderConfirmation } from '../services/emails.js';
 
 const router = Router();
@@ -60,12 +60,18 @@ router.post('/checkout', optionalAuth, async (req, res, next) => {
       } catch { /* silent, checkout still proceeds at full price */ }
     }
 
+    // Free shipping at/above the threshold, flat rate below. Computed
+    // from the same per-fragrance prices as the line items.
+    const subtotalCents = items.reduce(
+      (sum, it) => sum + unitPriceFor(it.size, it.fragranceId) * it.qty, 0);
+
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       payment_method_types: ['card'],
       line_items,
       // Collect shipping during checkout so we don't need our own form.
       shipping_address_collection: { allowed_countries: ['US', 'CA', 'GB', 'AU', 'NZ', 'IE'] },
+      shipping_options: shippingOptionsFor(subtotalCents),
       // Stripe Tax pulls per-jurisdiction rates if enabled in the dashboard.
       automatic_tax: { enabled: false },
       // Either pre-applied promo code (from a referral landing) OR
@@ -83,6 +89,25 @@ router.post('/checkout', optionalAuth, async (req, res, next) => {
     });
 
     res.json({ url: session.url, id: session.id });
+  } catch (err) { next(err); }
+});
+
+/**
+ * GET /api/payments/orders
+ * Auth required. The signed-in user's order history, newest first.
+ * Items ship as the JSON cart snapshot stored by the webhook.
+ */
+router.get('/orders', requireAuth, async (req, res, next) => {
+  try {
+    const orders = await prisma.order.findMany({
+      where: { userId: req.userId },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true, createdAt: true, amountTotal: true,
+        currency: true, status: true, items: true,
+      },
+    });
+    res.json({ orders });
   } catch (err) { next(err); }
 });
 

@@ -344,6 +344,210 @@ body.dark .shop-toolbar-sort select { background-color: var(--deep); color: var(
   .hero { padding: 120px 20px 56px; }
 }
 
+/* ── Promo bar: thin strip pinned above the nav ─────────────────── */
+.promo-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 34px;
+  z-index: 310;               /* just above the nav (300) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
+}
+.promo-bar-text strong { color: var(--gold-light); font-weight: 700; }
+.promo-bar-x {
+  position: absolute;
+  right: 14px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.75rem;
+  padding: 4px 6px;
+}
+.promo-bar-x:hover { color: #fff; }
+/* The bar publishes --promo-h; nav and page content shift together. */
+nav.light, nav.dark { top: var(--promo-h, 0px); }
+body { padding-top: var(--promo-h, 0px); }
+
+/* ── Cart: free-shipping nudge + cross-sell ─────────────────────── */
+.cart-ship-nudge {
+  font-size: 0.8rem;
+  color: var(--fg-soft);
+  margin-bottom: 8px;
+}
+.cart-ship-nudge strong { color: var(--fg); }
+.cart-ship-nudge.unlocked { color: var(--green); font-weight: 600; }
+.cart-ship-track {
+  height: 4px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.cart-ship-fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: var(--gold);
+  transition: width 0.4s var(--ease-out);
+}
+.cart-pairs {
+  padding: 14px 24px 6px;
+  border-top: 1px solid var(--hairline);
+}
+.cart-pairs-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--fg-dim);
+  margin-bottom: 10px;
+}
+.cart-pair {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+}
+.cart-pair-thumb {
+  width: 44px; height: 44px;
+  flex-shrink: 0;
+  border-radius: var(--r-xs);
+  overflow: hidden;
+}
+.cart-pair-info { flex: 1; min-width: 0; }
+.cart-pair-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cart-pair-why {
+  font-size: 0.7rem;
+  color: var(--fg-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cart-pair-add {
+  flex-shrink: 0;
+  padding: 7px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-pill);
+  background: #fff;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--fg);
+  white-space: nowrap;
+}
+.cart-pair-add:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ── Star ratings ───────────────────────────────────────────────── */
+.product-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--fg);
+  margin: 2px 0;
+}
+.product-rating-star { color: #f5a623; font-size: 0.85rem; }
+.product-rating-count { font-weight: 400; color: var(--fg-dim); }
+
+/* ── Orders panel ───────────────────────────────────────────────── */
+.orders-loading { color: var(--fg-soft); font-size: 0.88rem; padding: 24px 0; }
+.orders-list { list-style: none; display: grid; gap: 14px; margin-top: 18px; }
+.order-card {
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-sm);
+  padding: 16px 18px;
+  background: #fff;
+}
+.order-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.order-card-date { font-size: 0.82rem; font-weight: 600; }
+.order-card-status {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: rgba(29,138,78,0.1);
+  color: var(--green);
+}
+.order-card-items { list-style: none; font-size: 0.82rem; color: var(--fg-soft); display: grid; gap: 3px; }
+.order-card-size { color: var(--fg-dim); }
+.order-card-foot {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--hairline);
+  font-size: 0.84rem;
+  color: var(--fg-soft);
+}
+.order-card-foot strong { color: var(--fg); font-size: 0.92rem; }
+
+/* ── Wishlist share + shared page ───────────────────────────────── */
+.wl-share-btn {
+  margin: 4px 0 18px;
+  padding: 9px 16px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-pill);
+  background: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--fg);
+}
+.wl-share-btn:hover { border-color: var(--gold); color: var(--gold); }
+.shared-wl { padding: 120px 24px 80px; max-width: 1280px; margin: 0 auto; }
+.shared-wl-head { text-align: center; margin-bottom: 40px; }
+.shared-wl-eyebrow { font-size: 0.8rem; font-weight: 600; color: var(--gold); margin-bottom: 10px; }
+.shared-wl-title { font-size: clamp(1.6rem, 3vw, 2.4rem); margin-bottom: 10px; }
+.shared-wl-sub { color: var(--fg-soft); font-size: 0.92rem; }
+
+/* ── Fragrance alerts capture ───────────────────────────────────── */
+.frag-alerts {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.frag-alerts.done { color: var(--green); font-size: 0.82rem; font-weight: 600; }
+.frag-alerts-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 14px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-xs);
+  background: #fff;
+  font-size: 0.84rem;
+  font-family: 'Inter', sans-serif;
+}
+.frag-alerts-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(31,94,255,0.12); outline: none; }
+.frag-alerts-btn {
+  padding: 10px 16px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-pill);
+  background: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--fg);
+  white-space: nowrap;
+}
+.frag-alerts-btn:hover { border-color: var(--gold); color: var(--gold); }
+.frag-alerts-btn:disabled { opacity: 0.6; }
+
 /* ── Dark theme: neutral charcoal commerce ──────────────────────── */
 body.dark .filter-pill { background: var(--deep); color: var(--cream); }
 body.dark .filter-pill.active, body.dark .filter-pill:hover { background: var(--cream); border-color: var(--cream); color: var(--ink); }
@@ -356,3 +560,20 @@ body.dark .modal-input, body.dark .auth-input, body.dark .fotm-input { backgroun
 body.dark .btn-dark, body.dark .fotm-btn, body.dark .waitlist-btn { background: var(--gold); }
 body.dark .btn-dark:hover, body.dark .fotm-btn:hover, body.dark .waitlist-btn:hover { background: var(--gold-light); color: var(--ink); }
 body.dark .scent-tile-initial { color: rgba(246,247,249,0.4); }
+/* Dark-mode QA: the commerce additions that default to white surfaces */
+body.dark .promo-bar { background: var(--deep); border-bottom: 1px solid var(--hairline); }
+body.dark .order-card,
+body.dark .cart-pair-add,
+body.dark .wl-share-btn,
+body.dark .frag-alerts-input,
+body.dark .frag-alerts-btn { background: var(--deep); color: var(--cream); }
+body.dark .cart-pair-add:hover,
+body.dark .wl-share-btn:hover,
+body.dark .frag-alerts-btn:hover { color: var(--gold-light); border-color: var(--gold-light); }
+body.dark .product-rating { color: var(--cream); }
+body.dark .filter-pill { color: var(--cream); }
+body.dark .sotw-note { background: var(--deep); color: var(--cream); }
+body.dark .sample-size-price { color: var(--gold-light); }
+/* ScentTile pastels are light by design; dim them slightly on dark so
+   cards don't glare */
+body.dark .scent-tile { filter: brightness(0.88) saturate(0.9); }

@@ -42,6 +42,33 @@ router.get('/by-fragrance/:id', async (req, res, next) => {
 });
 
 /**
+ * GET /api/reviews/summary
+ * Public. One call for the whole catalog: { summaries: { [fragranceId]:
+ * { avg, count } } }. The LOVED/LIKED/CONFLICT/HATED scale maps to a
+ * 5-star average (5 / 4 / 2.5 / 1) so cards can show "★ 4.6 (12)".
+ */
+router.get('/summary', async (req, res, next) => {
+  try {
+    const rows = await prisma.review.groupBy({
+      by: ['fragranceId', 'rating'],
+      _count: { _all: true },
+    });
+    const STAR = { LOVED: 5, LIKED: 4, CONFLICT: 2.5, HATED: 1 };
+    const acc = {};
+    for (const r of rows) {
+      const a = acc[r.fragranceId] ?? (acc[r.fragranceId] = { points: 0, count: 0 });
+      a.points += (STAR[r.rating] ?? 3) * r._count._all;
+      a.count  += r._count._all;
+    }
+    const summaries = {};
+    for (const [id, a] of Object.entries(acc)) {
+      summaries[id] = { avg: Math.round((a.points / a.count) * 10) / 10, count: a.count };
+    }
+    res.json({ summaries });
+  } catch (err) { next(err); }
+});
+
+/**
  * GET /api/reviews/mine
  * Auth required. Returns every review the user has written, joined
  * with the fragrance. Used by the profile page so the user can see /

@@ -110,6 +110,15 @@ export function Footer() {
               <li><Link to="/tools">AI Tools</Link></li>
             </ul>
           </div>
+
+          <div className="footer-col">
+            <h4 className="footer-col-head">Help</h4>
+            <ul>
+              <li><Link to="/faq">FAQ</Link></li>
+              <li><Link to="/shipping">Shipping &amp; Returns</Link></li>
+              <li><a href="mailto:scentlayer@gmail.com">Contact</a></li>
+            </ul>
+          </div>
         </nav>
 
         {/* ── Wordmark divider ─────────────────────────────────────── */}

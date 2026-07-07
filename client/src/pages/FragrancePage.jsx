@@ -13,15 +13,17 @@ import { slugify, parseNotes } from '../lib/slug.js';
 import { shareOrCopy } from '../lib/share.js';
 import { ScentTile } from '../components/ScentTile.jsx';
 import { unitPriceCents, formatMoney } from '../lib/pricing.js';
+import { api } from '../lib/api.js';
 import { SchemaJsonLd, buildProductSchema, buildBreadcrumbSchema } from '../components/SchemaJsonLd.jsx';
 
 const SAMPLE_SIZES = ['2ml', '5ml', '10ml', '30ml'];
 
 export function FragrancePage() {
   const { id } = useParams();
-  const { fragrances, openSampleModal, openSourceModal, openGiftModal, toggleWishlist, wishlistIds, addToCart, openCart, showToast, markViewed, recentlyViewed } = useApp();
+  const { fragrances, openSampleModal, openSourceModal, openGiftModal, toggleWishlist, wishlistIds, addToCart, openCart, showToast, markViewed, recentlyViewed, reviewSummary } = useApp();
   const numericId = Number(id);
   const fragrance = fragrances.find(f => f.id === numericId);
+  const heroRating = reviewSummary?.[numericId];
   const [size, setSize] = useState('5ml');
   const [stickyVisible, setStickyVisible] = useState(false);
   const heroImgRef = useRef(null);
@@ -156,6 +158,15 @@ export function FragrancePage() {
             <span className="fragrance-family">{fragrance.family}</span>
             <span className="fragrance-meta-sep">·</span>
             <span className="fragrance-type">{fragrance.type}</span>
+            {heroRating && heroRating.count > 0 && (
+              <>
+                <span className="fragrance-meta-sep">·</span>
+                <span className="product-rating" aria-label={`Rated ${heroRating.avg} out of 5 by ${heroRating.count} wearers`}>
+                  <span className="product-rating-star" aria-hidden="true">★</span>
+                  {heroRating.avg} <span className="product-rating-count">({heroRating.count})</span>
+                </span>
+              </>
+            )}
           </p>
 
           <p className="fragrance-composition">{synthDescription}</p>
@@ -237,6 +248,8 @@ export function FragrancePage() {
           >
             ✦ Send as a gift
           </button>
+
+          <FragranceAlerts fragrance={fragrance} showToast={showToast} />
 
           <button
             type="button"
@@ -354,6 +367,59 @@ function NoteAct({ num, label, sub, notes }) {
           </span>
         ))}
       </p>
+    </div>
+  );
+}
+
+/**
+ * Restock / price-alert email capture. Logged-in users subscribe in
+ * one tap with their account email; guests get a small inline input.
+ * Signups land in the waitlist table typed "fragrance-<id>".
+ */
+function FragranceAlerts({ fragrance, showToast }) {
+  const { user } = useApp();
+  const [email, setEmail] = useState('');
+  const [done, setDone] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  async function subscribe(addr) {
+    if (!addr || !addr.includes('@')) { showToast('Enter a valid email'); return; }
+    setBusy(true);
+    try {
+      await api('/api/waitlist', { method: 'POST', body: { email: addr, type: `fragrance-${fragrance.id}` } });
+      setDone(true);
+      showToast(`<span>You're set.</span> We'll email you about ${fragrance.name}.`);
+    } catch (e) {
+      showToast(e.message || 'Could not subscribe');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (done) {
+    return <p className="frag-alerts done">✓ Alerts on for {fragrance.name}</p>;
+  }
+
+  return (
+    <div className="frag-alerts">
+      {user?.email ? (
+        <button type="button" className="frag-alerts-btn" disabled={busy} onClick={() => subscribe(user.email)}>
+          🔔 Get restock &amp; price alerts
+        </button>
+      ) : (
+        <>
+          <input
+            className="frag-alerts-input"
+            type="email"
+            placeholder="Email for restock & price alerts"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <button type="button" className="frag-alerts-btn" disabled={busy} onClick={() => subscribe(email.trim())}>
+            Notify me
+          </button>
+        </>
+      )}
     </div>
   );
 }

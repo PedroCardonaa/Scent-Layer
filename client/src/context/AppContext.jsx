@@ -244,6 +244,16 @@ export function AppProvider({ children }) {
     return () => { cancelled = true; };
   }, []);
 
+  // ── Review summaries: one bulk fetch for star ratings on cards ────
+  // { [fragranceId]: { avg, count } }. Empty object when the API is
+  // down — cards simply render without a rating row.
+  const [reviewSummary, setReviewSummary] = useState({});
+  useEffect(() => {
+    api('/api/reviews/summary')
+      .then(d => { if (d?.summaries) setReviewSummary(d.summaries); })
+      .catch(() => { /* no ratings shown */ });
+  }, []);
+
   // ── Auth bootstrap ────────────────────────────────────────────────
   useEffect(() => {
     if (!getToken()) { setAuthLoading(false); loadLocalWishlist(); return; }
@@ -511,7 +521,8 @@ export function AppProvider({ children }) {
     savedBlends, saveBlend, deleteBlend, renameBlend, refreshBlends,
     myReviews, submitReview, refreshMyReviews,
     buildUserContext,
-  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme, analyticsConsent, setAnalyticsConsent, cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart, recentlyViewed, markViewed, sets, addSetToCart, wardrobeItems, setWardrobeStatus, removeWardrobeStatus, refreshWardrobe, savedBlends, saveBlend, deleteBlend, renameBlend, refreshBlends, myReviews, submitReview, refreshMyReviews, buildUserContext, refreshCatalog, apiReachable, giftModal, openGiftModal, closeGiftModal]);
+    reviewSummary,
+  }), [user, authLoading, login, signup, logout, saveQuizResult, fragrances, wishlistIds, toggleWishlist, refreshWishlist, showToast, sourceModal, openSourceModal, closeSourceModal, sampleModal, openSampleModal, closeSampleModal, visitCount, themePref, setThemePref, effectiveTheme, analyticsConsent, setAnalyticsConsent, cartItems, cartCount, cartOpen, addToCart, removeFromCart, updateCartQty, clearCart, openCart, closeCart, recentlyViewed, markViewed, sets, addSetToCart, wardrobeItems, setWardrobeStatus, removeWardrobeStatus, refreshWardrobe, savedBlends, saveBlend, deleteBlend, renameBlend, refreshBlends, myReviews, submitReview, refreshMyReviews, buildUserContext, refreshCatalog, apiReachable, giftModal, openGiftModal, closeGiftModal, reviewSummary]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
