@@ -3,6 +3,7 @@ import { ShoppingBag } from 'lucide-react';
 import { useApp } from '../context/AppContext.jsx';
 import { MagicCard } from './ui/MagicCard.jsx';
 import { ScentTile } from './ScentTile.jsx';
+import { FROM_PRICE_CENTS, formatMoney } from '../lib/pricing.js';
 import { useLongPress } from '../hooks/useLongPress.js';
 
 export function ProductCard({ fragrance: p }) {
@@ -96,6 +97,7 @@ export function ProductCard({ fragrance: p }) {
         <div className="product-info">
           <p className="product-brand">{p.brand}</p>
           <h3 className="product-name">{p.name}</h3>
+          <p className="product-price">from {formatMoney(FROM_PRICE_CENTS)}</p>
           <p className="product-notes-preview">{p.top}</p>
           <div className="product-footer">
             <span className="product-family">{p.family} · {p.type}</span>

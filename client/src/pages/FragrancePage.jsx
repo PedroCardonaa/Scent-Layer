@@ -12,6 +12,7 @@ import { useDocumentMeta } from '../lib/seo.js';
 import { slugify, parseNotes } from '../lib/slug.js';
 import { shareOrCopy } from '../lib/share.js';
 import { ScentTile } from '../components/ScentTile.jsx';
+import { unitPriceCents, formatMoney } from '../lib/pricing.js';
 import { SchemaJsonLd, buildProductSchema, buildBreadcrumbSchema } from '../components/SchemaJsonLd.jsx';
 
 const SAMPLE_SIZES = ['2ml', '5ml', '10ml', '30ml'];
@@ -176,7 +177,7 @@ export function FragrancePage() {
                   onClick={() => setSize(s)}
                   aria-pressed={size === s}
                 >
-                  {s}
+                  {s} · {formatMoney(unitPriceCents(s))}
                 </button>
               ))}
             </div>
@@ -192,7 +193,7 @@ export function FragrancePage() {
                 openCart();
               }}
             >
-              Add {size} to Cart
+              Add {size} to Cart · {formatMoney(unitPriceCents(size))}
             </button>
             <button
               type="button"

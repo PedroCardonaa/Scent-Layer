@@ -63,6 +63,8 @@ export function ShopPage() {
     mood:   params.getAll('mood').filter(v => MOOD_OPTS.includes(v)),
   };
   const search = params.get('q') ?? '';
+  const SORTS = { featured: 'Featured', name: 'Name A–Z', brand: 'Brand A–Z', family: 'Family' };
+  const sort = SORTS[params.get('sort')] ? params.get('sort') : 'featured';
 
   // Back-compat: the old links used `?filter=Family`, fold them into the new `family` param.
   useEffect(() => {
@@ -76,13 +78,17 @@ export function ShopPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function setFilterParams(nextFilters, nextSearch = search) {
+  function setFilterParams(nextFilters, nextSearch = search, nextSort = sort) {
     const sp = new URLSearchParams();
     Object.entries(nextFilters).forEach(([group, vals]) => {
       vals.forEach(v => sp.append(group, v));
     });
     if (nextSearch.trim()) sp.set('q', nextSearch);
+    if (nextSort && nextSort !== 'featured') sp.set('sort', nextSort);
     setParams(sp, { replace: true });
+  }
+  function setSort(nextSort) {
+    setFilterParams(filters, search, nextSort);
   }
 
   // Theme is now centralized in AppContext, page no longer touches body.dark.
@@ -97,7 +103,7 @@ export function ShopPage() {
 
   const filteredFragrances = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return fragrances.filter(p => {
+    const list = fragrances.filter(p => {
       if (filters.family.length && !filters.family.includes(p.family)) return false;
       if (filters.season.length && !filters.season.some(s => p.season.includes(s))) return false;
       if (filters.time.length   && !filters.time.some(t => p.time.includes(t)))     return false;
@@ -108,7 +114,14 @@ export function ShopPage() {
       }
       return true;
     });
-  }, [fragrances, filters, search]);
+    // 'featured' keeps catalog order; the rest are stable alphabetical
+    // sorts. Family falls back to name within the same family so the
+    // grouping reads deliberately.
+    if (sort === 'name')   list.sort((a, b) => a.name.localeCompare(b.name));
+    if (sort === 'brand')  list.sort((a, b) => a.brand.localeCompare(b.brand) || a.name.localeCompare(b.name));
+    if (sort === 'family') list.sort((a, b) => a.family.localeCompare(b.family) || a.name.localeCompare(b.name));
+    return list;
+  }, [fragrances, filters, search, sort]);
 
   useScrollReveal('.shop-product-grid .product-card', [filteredFragrances.length]);
 
@@ -222,6 +235,19 @@ export function ShopPage() {
       </div>
 
       <div className="shop-grid-section">
+        <div className="shop-toolbar">
+          <p className="shop-toolbar-count">
+            {filteredFragrances.length} fragrance{filteredFragrances.length !== 1 ? 's' : ''}
+          </p>
+          <label className="shop-toolbar-sort">
+            Sort by
+            <select value={sort} onChange={(e) => setSort(e.target.value)} aria-label="Sort catalog">
+              {Object.entries(SORTS).map(([k, label]) => (
+                <option key={k} value={k}>{label}</option>
+              ))}
+            </select>
+          </label>
+        </div>
         <div className="shop-product-grid">
           {filteredFragrances.length === 0
             ? (

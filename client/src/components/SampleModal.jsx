@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
 import { trackEvent } from '../lib/analytics.js';
+import { unitPriceCents, formatMoney } from '../lib/pricing.js';
 
 const SAMPLE_SIZES = [
   { ml: '2ml',  label: '~30 sprays',  desc: 'Try it once or twice' },
@@ -86,6 +87,7 @@ export function SampleModal() {
               onClick={() => setSize(s.ml)}
             >
               <span className="sample-size-ml">{s.ml}</span>
+              <span className="sample-size-price">{formatMoney(unitPriceCents(s.ml))}</span>
               <span className="sample-size-sprays">{s.label}</span>
               <span className="sample-size-desc">{s.desc}</span>
             </button>
@@ -97,9 +99,9 @@ export function SampleModal() {
         <input className="modal-input" placeholder="Fragrance name & brand" value={form.perfume} onChange={(e) => setForm(f => ({ ...f, perfume: e.target.value }))} />
         <textarea className="modal-textarea" placeholder="Anything else? (concentration preference, multiple sizes, etc.)" value={form.message} onChange={(e) => setForm(f => ({ ...f, message: e.target.value }))} />
         <button className="modal-submit" onClick={submit} disabled={submitting} type="button">
-          {submitting ? 'Sending…' : `Order ${size} Sample`}
+          {submitting ? 'Sending…' : `Order ${size} Sample · ${formatMoney(unitPriceCents(size))}`}
         </button>
-        <p className="modal-note">We'll confirm pricing and ship times within 24 hours.</p>
+        <p className="modal-note">We'll confirm your order and ship times within 24 hours.</p>
         <button type="button" className="modal-switch" onClick={switchToBottle}>
           Or source a full bottle →
         </button>
