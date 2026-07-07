@@ -248,7 +248,16 @@ body.dark .shop-toolbar-sort select { background-color: var(--deep); color: var(
   justify-content: center;
   overflow: hidden;
 }
-.scent-tile svg { opacity: 0.55; }
+.scent-tile svg {
+  filter: drop-shadow(0 6px 10px rgba(17,17,20,0.10));
+  transition: transform 0.35s var(--ease-out);
+}
+/* Gentle lift when the wrapping card is hovered */
+.product-card:hover .scent-tile svg,
+.wl-card:hover .scent-tile svg,
+.vault-card:hover .scent-tile svg {
+  transform: translateY(-5px);
+}
 .scent-tile-initial {
   position: absolute;
   left: 12px;
