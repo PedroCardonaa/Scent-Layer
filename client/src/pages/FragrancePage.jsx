@@ -147,7 +147,7 @@ export function FragrancePage() {
       <section className="fragrance-hero">
         <div className="fragrance-hero-image parallax-hero">
           <div ref={heroImgRef} className="parallax-hero-img" style={{ width: '100%', height: '100%' }}>
-            <ScentTile fragrance={fragrance} />
+            <ScentTile fragrance={fragrance} variant="hero" />
           </div>
           {fragrance.badge && <div className="fragrance-badge">{fragrance.badge}</div>}
         </div>

@@ -100,12 +100,39 @@ const SHAPES = [
   },
 ];
 
+// ── Hand-assigned silhouettes for recognizable bottles ────────────
+// Shape indices: 0 tall column, 1 wide flask, 2 rounded shoulders,
+// 3 slim cylinder, 4 squat square. Fragrances whose real bottle has a
+// famous shape get it pinned here so regulars recognize them at a
+// glance; everything else falls back to the id hash.
+const SHAPE_OVERRIDES = {
+  1: 0,   // Creed Aventus — tall shouldered column
+  2: 1,   // Baccarat Rouge 540 — the wide rectangular flask
+  3: 2,  59: 2,  60: 2,   // Byredo — round shoulders, disc cap
+  4: 2,  13: 2,  58: 2,   // Le Labo — apothecary rounded rectangle
+  5: 2,  61: 2,           // Margiela Replica — apothecary bottle
+  6: 0,   // Sauvage — tall rounded column
+  8: 0,  12: 0,  18: 0,   // Tom Ford Private Blend — tall ribbed column
+  9: 0,   // Creed SMW — tall column
+  10: 2,  // Ombre Leather — curved rectangle
+  14: 3,  // Molecule 01 — slim cylinder
+  17: 1,  // Chanel Les Exclusifs — wide flask
+  19: 3, 20: 3, 21: 3,    // Diptyque — slim oval
+  22: 3, 23: 3, 24: 3,    // Frederic Malle — the cylinder
+  25: 4, 26: 4,           // Amouage — squat crowned square
+  29: 2, 30: 2, 31: 2,    // Parfums de Marly — rounded square
+  32: 2, 33: 2,           // Xerjoff — rounded shoulders
+  37: 4, 38: 4,           // Initio — black squat square
+  40: 4, 41: 4, 42: 4,    // Kilian — squat square in the clutch
+  55: 4,  // Bleu de Chanel — squat square
+};
+
 function pick(arr, seed) {
   return arr[Math.abs(seed) % arr.length];
 }
 
-function Bottle({ id, liquid, cap }) {
-  const s = SHAPES[Math.abs(id) % SHAPES.length];
+function Bottle({ id, liquid, cap, brand, detailed = false }) {
+  const s = SHAPES[SHAPE_OVERRIDES[id] ?? (Math.abs(id) % SHAPES.length)];
   const [liqTop, liqBottom] = liquid;
   // Fill level 62%–82%, stepped by id so it's stable per fragrance.
   const fill = 0.62 + ((id * 13) % 5) * 0.05;
@@ -115,6 +142,14 @@ function Bottle({ id, liquid, cap }) {
   const liqRx = Math.max(4, s.body.rx - inset);
   const gradId = `sl-liq-${id}`;
 
+  const cx = s.body.x + s.body.w / 2;
+  // Detailed variant grows the label into a real one with the brand
+  // name set in type; compact tiles keep the small blank chip.
+  const showLabel = detailed || s.label;
+  const labelW = detailed ? 46 : 34;
+  const labelH = detailed ? 32 : 26;
+  const labelY = s.body.y + s.body.h * 0.42;
+
   return (
     <svg viewBox="0 0 120 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <defs>
@@ -123,6 +158,11 @@ function Bottle({ id, liquid, cap }) {
           <stop offset="100%" stopColor={liqBottom} />
         </linearGradient>
       </defs>
+
+      {/* grounding shadow under the bottle (hero only) */}
+      {detailed && (
+        <ellipse cx={cx} cy={192} rx={s.body.w * 0.46} ry={5} fill="rgba(17,17,20,0.10)" />
+      )}
 
       {/* glass body */}
       <rect
@@ -135,25 +175,58 @@ function Bottle({ id, liquid, cap }) {
         x={s.body.x + inset} y={liqY} width={s.body.w - inset * 2} height={liqH} rx={liqRx}
         fill={`url(#${gradId})`}
       />
+      {/* liquid surface meniscus (hero only) */}
+      {detailed && (
+        <ellipse
+          cx={cx} cy={liqY + 2} rx={(s.body.w - inset * 2) / 2 - 2} ry={2.5}
+          fill={liqTop} opacity="0.8"
+        />
+      )}
       {/* glass highlight */}
       <rect
         x={s.body.x + inset + 3} y={s.body.y + inset + 4}
         width={Math.max(4, s.body.w * 0.1)} height={s.body.h - inset * 2 - 10}
         rx={3} fill="rgba(255,255,255,0.5)"
       />
-      {/* label chip on the wider shapes */}
-      {s.label && (
+      {/* second, thinner highlight on the right (hero only) */}
+      {detailed && (
+        <rect
+          x={s.body.x + s.body.w - inset - 6} y={s.body.y + inset + 8}
+          width={2.5} height={s.body.h - inset * 2 - 18}
+          rx={1.25} fill="rgba(255,255,255,0.35)"
+        />
+      )}
+      {/* label */}
+      {showLabel && (
         <g>
           <rect
-            x={s.body.x + s.body.w / 2 - 17} y={s.body.y + s.body.h * 0.42}
-            width={34} height={26} rx={3}
+            x={cx - labelW / 2} y={labelY}
+            width={labelW} height={labelH} rx={3}
             fill="rgba(255,255,255,0.92)" stroke="rgba(17,17,20,0.12)" strokeWidth="1"
           />
-          <line
-            x1={s.body.x + s.body.w / 2 - 9} y1={s.body.y + s.body.h * 0.42 + 13}
-            x2={s.body.x + s.body.w / 2 + 9} y2={s.body.y + s.body.h * 0.42 + 13}
-            stroke="rgba(17,17,20,0.4)" strokeWidth="1.5" strokeLinecap="round"
-          />
+          {detailed && brand ? (
+            <>
+              <text
+                x={cx} y={labelY + labelH / 2 - 1}
+                textAnchor="middle"
+                fontFamily="Inter, sans-serif" fontSize="6" fontWeight="600"
+                letterSpacing="0.6" fill="rgba(17,17,20,0.72)"
+              >
+                {String(brand).toUpperCase().slice(0, 13)}
+              </text>
+              <line
+                x1={cx - 10} y1={labelY + labelH / 2 + 6}
+                x2={cx + 10} y2={labelY + labelH / 2 + 6}
+                stroke="rgba(17,17,20,0.35)" strokeWidth="1" strokeLinecap="round"
+              />
+            </>
+          ) : (
+            <line
+              x1={cx - 9} y1={labelY + labelH / 2}
+              x2={cx + 9} y2={labelY + labelH / 2}
+              stroke="rgba(17,17,20,0.4)" strokeWidth="1.5" strokeLinecap="round"
+            />
+          )}
         </g>
       )}
       {/* neck */}
@@ -161,6 +234,14 @@ function Bottle({ id, liquid, cap }) {
         x={s.neck.x} y={s.neck.y} width={s.neck.w} height={s.neck.h}
         fill="rgba(255,255,255,0.55)" stroke="rgba(17,17,20,0.22)" strokeWidth="2"
       />
+      {/* gold collar between neck and cap (hero only) */}
+      {detailed && (
+        <rect
+          x={s.neck.x - 2} y={s.cap.y + s.cap.h - 2}
+          width={s.neck.w + 4} height={4} rx={1}
+          fill="#b08d4a"
+        />
+      )}
       {/* cap */}
       <rect
         x={s.cap.x} y={s.cap.y} width={s.cap.w} height={s.cap.h} rx={s.cap.rx}
@@ -175,21 +256,24 @@ function Bottle({ id, liquid, cap }) {
   );
 }
 
-export function ScentTile({ fragrance, showInitial = true, className = '' }) {
+export function ScentTile({ fragrance, showInitial = true, variant = 'tile', className = '' }) {
   const fam = FAMILIES[fragrance?.family] || DEFAULT_FAMILY;
   const id = Number(fragrance?.id) || 0;
   const liquid = pick(fam.liquids, id * 7 + 3);
   const cap = pick(CAPS, id * 3 + 1);
   const [bg1, bg2] = fam.bg;
+  const detailed = variant === 'hero';
 
   return (
     <div
-      className={`scent-tile ${className}`}
+      className={`scent-tile ${detailed ? 'scent-tile-hero' : ''} ${className}`}
       style={{ background: `linear-gradient(160deg, ${bg1} 0%, ${bg2} 100%)` }}
       aria-hidden="true"
     >
-      <Bottle id={id} liquid={liquid} cap={cap} />
-      {showInitial && fragrance?.brand && (
+      <Bottle id={id} liquid={liquid} cap={cap} brand={fragrance?.brand} detailed={detailed} />
+      {/* Hero variant sets the brand in type on the bottle label, so
+          the corner initial would be redundant. */}
+      {showInitial && !detailed && fragrance?.brand && (
         <span className="scent-tile-initial">{fragrance.brand}</span>
       )}
     </div>
