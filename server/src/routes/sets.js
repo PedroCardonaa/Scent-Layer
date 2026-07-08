@@ -82,6 +82,10 @@ const SETS = [
   },
 ];
 
+// Exported so checkout (payments.js) can verify set membership and
+// apply the set discount server-side without trusting the client.
+export { SETS };
+
 router.get('/', (_req, res) => {
   res.json({ sets: SETS });
 });

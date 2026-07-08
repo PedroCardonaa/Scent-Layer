@@ -1,17 +1,27 @@
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingBag } from 'lucide-react';
 import { useApp } from '../context/AppContext.jsx';
 import { MagicCard } from './ui/MagicCard.jsx';
 import { ScentTile } from './ScentTile.jsx';
 import { fromPriceCents, formatMoney } from '../lib/pricing.js';
+import { slugify } from '../lib/slug.js';
+import { getCompareIds, toggleCompare, subscribeCompare } from '../lib/compare.js';
 import { useLongPress } from '../hooks/useLongPress.js';
 
 export function ProductCard({ fragrance: p }) {
   const { wishlistIds, toggleWishlist, openSampleModal, openSourceModal, addToCart, openCart, showToast, reviewSummary } = useApp();
+  const navigate = useNavigate();
   const saved = wishlistIds.includes(p.id);
   const rating = reviewSummary?.[p.id];
   const label = `${p.name}, ${p.brand}`;
   const detailHref = `/fragrance/${p.id}`;
+
+  // Compare selection lives in a tiny shared store (lib/compare.js) so
+  // the card buttons and the floating tray stay in sync.
+  const [compareIds, setCompareIds] = useState(getCompareIds());
+  useEffect(() => subscribeCompare((ids) => setCompareIds([...ids])), []);
+  const comparing = compareIds.includes(p.id);
 
   // Helper: when an inline action button is clicked, prevent the wrapping
   // Link from navigating. Lets the user click Wishlist / Order Sample / etc.
@@ -93,6 +103,14 @@ export function ProductCard({ fragrance: p }) {
             >
               <ShoppingBag size={14} strokeWidth={1.5} />
             </button>
+            <button
+              type="button"
+              className={`product-action-btn ${comparing ? 'comparing' : ''}`}
+              onClick={stop(() => toggleCompare(p.id))}
+              title={comparing ? 'Remove from comparison' : 'Add to comparison'}
+              aria-label={comparing ? 'Remove from comparison' : 'Add to comparison'}
+              aria-pressed={comparing}
+            >⇄</button>
           </div>
         </div>
         <div className="product-info">
@@ -105,7 +123,23 @@ export function ProductCard({ fragrance: p }) {
             </p>
           )}
           <p className="product-price">from {formatMoney(fromPriceCents(p.id))}</p>
-          <p className="product-notes-preview">{p.top}</p>
+          {/* Top notes as chips linking into /notes/:slug. Spans with
+              programmatic navigation — a real <a> can't nest inside
+              the card's wrapping <Link>. */}
+          <p className="product-notes-preview">
+            {String(p.top || '').split(',').map(n => n.trim()).filter(Boolean).slice(0, 3).map(note => (
+              <span
+                key={note}
+                role="link"
+                tabIndex={0}
+                className="note-chip"
+                onClick={stop(() => navigate(`/notes/${slugify(note)}`))}
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); navigate(`/notes/${slugify(note)}`); } }}
+              >
+                {note}
+              </span>
+            ))}
+          </p>
           <div className="product-footer">
             <span className="product-family">{p.family} · {p.type}</span>
             <button type="button" className="sample-btn" onClick={stop(() => openSampleModal(label))}>Order Sample</button>

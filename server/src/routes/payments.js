@@ -5,6 +5,8 @@ import { prisma } from '../db.js';
 import { stripe, unitPriceFor, shippingOptionsFor, STRIPE_WEBHOOK_SECRET } from '../services/stripe.js';
 import { optionalAuth, requireAuth } from '../middleware/auth.js';
 import { sendOrderConfirmation } from '../services/emails.js';
+import { sendEmail } from '../services/email.js';
+import { SETS } from './sets.js';
 
 const router = Router();
 
@@ -14,7 +16,22 @@ const lineItemShape = z.object({
   brand:       z.string(),
   size:        z.string(),       // "2ml" | "5ml" | "10ml" | "30ml"
   qty:         z.number().int().min(1).max(20),
+  setSlug:     z.string().max(60).optional(),
 });
+
+/**
+ * Server-verified unit price for a line item. If the item claims set
+ * membership, the discount only applies when the slug names a real
+ * set AND the fragrance/size actually belong to it — the client never
+ * dictates a percentage.
+ */
+function verifiedUnitPrice(it) {
+  const base = unitPriceFor(it.size, it.fragranceId);
+  if (!it.setSlug) return base;
+  const set = SETS.find(s => s.slug === it.setSlug);
+  if (!set || set.size !== it.size || !set.fragranceIds.includes(it.fragranceId)) return base;
+  return Math.round(base * (1 - set.discountPct / 100));
+}
 
 /**
  * POST /api/payments/checkout
@@ -38,9 +55,9 @@ router.post('/checkout', optionalAuth, async (req, res, next) => {
       quantity: it.qty,
       price_data: {
         currency: 'usd',
-        unit_amount: unitPriceFor(it.size, it.fragranceId),
+        unit_amount: verifiedUnitPrice(it),
         product_data: {
-          name: `${it.name} (${it.size})`,
+          name: `${it.name} (${it.size})${it.setSlug ? ' · set price' : ''}`,
           description: it.brand,
           metadata: { fragranceId: String(it.fragranceId), size: it.size },
         },
@@ -61,9 +78,9 @@ router.post('/checkout', optionalAuth, async (req, res, next) => {
     }
 
     // Free shipping at/above the threshold, flat rate below. Computed
-    // from the same per-fragrance prices as the line items.
+    // from the same verified per-fragrance prices as the line items.
     const subtotalCents = items.reduce(
-      (sum, it) => sum + unitPriceFor(it.size, it.fragranceId) * it.qty, 0);
+      (sum, it) => sum + verifiedUnitPrice(it) * it.qty, 0);
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
@@ -133,6 +150,37 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
   } catch (e) {
     console.error('[stripe] webhook signature verification failed', e.message);
     return res.status(400).send(`Webhook Error: ${e.message}`);
+  }
+
+  // Abandoned checkout: Stripe fires this when a session's 24h window
+  // lapses without payment. One gentle recovery email, only when the
+  // shopper got far enough to leave an email address.
+  // NOTE: the Stripe dashboard webhook must be subscribed to
+  // `checkout.session.expired` for this branch to ever receive events.
+  if (event.type === 'checkout.session.expired') {
+    const s = event.data.object;
+    const to = s.customer_details?.email || s.customer_email;
+    if (to) {
+      const items = (() => {
+        try { return JSON.parse(s.metadata?.cart || '[]'); } catch { return []; }
+      })();
+      const site = process.env.SITE_URL || 'https://scentlayer.example';
+      const rows = items.map(it =>
+        `<li>${it.qty}× ${it.name} (${it.size})</li>`).join('');
+      sendEmail({
+        to,
+        from: process.env.RESEND_FROM || 'Scent Layer <hello@scentlayer.example>',
+        subject: 'Your samples are still waiting',
+        html: `
+          <p>You were a click away from these:</p>
+          <ul>${rows || '<li>your picked samples</li>'}</ul>
+          <p>Your cart is saved on this device — pick up where you left off:</p>
+          <p><a href="${site}/shop">Return to Scent Layer</a></p>
+          <p style="color:#888;font-size:12px">If you changed your mind, ignore this — we won't nag twice.</p>
+        `,
+      }).catch(e => console.error('[email:abandoned]', e));
+    }
+    return res.json({ received: true, recovered: !!to });
   }
 
   if (event.type !== 'checkout.session.completed') {

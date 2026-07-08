@@ -131,7 +131,20 @@ export function formatMoney(cents, currency = 'USD') {
   }).format(cents / 100);
 }
 
+/**
+ * Unit price for a cart line item, honoring a Discovery Set discount
+ * (items added via addSetToCart carry discountPct). Mirrors the
+ * server-side validation in payments.js — the server independently
+ * verifies the setSlug before applying the same discount, so a
+ * hand-edited cart can't invent one.
+ */
+export function lineUnitPriceCents(item) {
+  const base = unitPriceCents(item.size, item.fragranceId);
+  const pct = Number(item?.discountPct) || 0;
+  return pct > 0 ? Math.round(base * (1 - pct / 100)) : base;
+}
+
 // Total cents for a cart-items array of { size, qty, fragranceId }.
 export function cartSubtotalCents(items) {
-  return items.reduce((sum, it) => sum + unitPriceCents(it.size, it.fragranceId) * it.qty, 0);
+  return items.reduce((sum, it) => sum + lineUnitPriceCents(it) * it.qty, 0);
 }

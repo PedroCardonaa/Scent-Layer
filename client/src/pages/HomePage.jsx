@@ -1,25 +1,34 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Nav } from '../components/Nav.jsx';
 import { Footer } from '../components/Footer.jsx';
 import { BackToTop } from '../components/BackToTop.jsx';
 import { ProductCard } from '../components/ProductCard.jsx';
-import { HeroBottle, SotwBottle } from '../components/BottleSvg.jsx';
-import { NewsletterStrip } from '../components/NewsletterStrip.jsx';
+import { TrustStrip } from '../components/TrustStrip.jsx';
+import { DiscoverySets } from '../components/DiscoverySets.jsx';
 import { ExitIntentModal } from '../components/ExitIntentModal.jsx';
-import { Marquee } from '../components/ui/Marquee.jsx';
-import { ProductRevealCard } from '../components/ui/ProductRevealCard.jsx';
-import { GlowCard } from '../components/ui/GlowCard.jsx';
 import { QuizMatchCard } from '../components/QuizMatchCard.jsx';
 import { BasedOnSampledRow } from '../components/BasedOnSampledRow.jsx';
 import { TodaysEdit } from '../components/TodaysEdit.jsx';
-import { TheVault } from '../components/TheVault.jsx';
 import { WishlistRecsRow } from '../components/WishlistRecsRow.jsx';
 import { RecentlyViewedRow } from '../components/RecentlyViewedRow.jsx';
 import { useApp } from '../context/AppContext.jsx';
 import { useScrollReveal } from '../hooks/useScrollReveal.js';
 import { useDocumentMeta } from '../lib/seo.js';
 import { api } from '../lib/api.js';
+
+/**
+ * Homepage, commerce-first and deliberately SHORT. The order is:
+ * hero → trust strip → buyable product grid → starter sets → one
+ * editorial block (Today's Edit) → personalization rows (render only
+ * with data) → Scent Club (the single email capture) → footer.
+ *
+ * Removed on purpose (they tripled the scroll length): the newsletter
+ * strip and waitlist section (both duplicated the Scent Club email
+ * capture), the SOTW spotlight and Vault rail (both duplicated the
+ * grid + Today's Edit), the marquees (decoration), and the tools promo
+ * (Tools lives in the nav).
+ */
 
 const FILTERS = [
   { key: 'all', label: 'All', match: () => true },
@@ -31,30 +40,30 @@ const FILTERS = [
 ];
 
 export function HomePage() {
-  const { fragrances, openSampleModal, openSourceModal, showToast } = useApp();
+  const { fragrances, showToast } = useApp();
   const [filter, setFilter] = useState('all');
   const visible = useMemo(() => {
     const fn = FILTERS.find(f => f.key === filter)?.match ?? (() => true);
     return fragrances.filter(fn).slice(0, 8);
   }, [fragrances, filter]);
 
-  useScrollReveal('.product-card,.tool-card,.note-card,.mission-value,.proof-card,.reveal', [visible.length]);
+  useScrollReveal('.product-card,.reveal', [visible.length]);
 
   useDocumentMeta({
     title: 'Wear Your Story',
     description: 'Curated niche and designer fragrance samples. Discover your scent in 2ml, 5ml, 10ml, or 30ml decants, authenticated, decanted, delivered. Source full bottles at a discount.',
   });
 
-  // Theme is now centralized in AppContext, page no longer touches body.dark.
-
   async function joinWaitlist(type, inputId) {
     const el = document.getElementById(inputId);
     const email = el?.value?.trim();
     if (!email || !email.includes('@')) { showToast('Please enter a valid email'); return; }
     try {
-      await api('/api/waitlist', { method: 'POST', body: { email, type } });
+      const r = await api('/api/waitlist', { method: 'POST', body: { email, type } });
       if (el) el.value = '';
-      showToast('<span>You\'re on the list!</span> We\'ll be in touch at launch.');
+      showToast(r?.promoCode
+        ? `<span>You're on the list!</span> Take ${r.promoCode} for 10% off your first order.`
+        : '<span>You\'re on the list!</span> We\'ll be in touch at launch.');
     } catch (e) { showToast(e.message); }
   }
 
@@ -74,68 +83,13 @@ export function HomePage() {
         </div>
       </section>
 
-      <NewsletterStrip />
+      <TrustStrip />
 
-      <TodaysEdit />
-
-      <TheVault />
-
-      {/* Personalization rows, render only when there's data to show.
-          Each component returns null for empty states so we don't end
-          up with three empty section headers on the homepage for new
-          guests. */}
-      <QuizMatchCard />
-      <BasedOnSampledRow />
-      <RecentlyViewedRow />
-      <WishlistRecsRow />
-
-      <section className="sotw">
-        <div>
-          <div className="sotw-badge"><div className="sotw-dot" /><span className="sotw-label">Scent of the Week</span></div>
-          <h2 className="sotw-title">Baccarat Rouge 540</h2>
-          <p className="sotw-brand">Maison Francis Kurkdjian</p>
-          <p className="sotw-desc">The fragrance that redefined modern luxury. An incandescent amber floral, jasmine and saffron over a cedar and ambergris base that glows for hours on skin.</p>
-          <div className="sotw-notes">
-            <span className="sotw-note">Jasmine</span><span className="sotw-note">Saffron</span><span className="sotw-note">Ambergris</span><span className="sotw-note">Cedar</span>
-          </div>
-          <button className="btn-dark" type="button" onClick={() => openSampleModal('Baccarat Rouge 540, Maison Francis Kurkdjian')}>Order a 2ml Sample</button>
-          <button type="button" className="source-link" style={{ display: 'inline-block', width: 'auto', marginLeft: 12, borderTop: 'none', padding: 0, color: 'rgba(245,240,232,0.45)' }} onClick={() => openSourceModal('Baccarat Rouge 540, Maison Francis Kurkdjian')}>or full bottle →</button>
-        </div>
-        <div className="sotw-card-wrap">
-          <ProductRevealCard
-            fragrance={{
-              name: 'Baccarat Rouge 540',
-              brand: 'Maison Francis Kurkdjian',
-              family: 'Oriental',
-              top: 'Jasmine, Saffron',
-              heart: 'Amberwood, Ambergris',
-              base: 'Fir Resin, Cedar',
-              season: ['Fall', 'Winter'],
-            }}
-            description="The fragrance that redefined modern luxury. An incandescent amber floral, jasmine and saffron over a cedar and ambergris base that glows for hours on skin."
-            onOrderSample={() => openSampleModal('Baccarat Rouge 540, Maison Francis Kurkdjian')}
-            onSourceBottle={() => openSourceModal('Baccarat Rouge 540, Maison Francis Kurkdjian')}
-          />
-        </div>
-      </section>
-
-      <div className="marquee-wrapper">
-        <Marquee duration="40s" gap="2.25rem" pauseOnHover repeat={4} className="py-2">
-          {['2ml · 5ml · 10ml · 30ml','Niche Fragrances','Designer Houses','Samples From 2ml','Creed · Byredo · Le Labo','MFK · Maison Margiela','Authenticated · Decanted','Or Source Full Bottles'].map((t, j) => (
-            <span key={j} className="marquee-item"><span className="marquee-dot" />{t}</span>
-          ))}
-        </Marquee>
-        <Marquee duration="55s" gap="2.25rem" reverse pauseOnHover repeat={4} className="py-2 opacity-50">
-          {['Editorial Decants','Sample First','Then Commit','Le Labo · Byredo','Tom Ford · Dior','Frederic Malle · Diptyque','Hand-Decanted','Glass Atomizers'].map((t, j) => (
-            <span key={j} className="marquee-item"><span className="marquee-dot" />{t}</span>
-          ))}
-        </Marquee>
-      </div>
-
-      <section className="section" id="collection">
+      {/* Products first — the shelf is the pitch. */}
+      <section className="section section-tight" id="collection">
         <div className="section-header">
-          <div><p className="section-label">The Collection</p><h2 className="section-title">Niche &amp; <em>designer</em><br/>favorites.</h2></div>
-          <Link to="/shop" className="section-link">View All →</Link>
+          <div><p className="section-label">The Collection</p><h2 className="section-title">Niche &amp; designer favorites.</h2></div>
+          <Link to="/shop" className="section-link">View all 61 →</Link>
         </div>
         <div className="filter-bar">
           {FILTERS.map(f => (
@@ -147,45 +101,15 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="tools-promo">
-        <div className="section-header" style={{ marginBottom: 0 }}>
-          <div><p className="section-label">Tools</p><h2 className="section-title">Built to help you<br/><em>find your scent.</em></h2></div>
-        </div>
-        <div className="tools-grid tools-grid--glow">
-          <GlowCard customSize glowColor="gold" className="tool-glow">
-            <Link to="/tools" className="tool-glow-content">
-              <span className="tool-icon">◈</span>
-              <h3 className="tool-name">Layer Builder</h3>
-              <p className="tool-desc">Combine 2 to 4 fragrances and get an AI analysis of how they interact, blend name, character, and wear occasions.</p>
-              <span className="tool-arrow">Try it →</span>
-            </Link>
-          </GlowCard>
-          <GlowCard customSize glowColor="gold" className="tool-glow">
-            <Link to="/shop#finder" className="tool-glow-content">
-              <span className="tool-icon">⌕</span>
-              <h3 className="tool-name">Scent Finder</h3>
-              <p className="tool-desc">Filter by notes family, season, time of day, or mood. Don't know the name, find it by feeling instead.</p>
-              <span className="tool-arrow">Explore →</span>
-            </Link>
-          </GlowCard>
-          <GlowCard customSize glowColor="gold" className="tool-glow">
-            <Link to="/profile#personalize" className="tool-glow-content">
-              <span className="tool-icon">✦</span>
-              <h3 className="tool-name">Scent Quiz</h3>
-              <p className="tool-desc">Answer 5 questions about your personality, lifestyle, and preferences, get a curated recommendation.</p>
-              <span className="tool-arrow">Personalize →</span>
-            </Link>
-          </GlowCard>
-          <GlowCard customSize glowColor="gold" className="tool-glow">
-            <Link to="/shop#calc" className="tool-glow-content">
-              <span className="tool-icon">⏱</span>
-              <h3 className="tool-name">Spray Calculator</h3>
-              <p className="tool-desc">Pick a bottle size and your daily sprays, find out exactly how long it lasts and what lifestyle it fits.</p>
-              <span className="tool-arrow">Calculate →</span>
-            </Link>
-          </GlowCard>
-        </div>
-      </section>
+      <DiscoverySets />
+
+      <TodaysEdit />
+
+      {/* Personalization rows, render only when there's data to show. */}
+      <QuizMatchCard />
+      <BasedOnSampledRow />
+      <RecentlyViewedRow />
+      <WishlistRecsRow />
 
       <section className="fotm">
         <div className="fotm-inner">
@@ -203,7 +127,7 @@ export function HomePage() {
               <input className="fotm-input" id="fotmEmail" placeholder="Your email address" type="email" />
               <button className="fotm-btn" type="button" onClick={() => joinWaitlist('fotm', 'fotmEmail')}>Join the Waitlist</button>
             </div>
-            <p className="fotm-note">Be first to know when we launch. No spam, just the drop announcement.</p>
+            <p className="fotm-note">Joining gets you 10% off your first sample order. No spam.</p>
           </div>
           <div className="fotm-right">
             <div className="fotm-card">
@@ -217,19 +141,6 @@ export function HomePage() {
               <div className="fotm-card-footer">Join the waitlist to unlock pricing</div>
             </div>
           </div>
-        </div>
-      </section>
-
-      <section className="waitlist">
-        <div className="waitlist-inner">
-          <p className="waitlist-eyebrow">We're launching soon</p>
-          <h2 className="waitlist-title">Get notified<br/><em>first.</em></h2>
-          <p className="waitlist-sub">Join the waitlist for early access, launch pricing, and the first monthly drop announcement.</p>
-          <div className="waitlist-form">
-            <input className="waitlist-input" id="waitlistEmail" placeholder="Your email address" type="email" />
-            <button className="waitlist-btn" type="button" onClick={() => joinWaitlist('general', 'waitlistEmail')}>Notify Me</button>
-          </div>
-          <p className="waitlist-note">No spam. One email when we launch.</p>
         </div>
       </section>
 

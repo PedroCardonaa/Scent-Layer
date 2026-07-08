@@ -390,8 +390,17 @@ function SlotInput({ slot, index, fragrances, onSelect, onRemove, onQuery }) {
 // rank-and-recommend for 3+.
 function Compare({ fragrances }) {
   const { user, showToast, openSampleModal, openSourceModal, buildUserContext, wardrobeItems, myReviews } = useApp();
-  // Selected fragrance IDs, 2..4 entries. Starts at 2; user can add up to 4.
-  const [selectedIds, setSelectedIds] = useState([null, null]);
+  // Selected fragrance IDs, 2..4 entries. Starts at 2; user can add up
+  // to 4. A ?compare=1,2,3 URL param (set by the grid's compare tray)
+  // preloads the selection.
+  const [selectedIds, setSelectedIds] = useState(() => {
+    try {
+      const param = new URLSearchParams(window.location.search).get('compare');
+      const ids = (param || '').split(',').map(Number).filter(Number.isInteger);
+      if (ids.length >= 2) return ids.slice(0, 4);
+    } catch { /* SSR / bad param */ }
+    return [null, null];
+  });
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);

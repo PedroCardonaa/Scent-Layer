@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext.jsx';
 import { api } from '../lib/api.js';
 import { trackEvent } from '../lib/analytics.js';
 import { ScentTile } from './ScentTile.jsx';
-import { unitPriceCents, cartSubtotalCents, formatMoney, FREE_SHIPPING_THRESHOLD_CENTS, SHIPPING_FLAT_CENTS } from '../lib/pricing.js';
+import { lineUnitPriceCents, cartSubtotalCents, formatMoney, FREE_SHIPPING_THRESHOLD_CENTS, SHIPPING_FLAT_CENTS } from '../lib/pricing.js';
 
 /**
  * Cart drawer slides in from the right. Two stages within the same panel:
@@ -93,6 +93,9 @@ export function CartDrawer() {
             brand: it.brand ?? '',
             size: it.size,
             qty: it.qty,
+            // Set membership: server verifies the slug and applies the
+            // set discount itself — never trusts a client-sent percent.
+            setSlug: it.setSlug || undefined,
           })),
           address: form.message || form.address || undefined,
           promoCode: getPromoCode() || undefined,
@@ -169,7 +172,7 @@ export function CartDrawer() {
             <ul className="cart-items">
               {cartItems.map(it => {
                 const frag = fragrances.find(f => f.id === it.fragranceId);
-                const lineCents = unitPriceCents(it.size, it.fragranceId) * it.qty;
+                const lineCents = lineUnitPriceCents(it) * it.qty;
                 return (
                   <li key={it.id} className="cart-item">
                     <div className="cart-item-thumb">

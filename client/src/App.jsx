@@ -15,6 +15,7 @@ import { ErrorBoundary } from './components/ErrorBoundary.jsx';
 import { ApiStatusBanner } from './components/ApiStatusBanner.jsx';
 import { MiniCartBar } from './components/MiniCartBar.jsx';
 import { PromoBar } from './components/PromoBar.jsx';
+import { CompareTray } from './components/CompareTray.jsx';
 import { captureRefFromUrl } from './lib/referral.js';
 import { trackPageView } from './lib/analytics.js';
 
@@ -179,6 +180,7 @@ export default function App() {
       <GiftModal />
       <CartDrawer />
       <MiniCartBar />
+      <CompareTray />
       <MobileBottomNav />
       <Toaster />
       <CookieConsent />
